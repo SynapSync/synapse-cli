@@ -46,6 +46,7 @@ temp/
 .synapsync/cache/
 .synapsync/logs/
 synapsync-reports/
+docs/
 
 # Provider directories (created by sync command)
 # Uncomment if you don't want to track synced skills
