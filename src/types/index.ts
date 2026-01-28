@@ -2,30 +2,41 @@
  * Core types for SynapSync CLI
  */
 
-import type { Department, SupportedProvider } from '../core/constants.js';
+import type { AssetType, Category, SupportedProvider } from '../core/constants.js';
 
 // ============================================
-// Skill Types
+// Base Asset Types
 // ============================================
 
-export interface SkillMetadata {
+/**
+ * Base metadata shared by all asset types
+ */
+export interface AssetMetadata {
   name: string;
+  type: AssetType;
   version: string;
-  department: Department;
+  category: Category;
   description: string;
   author?: string;
   tags?: string[];
-  providers?: string[];
+  providers?: SupportedProvider[];
 }
 
-export interface Skill extends SkillMetadata {
+/**
+ * A complete asset with content and location
+ */
+export interface Asset extends AssetMetadata {
   content: string;
   path: string;
 }
 
-export interface InstalledSkill {
+/**
+ * Record of an installed asset
+ */
+export interface InstalledAsset {
   name: string;
-  department: Department;
+  type: AssetType;
+  category: Category;
   version: string;
   installedAt: Date;
   source: 'registry' | 'local' | 'git';
@@ -33,19 +44,72 @@ export interface InstalledSkill {
 }
 
 // ============================================
+// Specialized Asset Types
+// ============================================
+
+/**
+ * Skill - Reusable instruction sets for AI assistants
+ */
+export interface Skill extends Asset {
+  type: 'skill';
+}
+
+/**
+ * Agent - Autonomous AI entities with specific behaviors
+ */
+export interface Agent extends Asset {
+  type: 'agent';
+  capabilities?: string[];
+  systemPrompt?: string;
+}
+
+/**
+ * Prompt - Reusable prompt templates
+ */
+export interface Prompt extends Asset {
+  type: 'prompt';
+  variables?: string[];
+  examples?: string[];
+}
+
+/**
+ * Workflow - Multi-step AI processes
+ */
+export interface Workflow extends Asset {
+  type: 'workflow';
+  steps?: WorkflowStep[];
+}
+
+export interface WorkflowStep {
+  id: string;
+  name: string;
+  type: 'prompt' | 'agent' | 'tool' | 'condition';
+  config: Record<string, unknown>;
+}
+
+/**
+ * Tool - External integrations and functions
+ */
+export interface Tool extends Asset {
+  type: 'tool';
+  schema?: Record<string, unknown>;
+  endpoint?: string;
+}
+
+// ============================================
 // Manifest Types
 // ============================================
 
-export interface SkillManifest {
+export interface SynapSyncManifest {
   version: string;
   lastUpdated: string;
-  skills: Record<string, InstalledSkill>;
+  assets: Record<string, InstalledAsset>;
   syncs: Record<
-    string,
+    SupportedProvider,
     {
       lastSync: string;
       method: 'symlink' | 'copy';
-      skills: string[];
+      assets: string[];
     }
   >;
 }
@@ -57,14 +121,17 @@ export interface SkillManifest {
 export interface ProviderConnection {
   id: string;
   name: SupportedProvider;
-  status: 'active' | 'inactive' | 'error';
-  config: {
-    model: string;
-    maxTokens?: number;
-    temperature?: number;
-  };
+  status: 'connected' | 'disconnected' | 'error';
+  config: ProviderConfig;
   lastSync?: Date;
   createdAt: Date;
+}
+
+export interface ProviderConfig {
+  model?: string;
+  maxTokens?: number;
+  temperature?: number;
+  apiKeyEnvVar?: string;
 }
 
 export interface ProviderHealthStatus {
@@ -74,19 +141,19 @@ export interface ProviderHealthStatus {
 }
 
 // ============================================
-// Config Types
+// Configuration Types
 // ============================================
 
 export interface SyncConfig {
-  agentsDir: string;
-  skillsSubdir: string;
   defaultMethod: 'symlink' | 'copy';
-  providers: Record<
-    string,
-    {
-      enabled: boolean;
-      path: string;
-    }
+  providers: Partial<
+    Record<
+      SupportedProvider,
+      {
+        enabled: boolean;
+        paths?: Partial<Record<AssetType, string>>;
+      }
+    >
   >;
 }
 
@@ -101,11 +168,10 @@ export interface ProjectConfig {
   version: string;
   cli: CLIConfig;
   storage: {
-    agentsDir: string;
-    skillsSubdir: string;
+    dir: string;
   };
   sync: SyncConfig;
-  providers: Record<string, ProviderConnection>;
+  providers: Partial<Record<SupportedProvider, ProviderConnection>>;
 }
 
 // ============================================
@@ -118,5 +184,29 @@ export interface CommandContext {
   verbose: boolean;
 }
 
-// Re-export Department type
-export type { Department, SupportedProvider };
+// ============================================
+// Registry Types
+// ============================================
+
+export interface RegistryAsset {
+  name: string;
+  type: AssetType;
+  version: string;
+  description: string;
+  author: string;
+  downloads: number;
+  stars: number;
+  lastUpdated: string;
+}
+
+export interface RegistrySearchResult {
+  assets: RegistryAsset[];
+  total: number;
+  page: number;
+  perPage: number;
+}
+
+// ============================================
+// Re-exports
+// ============================================
+export type { AssetType, Category, SupportedProvider };

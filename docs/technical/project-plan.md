@@ -75,102 +75,128 @@ Este documento describe el plan de implementacion del proyecto SynapSync CLI, un
 
 > Estructura basada en analisis de vercel-labs/skills y numman-ali/openskills
 
+### Current Implementation ✅
+
 ```
 synapse-cli/
 ├── src/
-│   ├── index.ts                # Entry point - bin executable
-│   ├── cli.ts                  # CLI setup con Commander.js
+│   ├── index.ts                # ✅ Entry point - bin executable
+│   ├── cli.ts                  # ✅ CLI setup con Commander.js
+│   ├── version.ts              # ✅ Version constant
 │   │
-│   ├── commands/               # Un archivo por comando (patron openskills)
-│   │   ├── init.ts
-│   │   ├── config.ts
-│   │   ├── connect.ts
-│   │   ├── disconnect.ts
-│   │   ├── providers.ts
-│   │   ├── search.ts
-│   │   ├── install.ts
-│   │   ├── uninstall.ts
-│   │   ├── list.ts
-│   │   ├── info.ts
-│   │   ├── update.ts
-│   │   ├── run.ts
-│   │   ├── sync.ts
-│   │   ├── status.ts
-│   │   ├── doctor.ts
-│   │   ├── clean.ts
-│   │   └── version.ts
+│   ├── commands/               # Comandos CLI
+│   │   ├── help.ts             # ✅ Implementado
+│   │   ├── version.ts          # ✅ Implementado
+│   │   └── info.ts             # ✅ Implementado (con topics)
 │   │
-│   ├── ui/                     # Componentes visuales reutilizables
-│   │   ├── logo.ts             # ASCII art con gradiente
-│   │   ├── banner.ts           # Pantalla de bienvenida
-│   │   ├── prompts.ts          # Wrappers de @clack/prompts
-│   │   ├── spinner.ts          # Wrappers de ora
-│   │   ├── formatters.ts       # Tablas, boxes, listas
-│   │   └── colors.ts           # Constantes de colores
+│   ├── ui/                     # Componentes visuales
+│   │   ├── logo.ts             # ✅ ASCII art con gradiente
+│   │   ├── banner.ts           # ✅ Pantalla de bienvenida
+│   │   ├── repl.ts             # ✅ Modo interactivo REPL
+│   │   └── colors.ts           # ✅ Colores por tipo/categoria
 │   │
 │   ├── services/               # Logica de negocio
-│   │   ├── provider/
-│   │   │   ├── manager.ts      # ProviderManager
-│   │   │   ├── adapters/
-│   │   │   │   ├── base.ts     # BaseAdapter interface
-│   │   │   │   ├── claude.ts
-│   │   │   │   ├── openai.ts
-│   │   │   │   └── gemini.ts
-│   │   │   └── types.ts
-│   │   ├── capability/
-│   │   │   ├── manager.ts      # CapabilityManager
-│   │   │   ├── resolver.ts     # Dependency resolver
-│   │   │   └── types.ts
-│   │   ├── registry/
-│   │   │   ├── client.ts       # RegistryClient
-│   │   │   └── types.ts
-│   │   ├── sync/
-│   │   │   ├── engine.ts       # SyncEngine
-│   │   │   └── types.ts
-│   │   ├── agent/
-│   │   │   ├── manager.ts
-│   │   │   └── types.ts
-│   │   └── workflow/
-│   │       ├── engine.ts
-│   │       └── types.ts
+│   │   ├── asset/              # ✅ Sistema de assets
+│   │   │   ├── types.ts        # ✅ Tipos de instalacion
+│   │   │   ├── detector.ts     # ✅ Deteccion de tipos
+│   │   │   ├── prompter.ts     # ✅ Prompts interactivos
+│   │   │   └── index.ts        # ✅ API de alto nivel
+│   │   └── index.ts
 │   │
 │   ├── core/                   # Utilidades core
-│   │   ├── config.ts           # ConfigManager + schema + defaults
-│   │   ├── storage.ts          # StorageManager (.synapse/)
-│   │   ├── keychain.ts         # Secure credential storage
-│   │   ├── auth.ts             # AuthManager
-│   │   ├── logger.ts           # Logger con niveles
-│   │   └── errors.ts           # Custom errors
+│   │   └── constants.ts        # ✅ Asset types, providers, categories
 │   │
 │   ├── utils/                  # Utilidades generales
-│   │   ├── fs.ts               # File system helpers
-│   │   ├── git.ts              # Git operations
-│   │   ├── yaml.ts             # YAML parsing
-│   │   └── validation.ts       # Zod schemas
+│   │   ├── logger.ts           # ✅ Logger centralizado
+│   │   └── index.ts
 │   │
 │   └── types/                  # Tipos compartidos
-│       ├── index.ts
-│       ├── provider.ts
-│       ├── capability.ts
-│       └── config.ts
-│
-├── tests/
-│   ├── unit/                   # Tests unitarios por modulo
-│   ├── integration/            # Tests de integracion
-│   ├── e2e/                    # Tests end-to-end
-│   └── fixtures/               # Datos de prueba
+│       └── index.ts            # ✅ Asset, Provider, Config types
 │
 ├── docs/
 │   ├── technical/
+│   │   ├── project-plan.md     # Este documento
+│   │   └── asset-architecture.md # Arquitectura de assets
 │   └── roadmap/
+│       └── phase-1-foundation.md # Roadmap Phase 1
 │
 ├── package.json
-├── tsconfig.json
-├── tsup.config.ts              # Build configuration
-├── vitest.config.ts
-├── .eslintrc.cjs
+├── tsconfig.json               # ✅ Strict typing configuration
+├── tsup.config.ts              # ✅ Build configuration
+├── eslint.config.js            # ✅ Strict ESLint rules
 ├── .prettierrc
 └── README.md
+```
+
+### Planned Structure (Full)
+
+```
+synapse-cli/
+├── src/
+│   ├── index.ts
+│   ├── cli.ts
+│   │
+│   ├── commands/
+│   │   ├── help.ts             # ✅
+│   │   ├── version.ts          # ✅
+│   │   ├── info.ts             # ✅
+│   │   ├── init.ts             # PENDING
+│   │   ├── config.ts           # PENDING
+│   │   ├── connect.ts          # PENDING
+│   │   ├── disconnect.ts       # PENDING
+│   │   ├── providers.ts        # PENDING
+│   │   ├── search.ts           # PENDING
+│   │   ├── install.ts          # PENDING
+│   │   ├── uninstall.ts        # PENDING
+│   │   ├── list.ts             # PENDING
+│   │   ├── update.ts           # PENDING
+│   │   ├── run.ts              # PENDING
+│   │   ├── sync.ts             # PENDING
+│   │   ├── status.ts           # PENDING
+│   │   ├── doctor.ts           # PENDING
+│   │   └── clean.ts            # PENDING
+│   │
+│   ├── ui/
+│   │   ├── logo.ts             # ✅
+│   │   ├── banner.ts           # ✅
+│   │   ├── repl.ts             # ✅
+│   │   ├── colors.ts           # ✅
+│   │   ├── prompts.ts          # PENDING - @clack/prompts
+│   │   ├── spinner.ts          # PENDING - ora wrappers
+│   │   └── formatters.ts       # PENDING - tablas, boxes
+│   │
+│   ├── services/
+│   │   ├── asset/              # ✅ Multi-asset detection
+│   │   ├── provider/           # PENDING
+│   │   ├── registry/           # PENDING
+│   │   ├── sync/               # PENDING
+│   │   └── workflow/           # PENDING
+│   │
+│   ├── core/
+│   │   ├── constants.ts        # ✅
+│   │   ├── config.ts           # PENDING - ConfigManager
+│   │   ├── storage.ts          # PENDING - StorageManager
+│   │   ├── keychain.ts         # PENDING - Secure credentials
+│   │   ├── auth.ts             # PENDING - AuthManager
+│   │   └── errors.ts           # PENDING - Custom errors
+│   │
+│   ├── utils/
+│   │   ├── logger.ts           # ✅
+│   │   ├── fs.ts               # PENDING
+│   │   ├── git.ts              # PENDING
+│   │   ├── yaml.ts             # PENDING
+│   │   └── validation.ts       # PENDING - Zod schemas
+│   │
+│   └── types/
+│       └── index.ts            # ✅
+│
+├── tests/
+│   ├── unit/                   # PENDING
+│   ├── integration/            # PENDING
+│   ├── e2e/                    # PENDING
+│   └── fixtures/               # PENDING
+│
+└── docs/
 ```
 
 ### Key Architectural Decisions
@@ -234,39 +260,52 @@ synapse-cli/
 3. **GeminiAdapter** - Google Gemini API
 4. **HuggingFaceAdapter** - Hugging Face Inference API
 
-### 4.3 Capability Service (`src/services/capability/`)
+### 4.3 Asset Service (`src/services/asset/`) ✅ IMPLEMENTED
 
 **Responsabilidades:**
-- Instalar/desinstalar capabilities
-- Resolver dependencias
-- Ejecutar capabilities
-- Gestionar versiones
+- Detectar tipo de asset desde multiples fuentes
+- Parsear fuentes de instalacion (registry, local, GitHub, URL)
+- Prompts interactivos para seleccion de tipo
+- Resolver assets para instalacion
 
-**Capability Structure:**
+**Asset Detection Flow:**
 
-```yaml
-# capability.yaml
-name: code-reviewer
-version: 2.1.0
-type: agent
-description: Comprehensive code review agent
-
-providers:
-  - claude
-  - openai
-
-dependencies:
-  - syntax-checker@^3.0.0
-  - security-scanner@^2.4.0
-
-config:
-  severity:
-    type: enum
-    values: [low, medium, high, critical]
-    default: medium
-
-entrypoint: index.ts
 ```
+synapsync install <source>
+       │
+       ▼
+┌─────────────────────┐
+│ 1. Check --type     │ ─── Si existe ──► Usar tipo (confidence: high)
+│    flag             │
+└─────────────────────┘
+       │ No
+       ▼
+┌─────────────────────┐
+│ 2. Query Registry   │ ─── Si existe ──► Usar tipo (confidence: high)
+└─────────────────────┘
+       │ No
+       ▼
+┌─────────────────────┐
+│ 3. Detect by file   │ ─── Si existe ──► Usar tipo (confidence: high)
+│    (local/GitHub)   │     SKILL.md, AGENT.md, etc.
+└─────────────────────┘
+       │ No
+       ▼
+┌─────────────────────┐
+│ 4. Prompt user      │ ─── Seleccion ──► Usar tipo (confidence: prompt)
+│    (interactive)    │
+└─────────────────────┘
+```
+
+**Asset File Formats:**
+
+| Type | File | Format |
+|------|------|--------|
+| skill | `SKILL.md` | Markdown with YAML frontmatter |
+| agent | `AGENT.md` | Markdown with YAML frontmatter |
+| prompt | `PROMPT.md` | Markdown with YAML frontmatter |
+| workflow | `WORKFLOW.yaml` | YAML configuration |
+| tool | `TOOL.md` | Markdown with YAML frontmatter |
 
 ### 4.4 Registry Service (`src/services/registry/`)
 
@@ -305,13 +344,117 @@ entrypoint: index.ts
 
 ## 5. Data Models
 
-### Provider Connection
+> Ver [Asset Architecture](./asset-architecture.md) para detalles completos del sistema multi-asset.
+
+### Asset Types
+
+SynapSync soporta 5 tipos de assets de IA:
+
+| Type | File | Description |
+|------|------|-------------|
+| **skill** | `SKILL.md` | Instrucciones reutilizables para asistentes de IA |
+| **agent** | `AGENT.md` | Entidades AI autonomas con comportamientos especificos |
+| **prompt** | `PROMPT.md` | Templates de prompts reutilizables con variables |
+| **workflow** | `WORKFLOW.yaml` | Procesos multi-paso que combinan agentes y prompts |
+| **tool** | `TOOL.md` | Integraciones externas y funciones |
+
+### Base Types (Implemented ✅)
+
+```typescript
+// src/core/constants.ts
+export const ASSET_TYPES = ['skill', 'agent', 'prompt', 'workflow', 'tool'] as const;
+export type AssetType = (typeof ASSET_TYPES)[number];
+
+export const ASSET_FILE_NAMES: Record<AssetType, string> = {
+  skill: 'SKILL.md',
+  agent: 'AGENT.md',
+  prompt: 'PROMPT.md',
+  workflow: 'WORKFLOW.yaml',
+  tool: 'TOOL.md',
+};
+
+export const CATEGORIES = [
+  'frontend', 'backend', 'database', 'devops', 'security',
+  'testing', 'analytics', 'automation', 'general',
+] as const;
+export type Category = (typeof CATEGORIES)[number];
+
+export const SUPPORTED_PROVIDERS = [
+  'claude', 'openai', 'gemini', 'cursor', 'windsurf', 'copilot',
+] as const;
+export type SupportedProvider = (typeof SUPPORTED_PROVIDERS)[number];
+
+export const PROVIDER_PATHS: Record<SupportedProvider, Record<AssetType, string>> = {
+  claude: {
+    skill: '.claude/skills',
+    agent: '.claude/agents',
+    prompt: '.claude/prompts',
+    workflow: '.claude/workflows',
+    tool: '.claude/tools',
+  },
+  // ... other providers
+};
+```
+
+### Asset Interfaces (Implemented ✅)
+
+```typescript
+// src/types/index.ts
+interface AssetMetadata {
+  name: string;
+  type: AssetType;
+  version: string;
+  category: Category;
+  description: string;
+  author?: string;
+  tags?: string[];
+  providers?: SupportedProvider[];
+}
+
+interface Asset extends AssetMetadata {
+  content: string;
+  path: string;
+}
+
+// Specialized assets
+interface Skill extends Asset { type: 'skill'; }
+interface Agent extends Asset { type: 'agent'; capabilities?: string[]; }
+interface Prompt extends Asset { type: 'prompt'; variables?: string[]; }
+interface Workflow extends Asset { type: 'workflow'; steps?: WorkflowStep[]; }
+interface Tool extends Asset { type: 'tool'; schema?: Record<string, unknown>; }
+```
+
+### Installation Source Types (Implemented ✅)
+
+```typescript
+// src/services/asset/types.ts
+type InstallSourceType = 'registry' | 'local' | 'github' | 'url';
+
+interface InstallSource {
+  type: InstallSourceType;
+  value: string;
+  owner?: string;     // For GitHub
+  repo?: string;      // For GitHub
+  path?: string;      // For GitHub subpath
+  ref?: string;       // For GitHub branch/tag
+}
+
+interface AssetDetectionResult {
+  type: AssetType | null;
+  method: 'flag' | 'registry' | 'file' | 'prompt' | 'unknown';
+  confidence: 'high' | 'medium' | 'low';
+  source: InstallSource;
+  metadata?: AssetRegistryMetadata;
+}
+```
+
+### Provider Connection (Planned)
 
 ```typescript
 interface ProviderConnection {
   id: string;
   name: string;
-  type: 'claude' | 'openai' | 'gemini' | 'huggingface' | 'custom';
+  type: SupportedProvider;
   status: 'active' | 'inactive' | 'error';
   config: {
     model: string;
@@ -323,99 +466,45 @@ interface ProviderConnection {
 }
 ```
 
-### Skill
-
-> Ver [Skill Architecture](./skill-architecture.md) para detalles completos.
+### Manifest (Planned)
 
 ```typescript
-interface Skill {
+// .synapsync/manifest.json
+interface SynapSyncManifest {
+  version: string;
+  lastUpdated: string;
+  assets: Record<string, InstalledAsset>;
+  syncs: Record<SupportedProvider, {
+    lastSync: string;
+    method: 'symlink' | 'copy';
+    assets: string[];
+  }>;
+}
+
+interface InstalledAsset {
   name: string;
+  type: AssetType;
+  category: Category;
   version: string;
-  department: Department;           // 'frontend' | 'backend' | 'devops' | etc.
-  description: string;
-  author?: string;
-  tags?: string[];
-  providers?: string[];             // Compatible providers (all if empty)
-  content: string;                  // Full SKILL.md content
-  path: string;                     // Full path to SKILL.md
-}
-
-type Department =
-  | 'frontend'
-  | 'backend'
-  | 'database'
-  | 'devops'
-  | 'security'
-  | 'growth'
-  | 'testing'
-  | 'general'
-  | string;  // Custom departments allowed
-
-// Storage structure:
-// .agents/skills/{department}/{skill-name}/SKILL.md
-```
-
-### Skill Manifest
-
-```typescript
-// .agents/skills.manifest.json
-interface SkillManifest {
-  version: string;
-  lastUpdated: Date;
-  skills: {
-    [skillName: string]: {
-      department: Department;
-      version: string;
-      installedAt: Date;
-      source: 'registry' | 'local' | 'git';
-    };
-  };
-  syncs: {
-    [provider: string]: {
-      lastSync: Date;
-      method: 'symlink' | 'copy';
-      skills: string[];
-    };
-  };
+  installedAt: Date;
+  source: 'registry' | 'local' | 'github';
+  sourceUrl?: string;
 }
 ```
 
-### Project State
-
-```typescript
-interface ProjectState {
-  name: string;
-  version: string;
-  providers: ProviderConnection[];
-  skills: SkillManifest;
-  lastSync: Date;
-  syncStatus: 'synced' | 'pending' | 'error';
-}
-```
-
-### Sync Configuration
+### Sync Configuration (Planned)
 
 ```typescript
 interface SyncConfig {
-  agentsDir: string;              // Default: '.agents'
-  skillsSubdir: string;           // Default: 'skills'
+  baseDir: string;                // Default: '.synapsync'
   defaultMethod: 'symlink' | 'copy';
   providers: {
     [name: string]: {
       enabled: boolean;
-      path: string;               // e.g., '.claude/skills'
+      paths: Record<AssetType, string>;
     };
   };
 }
-
-// Provider paths (configurable)
-const PROVIDER_PATHS = {
-  claude: '.claude/skills',
-  gemini: '.gemini/skills',
-  codex: '.codex/skills',
-  cursor: '.cursor/skills',
-  windsurf: '.windsurf/skills',
-};
 ```
 
 ---
@@ -543,37 +632,58 @@ Example: feat(cli): add init command with interactive prompts
 
 ## 10. Milestones
 
-### Milestone 1: Foundation (Phase 1)
-- [ ] Project setup (TypeScript, testing, linting)
-- [ ] CLI framework setup
-- [ ] Welcome screen
-- [ ] `init`, `config`, `help`, `version` commands
-- [ ] Provider connection system
-- [ ] Basic provider adapters (Claude, OpenAI)
+### Milestone 1: Foundation (Phase 1) - IN PROGRESS
 
-### Milestone 2: Capabilities (Phase 1-2)
-- [ ] Capability schema definition
+**Week 1: Project Setup & CLI Framework ✅ COMPLETED**
+- [x] Project setup (TypeScript 5.7, strict typing, ESLint strict rules)
+- [x] CLI framework setup (Commander.js)
+- [x] Welcome screen with ASCII logo gradient
+- [x] Interactive REPL mode
+- [x] `help`, `version`, `info` commands
+- [x] Centralized logger utility
+
+**Week 1.5: Asset Type System ✅ COMPLETED**
+- [x] Multi-asset type system (skill, agent, prompt, workflow, tool)
+- [x] Asset detection system (flag, registry, file, prompt)
+- [x] Installation source parser (registry, local, GitHub, URL)
+- [x] `/info` command with documentation topics
+
+**Week 2: Basic Commands - PENDING**
+- [ ] `init` command with interactive prompts
+- [ ] `config` command (list, get, set)
+- [ ] ConfigManager implementation
+
+**Week 3: Provider Management - PENDING**
+- [ ] Provider adapter interface
+- [ ] Claude adapter
+- [ ] OpenAI adapter
+- [ ] `connect`, `disconnect`, `providers` commands
+
+**Week 4: Asset Management - PENDING**
 - [ ] Registry client
-- [ ] `search`, `install`, `list`, `info` commands
-- [ ] Dependency resolution
-- [ ] Local capability storage
+- [ ] `search`, `install`, `list`, `uninstall` commands
+- [ ] Manifest management
+
+### Milestone 2: Sync & Storage (Phase 2)
+- [ ] StorageManager implementation
+- [ ] `sync` command with symlink/copy
+- [ ] `status` command
+- [ ] Provider path management
+- [ ] Conflict resolution
 
 ### Milestone 3: Execution (Phase 2)
 - [ ] `run` command implementation
 - [ ] Capability execution engine
 - [ ] Output formatting
-- [ ] `sync` and `status` commands
 - [ ] `doctor` command
 
 ### Milestone 4: Advanced (Phase 3)
-- [ ] Agent management
 - [ ] Workflow engine
 - [ ] Registry auth and publishing
 - [ ] `watch` mode
 - [ ] Performance optimizations
 
 ### Milestone 5: Polish (Phase 4)
-- [ ] Interactive mode
 - [ ] Benchmarking
 - [ ] Plugin system
 - [ ] Comprehensive documentation
@@ -683,3 +793,4 @@ Example: feat(cli): add init command with interactive prompts
 |---------|------|--------|---------|
 | 1.0.0 | 2025-01-27 | Claude AI | Initial project plan |
 | 1.1.0 | 2025-01-27 | Claude AI | Updated stack based on CLI analysis (skills, openskills) |
+| 2.0.0 | 2025-01-27 | Claude AI | Updated to multi-asset architecture, current implementation status, updated data models, reference to asset-architecture.md |

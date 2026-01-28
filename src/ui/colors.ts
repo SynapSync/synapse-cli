@@ -4,6 +4,9 @@
 
 import pc from 'picocolors';
 
+// Reset code
+export const RESET = '\x1b[0m';
+
 // Semantic colors for different UI elements
 export const colors = {
   // Status colors
@@ -25,15 +28,25 @@ export const colors = {
   path: pc.underline,
   url: pc.blue,
 
-  // Department colors for skills
-  department: {
+  // Asset type colors
+  assetType: {
+    skill: '\x1b[38;5;39m', // Blue
+    agent: '\x1b[38;5;208m', // Orange
+    prompt: '\x1b[38;5;135m', // Purple
+    workflow: '\x1b[38;5;46m', // Green
+    tool: '\x1b[38;5;220m', // Yellow
+  } as Record<string, string>,
+
+  // Category colors for organization
+  category: {
     frontend: '\x1b[38;5;214m', // Orange
     backend: '\x1b[38;5;39m', // Blue
     database: '\x1b[38;5;208m', // Dark orange
     devops: '\x1b[38;5;135m', // Purple
     security: '\x1b[38;5;196m', // Red
-    growth: '\x1b[38;5;46m', // Bright green
     testing: '\x1b[38;5;220m', // Yellow
+    analytics: '\x1b[38;5;51m', // Cyan
+    automation: '\x1b[38;5;46m', // Bright green
     general: '\x1b[38;5;252m', // Light gray
   } as Record<string, string>,
 
@@ -42,19 +55,27 @@ export const colors = {
     claude: '\x1b[38;5;208m', // Orange (Anthropic)
     openai: '\x1b[38;5;46m', // Green (OpenAI)
     gemini: '\x1b[38;5;39m', // Blue (Google)
-    codex: '\x1b[38;5;46m', // Green (OpenAI)
     cursor: '\x1b[38;5;135m', // Purple
+    windsurf: '\x1b[38;5;51m', // Cyan
+    copilot: '\x1b[38;5;255m', // White (GitHub)
   } as Record<string, string>,
 };
 
-// Reset code
-export const RESET = '\x1b[0m';
+/**
+ * Apply asset type color to text
+ */
+export function colorAssetType(type: string, text: string): string {
+  const defaultColor = colors.assetType['skill'] ?? '';
+  const color = colors.assetType[type] ?? defaultColor;
+  return `${color}${text}${RESET}`;
+}
 
 /**
- * Apply department color to text
+ * Apply category color to text
  */
-export function colorDepartment(department: string, text: string): string {
-  const color = colors.department[department] ?? colors.department['general'];
+export function colorCategory(category: string, text: string): string {
+  const defaultColor = colors.category['general'] ?? '';
+  const color = colors.category[category] ?? defaultColor;
   return `${color}${text}${RESET}`;
 }
 
@@ -62,21 +83,23 @@ export function colorDepartment(department: string, text: string): string {
  * Apply provider color to text
  */
 export function colorProvider(provider: string, text: string): string {
-  const color = colors.provider[provider] ?? pc.white(text);
-  if (typeof color === 'string') {
+  const color = colors.provider[provider];
+  if (color) {
     return `${color}${text}${RESET}`;
   }
-  return color;
+  return pc.white(text);
 }
 
 /**
  * Create a colored status indicator
  */
-export function statusIndicator(status: 'active' | 'inactive' | 'error' | 'pending'): string {
+export function statusIndicator(
+  status: 'connected' | 'disconnected' | 'error' | 'pending'
+): string {
   switch (status) {
-    case 'active':
+    case 'connected':
       return pc.green('●');
-    case 'inactive':
+    case 'disconnected':
       return pc.dim('○');
     case 'error':
       return pc.red('●');

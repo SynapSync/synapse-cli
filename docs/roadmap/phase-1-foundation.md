@@ -1,101 +1,163 @@
 # Phase 1: Core Foundation
 
 **Duration:** Weeks 1-4
-**Focus:** CLI framework, basic commands, provider connections
+**Focus:** CLI framework, basic commands, provider connections, asset management
+**Status:** In Progress
 
 ---
 
 ## Overview
 
-La Phase 1 establece los cimientos del proyecto SynapSync CLI. El objetivo es tener una CLI funcional con los comandos esenciales y la capacidad de conectarse a proveedores de IA.
+La Phase 1 establece los cimientos del proyecto SynapSync CLI. El objetivo es tener una CLI funcional con los comandos esenciales, modo interactivo REPL, y la capacidad de gestionar assets de IA.
 
 ---
 
 ## Goals
 
-- [ ] Configurar el proyecto con TypeScript y tooling moderno
-- [ ] Implementar la estructura base del CLI
-- [ ] Crear la pantalla de bienvenida
-- [ ] Implementar comandos basicos: `init`, `config`, `help`, `version`
+- [x] Configurar el proyecto con TypeScript y tooling moderno
+- [x] Implementar la estructura base del CLI
+- [x] Crear la pantalla de bienvenida con logo ASCII
+- [x] Implementar modo interactivo REPL
+- [x] Implementar comandos basicos: `help`, `version`, `info`
+- [ ] Implementar comandos de proyecto: `init`, `config`, `status`
 - [ ] Sistema de conexion a proveedores: `connect`, `disconnect`, `providers`
-- [ ] Gestion basica de capabilities: `search`, `install`, `list`, `info`
+- [ ] Gestion de assets: `search`, `install`, `list`, `uninstall`
 
 ---
 
-## Week 1: Project Setup & CLI Framework
+## Week 1: Project Setup & CLI Framework ✅ COMPLETED
 
 ### Tasks
 
-#### 1.1 Project Initialization
+#### 1.1 Project Initialization ✅
 
-- [ ] Crear estructura de carpetas del proyecto
-- [ ] Configurar `package.json` con scripts y metadatos
-- [ ] Configurar TypeScript (`tsconfig.json`)
-- [ ] Configurar ESLint y Prettier
-- [ ] Configurar Vitest para testing
-- [ ] Configurar build process (tsup o similar)
+- [x] Crear estructura de carpetas del proyecto
+- [x] Configurar `package.json` con scripts y metadatos
+- [x] Configurar TypeScript (`tsconfig.json`) con tipado estricto
+- [x] Configurar ESLint con reglas estrictas de tipos
+- [x] Configurar Prettier
+- [x] Configurar build process con tsup
 
-**Deliverable:** Proyecto compilable con `npm run build`
+**Deliverable:** Proyecto compilable con `npm run build` ✅
 
-#### 1.2 CLI Framework Setup
+#### 1.2 CLI Framework Setup ✅
 
-- [ ] Instalar y configurar Commander.js o Oclif
-- [ ] Crear entry point principal (`src/index.ts`)
-- [ ] Configurar bin entry en package.json
-- [ ] Implementar estructura base de comandos
-- [ ] Configurar manejo global de errores
+- [x] Instalar y configurar Commander.js
+- [x] Crear entry point principal (`src/index.ts`)
+- [x] Configurar bin entry en package.json
+- [x] Implementar estructura base de comandos
+- [x] Configurar manejo global de errores
 
-**Deliverable:** CLI ejecutable con `synapsync --help`
+**Deliverable:** CLI ejecutable con `synapsync --help` ✅
 
-#### 1.3 Welcome Screen
+#### 1.3 Welcome Screen & REPL ✅
 
-- [ ] Disenar ASCII art del logo
-- [ ] Implementar pantalla de bienvenida
-- [ ] Mostrar estado inicial (providers, capabilities)
-- [ ] Mostrar tips y quick start
+- [x] Disenar ASCII art del logo con gradiente
+- [x] Implementar pantalla de bienvenida
+- [x] Implementar modo interactivo REPL
+- [x] Mostrar tips y quick start
+- [x] Comandos REPL: `/help`, `/clear`, `/exit`, `/version`, `/info`
 
-**Deliverable:** `synapsync` muestra pantalla de bienvenida
+**Deliverable:** `synapsync` muestra pantalla de bienvenida y entra en modo REPL ✅
 
-### Acceptance Criteria Week 1
+#### 1.4 Core Infrastructure ✅
+
+- [x] Logger centralizado (`src/utils/logger.ts`)
+- [x] Constantes y tipos core (`src/core/constants.ts`)
+- [x] Tipos de assets definidos (`src/types/index.ts`)
+- [x] Sistema de colores por categoria y tipo (`src/ui/colors.ts`)
+
+**Deliverable:** Infraestructura base lista ✅
+
+### Acceptance Criteria Week 1 ✅
 
 ```bash
 # El CLI se puede instalar localmente
-npm link
+npm link ✅
 
-# Muestra pantalla de bienvenida
-synapsync
+# Muestra pantalla de bienvenida y entra en REPL
+synapsync ✅
 
 # Muestra ayuda
-synapsync --help
-synapsync -h
+synapsync --help ✅
+
+# Modo interactivo funciona
+synapsync
+> /help ✅
+> /version ✅
+> /info --assets ✅
 ```
 
 ---
 
-## Week 2: Basic Commands
+## Week 1.5: Asset Type System ✅ COMPLETED (NEW)
+
+> Semana adicional para establecer el sistema de tipos de assets.
 
 ### Tasks
 
-#### 2.1 Help Command
+#### 1.5.1 Multi-Asset Type System ✅
 
-- [ ] Implementar `synapsync help`
-- [ ] Implementar `synapsync help <command>`
-- [ ] Formatear output con colores y estructura clara
-- [ ] Incluir ejemplos de uso
+- [x] Definir 5 tipos de assets: `skill`, `agent`, `prompt`, `workflow`, `tool`
+- [x] Archivos por tipo: `SKILL.md`, `AGENT.md`, `PROMPT.md`, `WORKFLOW.yaml`, `TOOL.md`
+- [x] Tipos TypeScript completos para cada asset type
+- [x] Constantes de configuracion por tipo
 
-**Deliverable:** Sistema de ayuda completo
+#### 1.5.2 Asset Detection System ✅
 
-#### 2.2 Version Command
+- [x] Parser de fuentes de instalacion (`src/services/asset/detector.ts`)
+- [x] Deteccion por flag explicito (`--type skill`)
+- [x] Deteccion por registry (placeholder)
+- [x] Deteccion por archivo local (escanea SKILL.md, AGENT.md, etc.)
+- [x] Deteccion por GitHub API
+- [x] Prompt interactivo como fallback (`src/services/asset/prompter.ts`)
 
-- [ ] Implementar `synapsync version`
-- [ ] Mostrar version del CLI
-- [ ] Mostrar version de Node.js
-- [ ] Mostrar plataforma
+#### 1.5.3 Installation Sources ✅
+
+- [x] Registry: `synapsync install code-reviewer`
+- [x] Local: `synapsync install ./path/to/asset`
+- [x] GitHub shorthand: `synapsync install github:user/repo`
+- [x] GitHub path: `synapsync install github:user/repo/assets/skill`
+- [x] GitHub branch: `synapsync install github:user/repo#develop`
+- [x] GitHub URL: `synapsync install https://github.com/user/repo`
+
+#### 1.5.4 Info Command ✅
+
+- [x] Comando `/info` con topics de documentacion
+- [x] `/info --assets` - Tipos de assets
+- [x] `/info --install` - Fuentes de instalacion y deteccion
+- [x] `/info --providers` - Proveedores soportados
+- [x] `/info --categories` - Categorias de organizacion
+- [x] `/info --sync` - Como funciona sync
+- [x] `/info --structure` - Estructura de proyecto
+
+**Deliverable:** Sistema de assets completamente tipado con deteccion automatica ✅
+
+---
+
+## Week 2: Basic Commands (PENDING)
+
+### Tasks
+
+#### 2.1 Help Command ✅
+
+- [x] Implementar `synapsync help`
+- [x] Implementar `synapsync help <command>`
+- [x] Formatear output con colores y estructura clara
+
+**Deliverable:** Sistema de ayuda completo ✅
+
+#### 2.2 Version Command ✅
+
+- [x] Implementar `synapsync version`
+- [x] Mostrar version del CLI
+- [x] Mostrar version de Node.js
+- [x] Mostrar plataforma
 - [ ] Implementar `--check` para ver updates disponibles
 
-**Deliverable:** `synapsync version` funcional
+**Deliverable:** `synapsync version` funcional ✅
 
-#### 2.3 Init Command
+#### 2.3 Init Command (PENDING)
 
 - [ ] Implementar `synapsync init`
 - [ ] Crear prompts interactivos (nombre, descripcion, providers)
@@ -107,13 +169,11 @@ synapsync -h
 
 **Deliverable:** Comando init genera proyecto correctamente
 
-#### 2.4 Config Command
+#### 2.4 Config Command (PENDING)
 
 - [ ] Implementar `synapsync config list`
 - [ ] Implementar `synapsync config get <key>`
 - [ ] Implementar `synapsync config set <key> <value>`
-- [ ] Implementar `synapsync config edit`
-- [ ] Implementar `synapsync config reset`
 - [ ] Crear ConfigManager en core
 
 **Deliverable:** Sistema de configuracion completo
@@ -136,20 +196,11 @@ synapsync config get cli.theme
 
 ---
 
-## Week 3: Provider Management
+## Week 3: Provider Management (PENDING)
 
 ### Tasks
 
-#### 3.1 Core Auth System
-
-- [ ] Crear AuthManager en core
-- [ ] Implementar almacenamiento seguro (keychain)
-- [ ] Crear abstraccion para credenciales
-- [ ] Implementar validacion de API keys
-
-**Deliverable:** Sistema de auth seguro
-
-#### 3.2 Provider Adapter Interface
+#### 3.1 Provider Adapter Interface
 
 - [ ] Definir interfaz base `ProviderAdapter`
 - [ ] Definir tipos comunes para providers
@@ -158,63 +209,47 @@ synapsync config get cli.theme
 
 ```typescript
 interface ProviderAdapter {
-  name: string;
+  name: SupportedProvider;
   connect(credentials: Credentials): Promise<void>;
   disconnect(): Promise<void>;
-  healthCheck(): Promise<HealthStatus>;
-  execute(prompt: string, options?: ExecuteOptions): Promise<Response>;
+  healthCheck(): Promise<ProviderHealthStatus>;
 }
 ```
 
 **Deliverable:** Interfaz de adapter definida
 
-#### 3.3 Claude Adapter
+#### 3.2 Claude Adapter
 
 - [ ] Implementar `ClaudeAdapter`
 - [ ] Configurar Anthropic SDK
 - [ ] Implementar autenticacion
 - [ ] Implementar health check
-- [ ] Manejar rate limits
 
 **Deliverable:** Adapter de Claude funcional
 
-#### 3.4 OpenAI Adapter
+#### 3.3 OpenAI Adapter
 
 - [ ] Implementar `OpenAIAdapter`
 - [ ] Configurar OpenAI SDK
 - [ ] Implementar autenticacion
 - [ ] Implementar health check
-- [ ] Manejar rate limits
 
 **Deliverable:** Adapter de OpenAI funcional
 
-#### 3.5 Connect Command
+#### 3.4 Connect/Disconnect Commands
 
 - [ ] Implementar `synapsync connect`
 - [ ] Implementar `synapsync connect <provider>`
-- [ ] Crear prompts de autenticacion
-- [ ] Guardar credenciales de forma segura
-- [ ] Testear conexion post-auth
-- [ ] Mostrar status del provider
-
-**Deliverable:** Comando connect funcional
-
-#### 3.6 Disconnect Command
-
 - [ ] Implementar `synapsync disconnect <provider>`
-- [ ] Confirmar accion con usuario
-- [ ] Eliminar credenciales almacenadas
-- [ ] Actualizar estado del proyecto
+- [ ] Guardar credenciales de forma segura
 
-**Deliverable:** Comando disconnect funcional
+**Deliverable:** Comandos connect/disconnect funcionales
 
-#### 3.7 Providers Command
+#### 3.5 Providers Command
 
 - [ ] Implementar `synapsync providers`
 - [ ] Mostrar tabla de providers conectados
 - [ ] Mostrar status de cada provider
-- [ ] Mostrar modelo activo
-- [ ] Mostrar rate limit actual
 
 **Deliverable:** Comando providers funcional
 
@@ -227,9 +262,6 @@ synapsync connect claude
 # -> Guarda en keychain
 # -> Muestra status
 
-# Conectar a OpenAI
-synapsync connect openai
-
 # Listar providers
 synapsync providers
 # -> Tabla con status de cada provider
@@ -240,87 +272,57 @@ synapsync disconnect claude
 
 ---
 
-## Week 4: Basic Skill Management
+## Week 4: Asset Management (PENDING)
 
-> **Note:** Ver [Skill Architecture](../technical/skill-architecture.md) para detalles completos de la estructura de almacenamiento.
+> **Note:** Ver [Asset Architecture](../technical/asset-architecture.md) para detalles completos.
 
 ### Tasks
 
-#### 4.1 Skill Schema & Storage Structure
-
-- [ ] Definir schema de skill (`SKILL.md` con frontmatter YAML)
-- [ ] Crear tipos TypeScript para skills y departments
-- [ ] Implementar validacion de schema con Zod
-- [ ] Documentar formato de skill
-- [ ] Implementar estructura de directorios por departamento:
-  ```
-  .agents/skills/{department}/{skill-name}/SKILL.md
-  ```
-- [ ] Crear constantes configurables para paths (`DEFAULT_AGENTS_DIR`, etc.)
-
-**Deliverable:** Schema de skill definido con estructura por departamento
-
-#### 4.2 Registry Client
+#### 4.1 Registry Client
 
 - [ ] Crear `RegistryClient` service
-- [ ] Implementar busqueda de capabilities
-- [ ] Implementar descarga de capabilities
+- [ ] Implementar busqueda de assets
+- [ ] Implementar descarga de assets
 - [ ] Implementar cache local
-- [ ] Manejar errores de red
 
-> **Note:** Para MVP, el registry puede ser un repositorio de GitHub o un JSON estatico.
+> **Note:** Para MVP, el registry puede ser un repositorio de GitHub o JSON estatico.
 
 **Deliverable:** Cliente de registry funcional
 
-#### 4.3 Search Command
+#### 4.2 Search Command
 
 - [ ] Implementar `synapsync search [query]`
-- [ ] Mostrar resultados formateados por departamento
-- [ ] Implementar filtros: `--tag`, `--provider`, `--department`, `--author`
+- [ ] Mostrar resultados formateados
+- [ ] Implementar filtros: `--tag`, `--type`, `--category`
 - [ ] Paginacion de resultados
 
 **Deliverable:** Comando search funcional
 
-#### 4.4 Install Command
+#### 4.3 Install Command
 
-- [ ] Implementar `synapsync install <skill>`
-- [ ] Implementar `synapsync install <skill>@<version>`
-- [ ] Implementar `synapsync install <skill> --department <dept>`
-- [ ] Resolver dependencias basicas
-- [ ] Descargar y guardar skill en estructura:
-  ```
-  .agents/skills/{department}/{skill-name}/SKILL.md
-  ```
-- [ ] Auto-detectar departamento desde metadata del skill
-- [ ] Prompt interactivo si departamento no especificado
-- [ ] Actualizar `skills.manifest.json`
+- [ ] Implementar `synapsync install <asset>`
+- [ ] Implementar `synapsync install <asset>@<version>`
+- [ ] Soportar todas las fuentes de instalacion (registry, local, GitHub)
+- [ ] Auto-detectar tipo de asset (skill, agent, prompt, etc.)
+- [ ] Prompt interactivo si tipo no detectado
+- [ ] Actualizar `manifest.json`
+- [ ] Opcion `--type` para tipo explicito
+- [ ] Opcion `--category` para categoria explicita
 - [ ] Opcion `--global` para instalacion global
 
-**Deliverable:** Comando install funcional con soporte de departamentos
+**Deliverable:** Comando install funcional con deteccion de tipos
 
-#### 4.5 List Command
+#### 4.4 List Command
 
 - [ ] Implementar `synapsync list`
-- [ ] Mostrar capabilities instaladas localmente
-- [ ] Mostrar capabilities globales
-- [ ] Opciones: `--global`, `--type`, `--outdated`
+- [ ] Mostrar assets instalados por tipo
+- [ ] Opciones: `--type`, `--category`, `--global`
 
 **Deliverable:** Comando list funcional
 
-#### 4.6 Info Command
+#### 4.5 Uninstall Command
 
-- [ ] Implementar `synapsync info <capability>`
-- [ ] Mostrar metadata completa
-- [ ] Mostrar dependencias
-- [ ] Mostrar ejemplos de uso
-- [ ] Mostrar links (docs, issues)
-
-**Deliverable:** Comando info funcional
-
-#### 4.7 Uninstall Command
-
-- [ ] Implementar `synapsync uninstall <capability>`
-- [ ] Verificar dependientes
+- [ ] Implementar `synapsync uninstall <asset>`
 - [ ] Confirmar con usuario
 - [ ] Opcion `--force`
 - [ ] Limpiar archivos
@@ -330,31 +332,26 @@ synapsync disconnect claude
 ### Acceptance Criteria Week 4
 
 ```bash
-# Buscar skills
+# Buscar assets
 synapsync search code review
-synapsync search --tag security
-synapsync search --department frontend
+synapsync search --type agent
+synapsync search --category frontend
 
-# Instalar skill (auto-detecta departamento)
+# Instalar desde registry
 synapsync install code-reviewer
-# -> Guardado en .agents/skills/general/code-reviewer/SKILL.md
+# -> Auto-detecta tipo desde registry
 
-# Instalar con departamento explicito
-synapsync install react-patterns --department frontend
-# -> Guardado en .agents/skills/frontend/react-patterns/SKILL.md
+# Instalar desde GitHub
+synapsync install github:user/my-skill
+# -> Detecta tipo por archivo (SKILL.md)
+# -> O pregunta si no puede detectar
 
-# Instalar version especifica
-synapsync install code-reviewer@2.1.0
+# Instalar con tipo explicito
+synapsync install ./local-asset --type agent
 
-# Listar instaladas (por departamento)
+# Listar instalados
 synapsync list
-# -> Muestra skills agrupadas por departamento
-
-synapsync list --department frontend
-# -> Solo skills de frontend
-
-# Ver info
-synapsync info code-reviewer
+synapsync list --type skill
 
 # Desinstalar
 synapsync uninstall code-reviewer
@@ -364,112 +361,94 @@ synapsync uninstall code-reviewer
 
 ## Technical Specifications
 
-### Directory Structure After Phase 1
+### Current Directory Structure
 
 ```
 src/
-├── cli/
-│   ├── commands/
-│   │   ├── init.ts
-│   │   ├── config.ts
-│   │   ├── help.ts
-│   │   ├── version.ts
-│   │   ├── connect.ts
-│   │   ├── disconnect.ts
-│   │   ├── providers.ts
-│   │   ├── search.ts
-│   │   ├── install.ts
-│   │   ├── list.ts
-│   │   ├── info.ts
-│   │   └── uninstall.ts
-│   ├── prompts/
-│   │   ├── init-prompts.ts
-│   │   └── provider-prompts.ts
-│   ├── formatters/
-│   │   ├── table.ts
-│   │   ├── box.ts
-│   │   └── spinner.ts
+├── index.ts                   # Entry point
+├── cli.ts                     # CLI setup con Commander.js
+├── version.ts                 # Version constant
+│
+├── commands/                  # Comandos CLI
+│   ├── help.ts               # ✅ Implementado
+│   ├── version.ts            # ✅ Implementado
+│   └── info.ts               # ✅ Implementado (con topics)
+│
+├── ui/                       # Componentes visuales
+│   ├── logo.ts               # ✅ ASCII art con gradiente
+│   ├── banner.ts             # ✅ Pantalla de bienvenida
+│   ├── repl.ts               # ✅ Modo interactivo REPL
+│   └── colors.ts             # ✅ Colores por tipo/categoria
+│
+├── services/                 # Logica de negocio
+│   ├── asset/
+│   │   ├── types.ts          # ✅ Tipos de instalacion
+│   │   ├── detector.ts       # ✅ Deteccion de tipos
+│   │   ├── prompter.ts       # ✅ Prompts interactivos
+│   │   └── index.ts          # ✅ API de alto nivel
 │   └── index.ts
-├── services/
-│   ├── provider/
-│   │   ├── ProviderManager.ts
-│   │   ├── adapters/
-│   │   │   ├── ClaudeAdapter.ts
-│   │   │   └── OpenAIAdapter.ts
-│   │   └── types.ts
-│   ├── capability/
-│   │   ├── CapabilityManager.ts
-│   │   └── types.ts
-│   └── registry/
-│       ├── RegistryClient.ts
-│       └── types.ts
-├── core/
-│   ├── config/
-│   │   ├── ConfigManager.ts
-│   │   ├── schema.ts
-│   │   └── defaults.ts
-│   ├── storage/
-│   │   ├── StorageManager.ts
-│   │   └── keychain.ts
-│   ├── auth/
-│   │   └── AuthManager.ts
-│   └── logger/
-│       └── Logger.ts
-└── types/
-    └── index.ts
+│
+├── core/                     # Utilidades core
+│   └── constants.ts          # ✅ Asset types, providers, categories
+│
+├── utils/                    # Utilidades generales
+│   ├── logger.ts             # ✅ Logger centralizado
+│   └── index.ts
+│
+└── types/                    # Tipos compartidos
+    └── index.ts              # ✅ Asset, Provider, Config types
 ```
 
-### Dependencies to Install
-
-> Stack actualizado basado en analisis de vercel-labs/skills y numman-ali/openskills
+### Strict TypeScript Configuration ✅
 
 ```json
 {
-  "dependencies": {
-    "@clack/prompts": "^0.11.0",
-    "commander": "^12.1.0",
-    "picocolors": "^1.1.1",
-    "ora": "^9.0.0",
-    "yaml": "^2.6.0",
-    "zod": "^3.23.0",
-    "keytar": "^7.9.0",
-    "@anthropic-ai/sdk": "^0.30.0",
-    "openai": "^4.70.0"
-  },
-  "devDependencies": {
-    "typescript": "^5.7.0",
-    "tsup": "^8.3.0",
-    "vitest": "^2.1.0",
-    "@types/node": "^22.0.0",
-    "eslint": "^9.0.0",
-    "prettier": "^3.4.0"
+  "compilerOptions": {
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "exactOptionalPropertyTypes": true
   }
 }
 ```
 
-### Why These Dependencies
+### Strict ESLint Rules ✅
 
-| Dependency         | Reason                                           |
-| ------------------ | ------------------------------------------------ |
-| **@clack/prompts** | UI moderna, mejor que inquirer, usado por Vercel |
-| **picocolors**     | 14x mas rapido que chalk, mismo API              |
-| **commander**      | Framework CLI robusto, aliases, subcomandos      |
-| **ora**            | Spinners elegantes, ampliamente usado            |
-| **yaml**           | Parse/stringify YAML para config files           |
-| **zod**            | Validacion de schemas con inferencia de tipos    |
-| **keytar**         | Almacenamiento seguro de credenciales            |
-| **tsup**           | Build tool rapido, ESM nativo                    |
+- `@typescript-eslint/no-explicit-any`: error
+- `@typescript-eslint/no-unsafe-*`: error
+- `@typescript-eslint/explicit-function-return-type`: error
+- `@typescript-eslint/strict-boolean-expressions`: error
 
-### Removed Dependencies
+### Asset Detection Flow
 
-| Removed     | Replacement           | Reason                      |
-| ----------- | --------------------- | --------------------------- |
-| inquirer    | @clack/prompts        | Mas moderno, mejor UX       |
-| chalk       | picocolors            | Mas ligero, mismo API       |
-| axios       | native fetch          | Node 20+ tiene fetch nativo |
-| boxen       | custom con picocolors | Menos dependencias          |
-| cli-table3  | custom formatter      | Mas control, menos deps     |
-| cosmiconfig | yaml + custom         | YAML es suficiente          |
+```
+synapsync install <source>
+       │
+       ▼
+┌─────────────────────┐
+│ 1. Check --type     │ ─── Si existe ──► Usar tipo (confidence: high)
+│    flag             │
+└─────────────────────┘
+       │ No
+       ▼
+┌─────────────────────┐
+│ 2. Query Registry   │ ─── Si existe ──► Usar tipo (confidence: high)
+└─────────────────────┘
+       │ No
+       ▼
+┌─────────────────────┐
+│ 3. Detect by file   │ ─── Si existe ──► Usar tipo (confidence: high)
+│    (local/GitHub)   │     SKILL.md, AGENT.md, etc.
+└─────────────────────┘
+       │ No
+       ▼
+┌─────────────────────┐
+│ 4. Prompt user      │ ─── Seleccion ──► Usar tipo (confidence: prompt)
+│    (interactive)    │
+└─────────────────────┘
+```
 
 ---
 
@@ -477,30 +456,26 @@ src/
 
 ### Unit Tests (minimum coverage: 70%)
 
-- [ ] ConfigManager tests
-- [ ] AuthManager tests
-- [ ] ProviderManager tests
-- [ ] ClaudeAdapter tests
-- [ ] OpenAIAdapter tests
-- [ ] RegistryClient tests
-- [ ] CapabilityManager tests
+- [ ] Logger tests
+- [ ] Asset detector tests
+- [ ] Source parser tests
+- [ ] ConfigManager tests (when implemented)
 
 ### Integration Tests
 
-- [ ] Init command flow
-- [ ] Connect -> Providers flow
-- [ ] Search -> Install -> List flow
-- [ ] Config get/set flow
+- [ ] REPL command flow
+- [ ] Info command topics
+- [ ] Install detection flow
 
 ### Manual Testing Checklist
 
-- [ ] Instalar CLI globalmente con `npm link`
-- [ ] Ejecutar `synapsync` sin argumentos
+- [x] Instalar CLI localmente con `npm link`
+- [x] Ejecutar `synapsync` sin argumentos
+- [x] Verificar modo REPL funciona
+- [x] Verificar `/info --assets` muestra documentacion
+- [x] Verificar `/info --install` muestra fuentes
 - [ ] Ejecutar `synapsync init` en directorio nuevo
-- [ ] Conectar a Claude con API key real
-- [ ] Conectar a OpenAI con API key real
-- [ ] Buscar e instalar una capability de prueba
-- [ ] Verificar que capabilities se listan correctamente
+- [ ] Buscar e instalar un asset de prueba
 
 ---
 
@@ -508,44 +483,35 @@ src/
 
 Phase 1 se considera completa cuando:
 
-1. **Todos los comandos MVP estan implementados:**
-   - `init`, `config`, `help`, `version`
-   - `connect`, `disconnect`, `providers`
-   - `search`, `install`, `list`, `info`, `uninstall`
+1. **Comandos MVP implementados:**
+   - [x] `help`, `version`, `info`
+   - [ ] `init`, `config`, `status`
+   - [ ] `connect`, `disconnect`, `providers`
+   - [ ] `search`, `install`, `list`, `uninstall`
 
-2. **Tests pasando:**
-   - Unit tests con coverage >= 70%
-   - Integration tests para flujos principales
+2. **Sistemas core funcionando:**
+   - [x] Logger centralizado
+   - [x] Sistema de tipos de assets
+   - [x] Deteccion automatica de tipos
+   - [x] Modo REPL interactivo
+   - [ ] ConfigManager
+   - [ ] RegistryClient
 
-3. **Documentacion:**
-   - README actualizado con instrucciones de uso
-   - Help text completo para cada comando
+3. **Quality:**
+   - [x] No errores de TypeScript
+   - [x] Linting pasando (strict mode)
+   - [x] Build exitoso
 
-4. **Quality:**
-   - No errores de TypeScript
-   - Linting pasando
-   - Build exitoso
-
-5. **Funcionalidad:**
-   - Se puede inicializar un proyecto
-   - Se puede conectar a Claude y OpenAI
-   - Se puede buscar e instalar capabilities
-
----
-
-## Risks & Mitigations
-
-| Risk                                | Mitigation                                          |
-| ----------------------------------- | --------------------------------------------------- |
-| Keychain no funciona en CI          | Implementar fallback a archivo encriptado           |
-| Registry no disponible              | Usar JSON local como fallback para MVP              |
-| Complejidad de prompts interactivos | Empezar con prompts simples, mejorar iterativamente |
-| Dependencias desactualizadas        | Lock versions, Dependabot                           |
+4. **Documentacion:**
+   - [x] `/info` command con topics
+   - [ ] README actualizado
+   - [ ] Help text para cada comando
 
 ---
 
-## Notes
+## Document History
 
-- **Priorizar funcionalidad sobre perfeccion** - Es mejor tener algo funcionando que algo perfecto incompleto
-- **Iterar rapido** - Hacer releases internas frecuentes para validar
-- **Documentar decisiones** - Mantener ADRs para decisiones arquitectonicas importantes
+| Version | Date | Changes |
+|---------|------|---------|
+| 1.0.0 | 2025-01-27 | Initial phase 1 roadmap |
+| 2.0.0 | 2025-01-27 | Updated with implemented features, multi-asset system, detection flow |

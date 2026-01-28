@@ -11,6 +11,7 @@ import { logger } from './utils/logger.js';
 // Import commands
 import { registerHelpCommand } from './commands/help.js';
 import { registerVersionCommand } from './commands/version.js';
+import { registerInfoCommand } from './commands/info.js';
 
 export function createCLI(): Command {
   const program = new Command();
@@ -33,6 +34,7 @@ export function createCLI(): Command {
   // Register commands
   registerHelpCommand(program);
   registerVersionCommand(program);
+  registerInfoCommand(program);
 
   // TODO: Register more commands as they are implemented
   // These commands will work both via CLI (synapsync init)
