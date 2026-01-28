@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "lastUpdated": "2026-01-28T06:51:46.972Z",
+  "lastUpdated": "2026-01-28T15:26:07.128Z",
   "cognitives": {
     "skill-creator": {
       "name": "skill-creator",
@@ -12,5 +12,13 @@
       "sourceUrl": "https://github.com/SynapSync/synapse-registry"
     }
   },
-  "syncs": {}
+  "syncs": {
+    "claude": {
+      "lastSync": "2026-01-28T15:26:07.128Z",
+      "method": "symlink",
+      "cognitives": [
+        "skill-creator"
+      ]
+    }
+  }
 }
