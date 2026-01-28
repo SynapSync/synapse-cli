@@ -1,0 +1,58 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build outputs
+dist/
+build/
+*.tsbuildinfo
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment & secrets
+.env
+.env.local
+.env.*.local
+*.pem
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Test coverage
+coverage/
+.nyc_output/
+
+# Temporary files
+.temp/
+tmp/
+temp/
+*.tmp
+
+# SynapSync specific
+.synapsync/cache/
+.synapsync/logs/
+synapsync-reports/
+
+# Provider directories (created by sync command)
+# Uncomment if you don't want to track synced skills
+# .claude/
+# .gemini/
+# .codex/
+# .cursor/
+
+# Skills manifest (local state)
+.agents/skills.manifest.json
