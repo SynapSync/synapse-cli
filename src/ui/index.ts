@@ -12,3 +12,4 @@ export {
   showInfo,
 } from './banner.js';
 export { colors, colorDepartment, colorProvider, statusIndicator, RESET } from './colors.js';
+export { startInteractiveMode, registerInteractiveCommand } from './repl.js';

@@ -4,7 +4,7 @@
 
 import { Command } from 'commander';
 import { CLI_NAME, CLI_DESCRIPTION } from './core/constants.js';
-import { showBanner } from './ui/banner.js';
+import { startInteractiveMode } from './ui/repl.js';
 import { version } from './version.js';
 
 // Import commands
@@ -24,9 +24,9 @@ export function createCLI(): Command {
       // Global pre-action hook for logging, etc.
     });
 
-  // Show banner when no command is provided
-  program.action(() => {
-    showBanner();
+  // Enter interactive mode when no command is provided
+  program.action(async () => {
+    await startInteractiveMode();
   });
 
   // Register commands
@@ -34,6 +34,8 @@ export function createCLI(): Command {
   registerVersionCommand(program);
 
   // TODO: Register more commands as they are implemented
+  // These commands will work both via CLI (synapsync init)
+  // and in interactive mode (/init)
   // registerInitCommand(program);
   // registerConfigCommand(program);
   // registerConnectCommand(program);
