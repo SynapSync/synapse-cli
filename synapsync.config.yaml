@@ -19,7 +19,7 @@ sync:
         workflow: .claude/workflows
         tool: .claude/tools
     openai:
-      enabled: true
+      enabled: false
       paths:
         skill: .openai/skills
         agent: .openai/agents
@@ -35,4 +35,4 @@ sync:
         workflow: .cursor/workflows
         tool: .cursor/tools
     gemini:
-      enabled: true
+      enabled: false

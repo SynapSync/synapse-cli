@@ -189,22 +189,75 @@ export interface CommandContext {
 // Registry Types
 // ============================================
 
-export interface RegistryCognitive {
+/**
+ * Registry index structure (registry.json)
+ */
+export interface RegistryIndex {
+  $schema?: string;
+  version: string;
+  lastUpdated: string;
+  totalCognitives: number;
+  cognitives: RegistryCognitiveEntry[];
+}
+
+/**
+ * A cognitive entry in the registry index
+ */
+export interface RegistryCognitiveEntry {
   name: string;
   type: CognitiveType;
   version: string;
   description: string;
   author: string;
+  category: Category;
+  tags: string[];
+  providers: SupportedProvider[];
   downloads: number;
-  stars: number;
-  lastUpdated: string;
+  path: string;
 }
 
+/**
+ * Full manifest for a cognitive (manifest.json in cognitive folder)
+ */
+export interface CognitiveManifest {
+  $schema?: string;
+  name: string;
+  type: CognitiveType;
+  version: string;
+  description: string;
+  author: string | { name: string; url?: string; email?: string };
+  license: string;
+  category: Category;
+  tags: string[];
+  providers: SupportedProvider[];
+  file: string;
+  repository?: { type: string; url: string };
+  homepage?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+/**
+ * Search result from the registry
+ */
 export interface RegistrySearchResult {
-  cognitives: RegistryCognitive[];
+  cognitives: RegistryCognitiveEntry[];
   total: number;
-  page: number;
-  perPage: number;
+  query?: string;
+  filters?: {
+    type?: CognitiveType;
+    category?: Category;
+    tag?: string;
+  };
+}
+
+/**
+ * Downloaded cognitive content
+ */
+export interface DownloadedCognitive {
+  manifest: CognitiveManifest;
+  content: string;
+  path: string;
 }
 
 // ============================================

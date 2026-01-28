@@ -4,3 +4,4 @@
 
 export * from './cognitive/index.js';
 export * from './config/index.js';
+export * from './registry/index.js';

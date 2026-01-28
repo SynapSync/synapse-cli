@@ -115,6 +115,15 @@ export const CLI_DESCRIPTION =
   'Neural AI Orchestration Platform - Manage AI cognitives (skills, agents, prompts, tools) across providers';
 
 // ============================================
+// Registry Configuration
+// ============================================
+export const REGISTRY_BASE_URL =
+  process.env['SYNAPSYNC_REGISTRY_URL'] ??
+  'https://raw.githubusercontent.com/SynapSync/synapse-registry/main';
+export const REGISTRY_INDEX_FILE = 'registry.json';
+export const REGISTRY_MANIFEST_FILE = 'manifest.json';
+
+// ============================================
 // ANSI Escape Codes
 // ============================================
 export const RESET = '\x1b[0m';
