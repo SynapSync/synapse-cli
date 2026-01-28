@@ -1,5 +1,4 @@
-name: test
-description: test
+name: synapse-cli
 version: 1.0.0
 cli:
   theme: auto
@@ -34,5 +33,3 @@ sync:
         prompt: .cursor/prompts
         workflow: .cursor/workflows
         tool: .cursor/tools
-    gemini:
-      enabled: false

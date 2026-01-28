@@ -75,19 +75,22 @@ export async function executeInitCommand(options: InitOptions = {}): Promise<Ini
 
   const result = await p.group(
     {
-      name: () =>
-        p.text({
+      name: () => {
+        const defaultName = path.basename(projectRoot);
+        return p.text({
           message: 'Project name',
-          placeholder: path.basename(projectRoot),
-          defaultValue: path.basename(projectRoot),
+          placeholder: defaultName,
+          defaultValue: defaultName,
           validate: (value) => {
-            if (value.trim() === '') return 'Project name is required';
-            if (!/^[a-z0-9-_]+$/i.test(value)) {
+            // Use defaultValue if empty (user pressed Enter)
+            const finalValue = value.trim() === '' ? defaultName : value;
+            if (!/^[a-z0-9-_]+$/i.test(finalValue)) {
               return 'Project name can only contain letters, numbers, hyphens, and underscores';
             }
             return undefined;
           },
-        }),
+        });
+      },
       description: () =>
         p.text({
           message: 'Description (optional)',

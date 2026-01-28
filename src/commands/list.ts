@@ -1,7 +1,7 @@
 /**
  * List Command
  *
- * List installed cognitives in the current project
+ * List installed cognitives or browse registry
  */
 
 import * as fs from 'fs';
@@ -9,9 +9,10 @@ import * as path from 'path';
 import type { Command } from 'commander';
 import pc from 'picocolors';
 import { ConfigManager } from '../services/config/manager.js';
+import { RegistryClient } from '../services/registry/client.js';
 import { COGNITIVE_TYPES, CATEGORIES } from '../core/constants.js';
 import type { CognitiveType, Category } from '../core/constants.js';
-import type { InstalledCognitive } from '../types/index.js';
+import type { InstalledCognitive, RegistryCognitiveEntry } from '../types/index.js';
 import { logger } from '../utils/logger.js';
 
 // ============================================
@@ -22,6 +23,7 @@ interface ListCommandOptions {
   type?: string;
   category?: string;
   json?: boolean;
+  remote?: boolean;
 }
 
 interface ProjectManifest {
@@ -40,6 +42,12 @@ interface ProjectManifest {
  */
 export async function executeListCommand(options: ListCommandOptions): Promise<void> {
   logger.line();
+
+  // Remote mode: list all cognitives from registry
+  if (options.remote === true) {
+    await listRemoteCognitives(options);
+    return;
+  }
 
   // Check if project is initialized
   const configManager = ConfigManager.findConfig();
@@ -68,6 +76,114 @@ export async function executeListCommand(options: ListCommandOptions): Promise<v
 
   // Display results
   displayCognitives(manifest, validatedOptions);
+}
+
+// ============================================
+// Remote Registry Listing
+// ============================================
+
+async function listRemoteCognitives(options: ListCommandOptions): Promise<void> {
+  const client = new RegistryClient();
+
+  logger.log(`  ${pc.dim('Fetching registry...')}`);
+
+  try {
+    const cognitives = await client.list();
+
+    // Validate and filter
+    const validatedOptions = validateOptions(options);
+    if (validatedOptions === null) {
+      return;
+    }
+
+    const filtered = filterRemoteCognitives(cognitives, validatedOptions);
+
+    if (options.json === true) {
+      console.log(JSON.stringify(filtered, null, 2));
+      return;
+    }
+
+    // Display results
+    displayRemoteCognitives(filtered);
+  } catch (error) {
+    logger.error(`Failed to fetch registry: ${error instanceof Error ? error.message : 'Unknown error'}`);
+  }
+}
+
+function filterRemoteCognitives(
+  cognitives: RegistryCognitiveEntry[],
+  options: ValidatedOptions
+): RegistryCognitiveEntry[] {
+  return cognitives.filter((c) => {
+    if (options.type !== undefined && c.type !== options.type) {
+      return false;
+    }
+    if (options.category !== undefined && c.category !== options.category) {
+      return false;
+    }
+    return true;
+  });
+}
+
+function displayRemoteCognitives(cognitives: RegistryCognitiveEntry[]): void {
+  logger.line();
+  logger.bold('  Available Cognitives (Registry)');
+  logger.line();
+
+  if (cognitives.length === 0) {
+    logger.log(`  ${pc.dim('No cognitives found in registry.')}`);
+    return;
+  }
+
+  // Group by type
+  const grouped: Record<string, RegistryCognitiveEntry[]> = {};
+  for (const cognitive of cognitives) {
+    if (grouped[cognitive.type] === undefined) {
+      grouped[cognitive.type] = [];
+    }
+    grouped[cognitive.type].push(cognitive);
+  }
+
+  for (const [type, items] of Object.entries(grouped)) {
+    const typeIcon = getCognitiveIcon(type as CognitiveType);
+    const typeLabel = `${type}s`;
+    logger.log(`  ${typeIcon} ${pc.bold(typeLabel.charAt(0).toUpperCase() + typeLabel.slice(1))} (${items.length})`);
+    logger.line();
+
+    for (const cognitive of items) {
+      // Name and version
+      logger.log(`    ${pc.white(cognitive.name)} ${pc.dim(`v${cognitive.version}`)}`);
+
+      // Description (truncated)
+      if (cognitive.description) {
+        const desc = cognitive.description.length > 60
+          ? cognitive.description.slice(0, 57) + '...'
+          : cognitive.description;
+        logger.log(`      ${pc.dim(desc)}`);
+      }
+
+      // Details
+      const details: string[] = [];
+      details.push(pc.dim(cognitive.category));
+      if (cognitive.author) {
+        details.push(pc.dim(`by ${cognitive.author}`));
+      }
+      logger.log(`      ${details.join(' · ')}`);
+
+      // Tags
+      if (cognitive.tags && cognitive.tags.length > 0) {
+        const tagsStr = cognitive.tags.slice(0, 5).join(' ');
+        logger.log(`      ${pc.cyan(tagsStr)}`);
+      }
+
+      logger.line();
+    }
+  }
+
+  // Summary
+  logger.log(`  ${pc.dim(`Total: ${cognitives.length} cognitive${cognitives.length === 1 ? '' : 's'} available`)}`);
+  logger.line();
+  logger.hint('Run synapsync install <name> to install a cognitive.');
 }
 
 // ============================================
@@ -268,9 +384,10 @@ export function registerListCommand(program: Command): void {
   program
     .command('list')
     .alias('ls')
-    .description('List installed cognitives')
+    .description('List installed cognitives or browse registry')
     .option('-t, --type <type>', 'Filter by type (skill, agent, prompt, workflow, tool)')
     .option('-c, --category <category>', 'Filter by category')
+    .option('-r, --remote', 'List all cognitives available in the registry')
     .option('--json', 'Output as JSON')
     .action(async (options: ListCommandOptions) => {
       await executeListCommand(options);
