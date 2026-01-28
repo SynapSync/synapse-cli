@@ -12,6 +12,7 @@ import { parseFrontmatter, extractVersion, extractName } from './parser.js';
 import {
   COGNITIVE_TYPES,
   COGNITIVE_FILE_NAMES,
+  COGNITIVE_FILE_EXTENSIONS,
   CATEGORIES,
 } from '../../core/constants.js';
 import type { CognitiveType, Category } from '../../core/constants.js';
@@ -86,16 +87,17 @@ export class CognitiveScanner {
     type: CognitiveType,
     category: Category
   ): ScannedCognitive | null {
-    const fileName = COGNITIVE_FILE_NAMES[type];
-    const filePath = path.join(cognitiveDir, fileName);
+    // Find the cognitive file (check legacy name first, then any matching extension)
+    const filePath = this.findCognitiveFile(cognitiveDir, type);
 
-    if (!fs.existsSync(filePath)) {
+    if (filePath === null) {
       return null;
     }
 
     const content = fs.readFileSync(filePath, 'utf-8');
     const metadata = parseFrontmatter(content);
     const dirName = path.basename(cognitiveDir);
+    const fileName = path.basename(filePath);
 
     const name = extractName(metadata, dirName, content);
     const version = extractVersion(metadata, content);
@@ -107,6 +109,7 @@ export class CognitiveScanner {
       category: (metadata.category as Category) ?? category,
       path: cognitiveDir,
       filePath,
+      fileName, // Add original filename
       hash,
       metadata: {
         ...metadata,
@@ -114,6 +117,38 @@ export class CognitiveScanner {
         version,
       },
     };
+  }
+
+  /**
+   * Find the cognitive file in a directory
+   * Checks for legacy fixed filename first, then any file with matching extension
+   */
+  private findCognitiveFile(cognitiveDir: string, type: CognitiveType): string | null {
+    // First, check for legacy fixed filename (SKILL.md, AGENT.md, etc.)
+    const legacyFileName = COGNITIVE_FILE_NAMES[type];
+    const legacyPath = path.join(cognitiveDir, legacyFileName);
+    if (fs.existsSync(legacyPath)) {
+      return legacyPath;
+    }
+
+    // If not found, look for any file with the correct extension
+    const extension = COGNITIVE_FILE_EXTENSIONS[type];
+    if (!fs.existsSync(cognitiveDir)) {
+      return null;
+    }
+
+    const files = fs.readdirSync(cognitiveDir);
+    for (const file of files) {
+      if (file.endsWith(extension) && !file.startsWith('.')) {
+        const fullPath = path.join(cognitiveDir, file);
+        const stat = fs.statSync(fullPath);
+        if (stat.isFile()) {
+          return fullPath;
+        }
+      }
+    }
+
+    return null;
   }
 
   /**

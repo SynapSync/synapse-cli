@@ -231,18 +231,19 @@ async function installFromLocal(
     throw new Error(`Path not found: ${absolutePath}`);
   }
 
-  // Detect cognitive type
-  const detectedType = detectCognitiveType(absolutePath);
-  const cognitiveType = (options.type as CognitiveType) ?? detectedType;
+  // Detect cognitive type and filename
+  const detected = detectCognitiveType(absolutePath);
 
-  if (cognitiveType === null) {
+  if (detected === null && options.type === undefined) {
     throw new Error(
       'Could not detect cognitive type. Please specify with --type flag.'
     );
   }
 
+  const cognitiveType = (options.type as CognitiveType) ?? detected?.type ?? 'skill';
+  const fileName = detected?.fileName ?? COGNITIVE_FILE_NAMES[cognitiveType];
+
   // Read the cognitive file
-  const fileName = COGNITIVE_FILE_NAMES[cognitiveType];
   const filePath = path.join(absolutePath, fileName);
 
   if (!fs.existsSync(filePath)) {
@@ -251,21 +252,21 @@ async function installFromLocal(
 
   const content = fs.readFileSync(filePath, 'utf-8');
   const metadata = parseMetadata(content);
-  const name = metadata.name ?? path.basename(absolutePath);
-  const category = (options.category as Category) ?? metadata.category ?? 'general';
+  const name = (metadata.name as string) ?? path.basename(absolutePath);
+  const category = (options.category as Category) ?? (metadata.category as Category) ?? 'general';
 
-  // Create manifest from metadata
+  // Create manifest from metadata - use original filename
   const manifest: CognitiveManifest = {
     name,
     type: cognitiveType,
-    version: metadata.version ?? '1.0.0',
-    description: metadata.description ?? '',
-    author: metadata.author ?? 'local',
-    license: metadata.license ?? 'MIT',
+    version: (metadata.version as string) ?? '1.0.0',
+    description: (metadata.description as string) ?? '',
+    author: (metadata.author as string) ?? 'local',
+    license: (metadata.license as string) ?? 'MIT',
     category,
-    tags: metadata.tags ?? [],
-    providers: metadata.providers ?? [],
-    file: fileName,
+    tags: (metadata.tags as string[]) ?? [],
+    providers: (metadata.providers as string[]) ?? [],
+    file: fileName, // Use the original filename
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   };
@@ -308,13 +309,44 @@ async function installFromLocal(
   logger.hint('Run synapsync sync to sync to your providers.');
 }
 
-function detectCognitiveType(dirPath: string): CognitiveType | null {
+/**
+ * Detect cognitive type from directory contents
+ * Checks for legacy fixed filenames first, then by extension
+ */
+function detectCognitiveType(dirPath: string): { type: CognitiveType; fileName: string } | null {
+  // First check for legacy fixed filenames
   for (const type of COGNITIVE_TYPES) {
     const fileName = COGNITIVE_FILE_NAMES[type];
     if (fs.existsSync(path.join(dirPath, fileName))) {
-      return type;
+      return { type, fileName };
     }
   }
+
+  // If not found, check for files by extension
+  if (!fs.existsSync(dirPath)) return null;
+
+  const files = fs.readdirSync(dirPath);
+
+  // Check for workflow first (yaml extension)
+  for (const file of files) {
+    if (file.endsWith('.yaml') && !file.startsWith('.')) {
+      return { type: 'workflow', fileName: file };
+    }
+  }
+
+  // Check for markdown files (could be skill, agent, prompt, or tool)
+  // We need to parse frontmatter to determine the type
+  for (const file of files) {
+    if (file.endsWith('.md') && !file.startsWith('.')) {
+      const content = fs.readFileSync(path.join(dirPath, file), 'utf-8');
+      const metadata = parseMetadata(content);
+      const detectedType = (metadata.type as CognitiveType) ?? 'skill'; // Default to skill
+      if (COGNITIVE_TYPES.includes(detectedType)) {
+        return { type: detectedType, fileName: file };
+      }
+    }
+  }
+
   return null;
 }
 

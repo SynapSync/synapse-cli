@@ -70,6 +70,7 @@ export interface SymlinkOptions {
 export interface CognitiveSymlinkMapping {
   cognitiveName: string;
   cognitiveType: CognitiveType;
-  sourcePath: string; // Path in .synapsync
-  targetPath: string; // Path in provider directory
+  sourcePath: string; // Path in .synapsync (file path)
+  targetPath: string; // Path in provider directory (file path)
+  isFile?: boolean; // True if syncing a single file (not a directory)
 }

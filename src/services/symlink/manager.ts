@@ -166,6 +166,7 @@ export class SymlinkManager {
 
   /**
    * Get mappings for cognitives to provider paths
+   * Maps cognitive files to flat files in provider directories
    */
   private getMappings(
     provider: SupportedProvider,
@@ -178,11 +179,17 @@ export class SymlinkManager {
       const typeDir = providerPaths[cognitive.type];
       if (typeDir === undefined) continue;
 
+      // Use the original filename if available, otherwise use name + extension
+      const fileName = cognitive.fileName ?? `${cognitive.name}.md`;
+
       mappings.push({
         cognitiveName: cognitive.name,
         cognitiveType: cognitive.type,
-        sourcePath: cognitive.path,
-        targetPath: path.join(this.projectRoot, typeDir, cognitive.name),
+        // Source is the actual file, not the folder
+        sourcePath: cognitive.filePath,
+        // Target is a flat file in the provider directory
+        targetPath: path.join(this.projectRoot, typeDir, fileName),
+        isFile: true,
       });
     }
 
@@ -191,6 +198,7 @@ export class SymlinkManager {
 
   /**
    * Get existing links in provider directories
+   * Scans for both files and directories (for backward compatibility)
    */
   getExistingLinks(provider: SupportedProvider): SymlinkInfo[] {
     const providerPaths = PROVIDER_PATHS[provider];
@@ -209,9 +217,13 @@ export class SymlinkManager {
         if (entry.name.startsWith('.')) continue;
 
         const entryPath = path.join(fullPath, entry.name);
-        const info = this.getLinkInfo(entryPath, cognitiveType);
-        if (info !== null) {
-          links.push(info);
+
+        // Include files (new flat structure) and directories/symlinks (legacy)
+        if (entry.isFile() || entry.isDirectory() || entry.isSymbolicLink()) {
+          const info = this.getLinkInfo(entryPath, cognitiveType);
+          if (info !== null) {
+            links.push(info);
+          }
         }
       }
     }
@@ -226,7 +238,9 @@ export class SymlinkManager {
     try {
       const stats = fs.lstatSync(linkPath);
       const isSymlink = stats.isSymbolicLink();
-      const cognitiveName = path.basename(linkPath);
+      const baseName = path.basename(linkPath);
+      // Remove extension to get cognitive name (e.g., "my-agent.md" -> "my-agent")
+      const cognitiveName = baseName.replace(/\.(md|yaml)$/i, '');
 
       let target = '';
       let isValid = false;
@@ -237,7 +251,11 @@ export class SymlinkManager {
         const resolvedTarget = path.resolve(path.dirname(linkPath), target);
         isValid = fs.existsSync(resolvedTarget);
       } else if (stats.isDirectory()) {
-        // It's a copy
+        // It's a directory copy (legacy)
+        target = linkPath;
+        isValid = true;
+      } else if (stats.isFile()) {
+        // It's a file copy
         target = linkPath;
         isValid = true;
       }
@@ -261,6 +279,7 @@ export class SymlinkManager {
    */
   private createLink(mapping: CognitiveSymlinkMapping, options: SymlinkOptions): SymlinkCreateResult {
     const method = this.getMethod(options);
+    const isFile = mapping.isFile ?? false;
 
     try {
       // Ensure parent directory exists
@@ -287,10 +306,15 @@ export class SymlinkManager {
       if (method === 'symlink') {
         // Calculate relative path for symlink
         const relativePath = path.relative(targetDir, mapping.sourcePath);
-        fs.symlinkSync(relativePath, mapping.targetPath, 'dir');
+        // Use 'file' type for file symlinks, 'dir' for directory symlinks
+        fs.symlinkSync(relativePath, mapping.targetPath, isFile ? 'file' : 'dir');
       } else {
-        // Copy the directory
-        this.copyDirectory(mapping.sourcePath, mapping.targetPath);
+        // Copy file or directory
+        if (isFile) {
+          fs.copyFileSync(mapping.sourcePath, mapping.targetPath);
+        } else {
+          this.copyDirectory(mapping.sourcePath, mapping.targetPath);
+        }
       }
 
       return {
@@ -303,7 +327,11 @@ export class SymlinkManager {
       // If symlink fails, try copy as fallback
       if (method === 'symlink' && !options.copy) {
         try {
-          this.copyDirectory(mapping.sourcePath, mapping.targetPath);
+          if (isFile) {
+            fs.copyFileSync(mapping.sourcePath, mapping.targetPath);
+          } else {
+            this.copyDirectory(mapping.sourcePath, mapping.targetPath);
+          }
           return {
             success: true,
             source: mapping.sourcePath,
@@ -332,17 +360,15 @@ export class SymlinkManager {
   }
 
   /**
-   * Remove a symlink or directory
+   * Remove a symlink, file, or directory
    */
   private removeLink(linkPath: string): void {
     const stats = fs.lstatSync(linkPath);
 
-    if (stats.isSymbolicLink()) {
+    if (stats.isSymbolicLink() || stats.isFile()) {
       fs.unlinkSync(linkPath);
     } else if (stats.isDirectory()) {
       fs.rmSync(linkPath, { recursive: true });
-    } else {
-      fs.unlinkSync(linkPath);
     }
   }
 

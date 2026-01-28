@@ -27,8 +27,12 @@ export interface ScannedCognitive {
   name: string;
   type: CognitiveType;
   category: Category;
+  /** Directory path containing the cognitive */
   path: string;
+  /** Full path to the cognitive file */
   filePath: string;
+  /** Original filename (e.g., "feature-branch-manager.md") */
+  fileName?: string;
   hash: string;
   metadata: CognitiveMetadata;
 }

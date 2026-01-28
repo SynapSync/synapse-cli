@@ -10,7 +10,17 @@
 export const COGNITIVE_TYPES = ['skill', 'agent', 'prompt', 'workflow', 'tool'] as const;
 export type CognitiveType = (typeof COGNITIVE_TYPES)[number];
 
-// Default file names per cognitive type
+// File extensions per cognitive type (used for detection/scanning)
+export const COGNITIVE_FILE_EXTENSIONS: Record<CognitiveType, string> = {
+  skill: '.md',
+  agent: '.md',
+  prompt: '.md',
+  workflow: '.yaml',
+  tool: '.md',
+};
+
+// Legacy: Default file names per cognitive type (for backward compatibility)
+// New cognitives should use their original filename
 export const COGNITIVE_FILE_NAMES: Record<CognitiveType, string> = {
   skill: 'SKILL.md',
   agent: 'AGENT.md',
