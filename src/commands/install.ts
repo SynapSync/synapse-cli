@@ -10,6 +10,7 @@ import type { Command } from 'commander';
 import pc from 'picocolors';
 import { RegistryClient, CognitiveNotFoundError, RegistryError } from '../services/registry/client.js';
 import { ConfigManager } from '../services/config/manager.js';
+import { SyncEngine } from '../services/sync/engine.js';
 import {
   DEFAULT_SYNAPSYNC_DIR,
   COGNITIVE_TYPES,
@@ -29,6 +30,7 @@ interface InstallCommandOptions {
   category?: string;
   force?: boolean;
   global?: boolean;
+  sync?: boolean;
 }
 
 interface InstallSource {
@@ -64,17 +66,42 @@ export async function executeInstallCommand(
   const parsedSource = parseSource(source);
   logger.log(`  ${pc.dim(`Installing from ${parsedSource.type}...`)}`);
 
+  let success = false;
+
   try {
     switch (parsedSource.type) {
       case 'registry':
-        await installFromRegistry(parsedSource.name, options, configManager);
+        success = await installFromRegistry(parsedSource.name, options, configManager);
         break;
       case 'local':
-        await installFromLocal(parsedSource.path!, options, configManager);
+        success = await installFromLocal(parsedSource.path!, options, configManager);
         break;
       case 'github':
-        await installFromGitHub(parsedSource, options, configManager);
+        success = await installFromGitHub(parsedSource, options, configManager);
         break;
+    }
+
+    // Auto-sync if --sync flag is provided and installation succeeded
+    if (success && options.sync === true) {
+      logger.log(`  ${pc.dim('Syncing to providers...')}`);
+      const synapSyncDir = configManager.getSynapSyncDir();
+      const projectRoot = configManager.getProjectRoot();
+      const config = configManager.getConfig();
+      const syncEngine = new SyncEngine(synapSyncDir, projectRoot, config);
+      const result = syncEngine.sync({ force: options.force });
+
+      if (result.providerResults && result.providerResults.length > 0) {
+        for (const pr of result.providerResults) {
+          const created = pr.created.filter(c => c.success).length;
+          const skipped = pr.skipped.length;
+          if (created > 0) {
+            logger.log(`  ${pc.green('✓')} Synced to ${pr.provider} (${created} created)`);
+          } else if (skipped > 0) {
+            logger.log(`  ${pc.green('✓')} Synced to ${pr.provider} (already up to date)`);
+          }
+        }
+      }
+      logger.line();
     }
   } catch (error) {
     logger.line();
@@ -148,7 +175,7 @@ async function installFromRegistry(
   name: string,
   options: InstallCommandOptions,
   configManager: ConfigManager
-): Promise<void> {
+): Promise<boolean> {
   const client = new RegistryClient();
 
   // Download cognitive
@@ -165,7 +192,7 @@ async function installFromRegistry(
     logger.line();
     logger.error(`Cognitive '${manifest.name}' is already installed.`);
     logger.hint('Use --force to overwrite.');
-    return;
+    return false;
   }
 
   // Download assets if any (check for assets folder)
@@ -183,8 +210,13 @@ async function installFromRegistry(
   logger.log(`    ${pc.dim('Type:')} ${manifest.type}`);
   logger.log(`    ${pc.dim('Category:')} ${category}`);
   logger.log(`    ${pc.dim('Location:')} ${path.relative(process.cwd(), targetDir)}`);
-  logger.line();
-  logger.hint('Run synapsync sync to sync to your providers.');
+
+  if (options.sync !== true) {
+    logger.line();
+    logger.hint('Run synapsync sync to sync to your providers.');
+  }
+
+  return true;
 }
 
 async function downloadAssets(
@@ -224,7 +256,7 @@ async function installFromLocal(
   sourcePath: string,
   options: InstallCommandOptions,
   configManager: ConfigManager
-): Promise<void> {
+): Promise<boolean> {
   const absolutePath = path.resolve(process.cwd(), sourcePath);
 
   if (!fs.existsSync(absolutePath)) {
@@ -278,7 +310,7 @@ async function installFromLocal(
     logger.line();
     logger.error(`Cognitive '${name}' is already installed.`);
     logger.hint('Use --force to overwrite.');
-    return;
+    return false;
   }
 
   // Copy all files from source
@@ -305,8 +337,13 @@ async function installFromLocal(
   logger.log(`    ${pc.dim('Category:')} ${category}`);
   logger.log(`    ${pc.dim('Source:')} local`);
   logger.log(`    ${pc.dim('Location:')} ${path.relative(process.cwd(), targetDir)}`);
-  logger.line();
-  logger.hint('Run synapsync sync to sync to your providers.');
+
+  if (options.sync !== true) {
+    logger.line();
+    logger.hint('Run synapsync sync to sync to your providers.');
+  }
+
+  return true;
 }
 
 /**
@@ -394,12 +431,13 @@ async function installFromGitHub(
   source: InstallSource,
   options: InstallCommandOptions,
   configManager: ConfigManager
-): Promise<void> {
+): Promise<boolean> {
   // For now, we'll use raw GitHub URLs similar to registry
   // This is a simplified implementation
   logger.line();
   logger.error('GitHub installation is not yet fully implemented.');
   logger.hint('For now, clone the repo locally and use: synapsync install ./path/to/cognitive');
+  return false;
 }
 
 // ============================================
@@ -497,6 +535,7 @@ export function registerInstallCommand(program: Command): void {
     .option('-t, --type <type>', 'Cognitive type (skill, agent, prompt, workflow, tool)')
     .option('-c, --category <category>', 'Category (overrides default)')
     .option('-f, --force', 'Overwrite if already installed')
+    .option('-s, --sync', 'Sync to providers after installation')
     .option('-g, --global', 'Install globally (not yet implemented)')
     .action(async (source: string, options: InstallCommandOptions) => {
       await executeInstallCommand(source, options);
