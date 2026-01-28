@@ -1,0 +1,38 @@
+name: test
+description: test
+version: 1.0.0
+cli:
+  theme: auto
+  color: true
+  verbose: false
+storage:
+  dir: .synapsync
+sync:
+  method: symlink
+  providers:
+    claude:
+      enabled: true
+      paths:
+        skill: .claude/skills
+        agent: .claude/agents
+        prompt: .claude/prompts
+        workflow: .claude/workflows
+        tool: .claude/tools
+    openai:
+      enabled: true
+      paths:
+        skill: .openai/skills
+        agent: .openai/agents
+        prompt: .openai/prompts
+        workflow: .openai/workflows
+        tool: .openai/tools
+    cursor:
+      enabled: false
+      paths:
+        skill: .cursor/skills
+        agent: .cursor/agents
+        prompt: .cursor/prompts
+        workflow: .cursor/workflows
+        tool: .cursor/tools
+    gemini:
+      enabled: true

@@ -9,6 +9,9 @@ import { showBanner, showError, showInfo } from './banner.js';
 import { CLI_NAME } from '../core/constants.js';
 import { logger } from '../utils/logger.js';
 import { executeInfoCommand } from '../commands/info.js';
+import { executeInitCommand } from '../commands/init.js';
+import { executeConfigCommand } from '../commands/config.js';
+import { executeStatusCommand } from '../commands/status.js';
 
 // Command definition with usage info
 interface CommandDef {
@@ -173,17 +176,50 @@ registerInteractiveCommand(
 // Project Commands
 // ============================================
 
-registerInteractiveCommand('init', 'Initialize a new project', (_args) => {
-  showInfo('Command not yet implemented. Coming in Phase 1 Week 2.');
-});
+registerInteractiveCommand(
+  'init',
+  'Initialize a new SynapSync project',
+  async (_args) => {
+    await executeInitCommand();
+  },
+  {
+    usage: '/init [options]',
+    options: [
+      { flag: '-n, --name', description: 'Project name' },
+      { flag: '-y, --yes', description: 'Skip prompts, use defaults' },
+    ],
+    examples: ['/init', '/init --name my-project', '/init --yes'],
+  }
+);
 
-registerInteractiveCommand('config', 'Manage configuration', (_args) => {
-  showInfo('Command not yet implemented. Coming in Phase 1 Week 2.');
-});
+registerInteractiveCommand(
+  'config',
+  'Manage project configuration',
+  (args) => {
+    executeConfigCommand(args);
+  },
+  {
+    usage: '/config [list|get|set] [key] [value]',
+    options: [
+      { flag: 'list', description: 'Show all configuration values' },
+      { flag: 'get <key>', description: 'Get a specific value' },
+      { flag: 'set <key> <value>', description: 'Set a configuration value' },
+    ],
+    examples: ['/config', '/config list', '/config get cli.theme', '/config set cli.theme dark'],
+  }
+);
 
-registerInteractiveCommand('status', 'Show project status', (_args) => {
-  showInfo('Command not yet implemented. Coming in Phase 1 Week 2.');
-});
+registerInteractiveCommand(
+  'status',
+  'Show project status',
+  (_args) => {
+    executeStatusCommand();
+  },
+  {
+    usage: '/status',
+    examples: ['/status'],
+  }
+);
 
 // ============================================
 // Provider Commands

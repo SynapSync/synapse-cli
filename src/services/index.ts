@@ -2,4 +2,5 @@
  * Services barrel exports
  */
 
-export * from './asset/index.js';
+export * from './cognitive/index.js';
+export * from './config/index.js';

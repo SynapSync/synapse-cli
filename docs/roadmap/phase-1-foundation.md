@@ -135,7 +135,7 @@ synapsync
 
 ---
 
-## Week 2: Basic Commands (PENDING)
+## Week 2: Basic Commands ✅ COMPLETED
 
 ### Tasks
 
@@ -144,6 +144,7 @@ synapsync
 - [x] Implementar `synapsync help`
 - [x] Implementar `synapsync help <command>`
 - [x] Formatear output con colores y estructura clara
+- [x] Mostrar argumentos disponibles para cada comando
 
 **Deliverable:** Sistema de ayuda completo ✅
 
@@ -153,45 +154,63 @@ synapsync
 - [x] Mostrar version del CLI
 - [x] Mostrar version de Node.js
 - [x] Mostrar plataforma
-- [ ] Implementar `--check` para ver updates disponibles
+- [x] Implementar `--check` para ver updates disponibles
 
 **Deliverable:** `synapsync version` funcional ✅
 
-#### 2.3 Init Command (PENDING)
+#### 2.3 Init Command ✅
 
-- [ ] Implementar `synapsync init`
-- [ ] Crear prompts interactivos (nombre, descripcion, providers)
-- [ ] Generar estructura de proyecto:
-  - `.synapsync/` directory
+- [x] Implementar `synapsync init`
+- [x] Crear prompts interactivos (nombre, descripcion, providers)
+- [x] Generar estructura de proyecto:
+  - `.synapsync/` directory con subdirectorios por tipo
   - `synapsync.config.yaml`
-  - `.gitignore`
-- [ ] Mostrar next steps al usuario
+  - `manifest.json`
+  - `.gitignore` actualizado
+- [x] Mostrar next steps al usuario
+- [x] Opcion `-y, --yes` para modo no-interactivo
 
-**Deliverable:** Comando init genera proyecto correctamente
+**Deliverable:** Comando init genera proyecto correctamente ✅
 
-#### 2.4 Config Command (PENDING)
+#### 2.4 Config Command ✅
 
-- [ ] Implementar `synapsync config list`
-- [ ] Implementar `synapsync config get <key>`
-- [ ] Implementar `synapsync config set <key> <value>`
-- [ ] Crear ConfigManager en core
+- [x] Implementar `synapsync config list`
+- [x] Implementar `synapsync config get <key>`
+- [x] Implementar `synapsync config set <key> <value>`
+- [x] Crear ConfigManager en services (`src/services/config/`)
 
-**Deliverable:** Sistema de configuracion completo
+**Deliverable:** Sistema de configuracion completo ✅
 
-### Acceptance Criteria Week 2
+#### 2.5 Status Command ✅
+
+- [x] Implementar `synapsync status`
+- [x] Mostrar estado de inicializacion
+- [x] Mostrar cognitives instalados por tipo
+- [x] Mostrar providers habilitados
+- [x] Mostrar timestamp de ultima actualizacion
+
+**Deliverable:** Comando status funcional ✅
+
+### Acceptance Criteria Week 2 ✅
 
 ```bash
 # Inicializar proyecto
-synapsync init
+synapsync init ✅
 # -> Crea .synapsync/, synapsync.config.yaml
 
 # Ver configuracion
-synapsync config list
+synapsync config list ✅
 
 # Modificar configuracion
-synapsync config set cli.theme dark
-synapsync config get cli.theme
+synapsync config set cli.theme dark ✅
+synapsync config get cli.theme ✅
 # -> dark
+
+# Ver estado del proyecto
+synapsync status ✅
+
+# Verificar actualizaciones
+synapsync version --check ✅
 ```
 
 ---

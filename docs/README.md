@@ -109,11 +109,24 @@ SynapSync soporta multiples tipos de cognitives de IA:
 synapsync                   # Pantalla de bienvenida + modo REPL
 synapsync --help            # Ayuda general
 synapsync version           # Version y info del sistema
+synapsync version --check   # Verificar actualizaciones disponibles
+synapsync init              # Inicializar proyecto (interactivo)
+synapsync init --yes        # Inicializar con valores por defecto
+synapsync config list       # Listar configuracion
+synapsync config get <key>  # Obtener valor de configuracion
+synapsync config set <k> <v># Establecer valor de configuracion
+synapsync status            # Mostrar estado del proyecto
 
 # REPL Mode (interactive)
 synapsync
 > /help                     # Ayuda del modo REPL
+> /help <command>           # Ayuda detallada de un comando
 > /version                  # Version del CLI
+> /init                     # Inicializar proyecto
+> /config list              # Ver configuracion
+> /config get cli.theme     # Obtener valor
+> /config set cli.theme dark# Establecer valor
+> /status                   # Estado del proyecto
 > /info --cognitives        # Documentacion de tipos de cognitives
 > /info --install           # Documentacion de fuentes de instalacion
 > /info --providers         # Proveedores soportados
@@ -127,7 +140,6 @@ synapsync
 ### Planned Commands
 
 ```bash
-synapsync init              # Inicializar proyecto
 synapsync connect           # Conectar proveedores de IA
 
 # Cognitive management (works with all cognitive types)
@@ -151,16 +163,16 @@ synapsync workflow          # Gestionar workflows
 
 ```
 Week 1     ████████████████████  100% ✅ Project Setup & CLI Framework
-Week 1.5   ████████████████████  100% ✅ Asset Type System
-Week 2     ░░░░░░░░░░░░░░░░░░░░    0%    Basic Commands (init, config)
+Week 1.5   ████████████████████  100% ✅ Cognitive Type System
+Week 2     ████████████████████  100% ✅ Basic Commands (init, config, status)
 Week 3     ░░░░░░░░░░░░░░░░░░░░    0%    Provider Management
-Week 4     ░░░░░░░░░░░░░░░░░░░░    0%    Asset Management
+Week 4     ░░░░░░░░░░░░░░░░░░░░    0%    Cognitive Management
 ```
 
 ### Overall Timeline
 
 ```
-Phase 1    ████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░  In Progress (40%)
+Phase 1    ███████████████░░░░░░░░░░░░░░░░░░░░░░░░░  In Progress (60%)
 Phase 2    ░░░░░░░░░░░░░░░░████████████████░░░░░░░░  Pending
 Phase 3    ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░████████  Pending
 Phase 4    ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░▓▓  Ongoing
