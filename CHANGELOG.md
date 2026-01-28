@@ -7,6 +7,55 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-01-28
+
+### Added
+
+#### Maintenance Commands (Phase 2 - Week 7)
+- **UpdateChecker service** (`src/services/maintenance/update-checker.ts`)
+  - Check installed cognitives for available updates
+  - Compare versions using semver
+  - Query registry for latest versions
+
+- **DoctorService** (`src/services/maintenance/doctor.ts`)
+  - Run diagnostic checks on SynapSync projects
+  - Auto-fix capability for fixable issues
+  - Checks: node-version, synapsync-dir, config-valid, manifest-exists,
+    manifest-consistency, providers-configured, symlinks validity, registry-connectivity
+
+- **CleanerService** (`src/services/maintenance/cleaner.ts`)
+  - Clean registry cache files
+  - Remove orphaned symlinks
+  - Delete temp files
+  - Calculate freed disk space
+
+- **`synapsync update` command**
+  - `synapsync update [cognitive]` - Update specific cognitive
+  - `--all` - Update all cognitives
+  - `--force` - Force update even if already latest
+  - `--dry-run` - Preview updates without applying
+  - `--json` - JSON output
+
+- **`synapsync doctor` command**
+  - Run comprehensive diagnostics on project
+  - `--fix` - Auto-fix detected issues
+  - `--check <checks...>` - Run specific checks only
+  - `--verbose` - Detailed output
+  - `--json` - JSON output
+
+- **`synapsync clean` command**
+  - Clean cache, orphaned symlinks, and temp files
+  - `--cache` - Clean registry cache only
+  - `--orphans` - Clean orphaned symlinks only
+  - `--temp` - Clean temp files only
+  - `--all` - Clean everything
+  - `--dry-run` - Preview what would be cleaned
+  - `--json` - JSON output
+
+### Changed
+- Updated `src/cli.ts` to register update, doctor, and clean commands
+- Updated `src/services/index.ts` to export maintenance services
+
 ## [0.2.0] - 2026-01-28
 
 ### Added
@@ -104,6 +153,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-[Unreleased]: https://github.com/SynapSync/synapse-cli/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/SynapSync/synapse-cli/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/SynapSync/synapse-cli/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/SynapSync/synapse-cli/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/SynapSync/synapse-cli/releases/tag/v0.1.0
