@@ -7,31 +7,31 @@ import * as readline from 'readline';
 import pc from 'picocolors';
 import { showBanner, showError, showInfo } from './banner.js';
 import { CLI_NAME } from '../core/constants.js';
+import { logger } from '../utils/logger.js';
 
 // Available commands in interactive mode
-const COMMANDS: Record<string, { description: string; handler: (args: string[]) => Promise<void> }> =
-  {};
+const COMMANDS: Record<string, { description: string; handler: () => void | Promise<void> }> = {};
 
 // Register a command for interactive mode
 export function registerInteractiveCommand(
   name: string,
   description: string,
-  handler: (args: string[]) => Promise<void>
+  handler: () => void | Promise<void>
 ): void {
   COMMANDS[name] = { description, handler };
 }
 
 // Built-in commands
-registerInteractiveCommand('help', 'Show available commands', async () => {
-  console.log();
-  console.log(pc.bold('  Available Commands:'));
-  console.log();
+registerInteractiveCommand('help', 'Show available commands', () => {
+  logger.line();
+  logger.bold('  Available Commands:');
+  logger.line();
 
   // Built-in commands
-  console.log(`  ${pc.cyan('/help')}              ${pc.dim('Show this help message')}`);
-  console.log(`  ${pc.cyan('/clear')}             ${pc.dim('Clear the screen')}`);
-  console.log(`  ${pc.cyan('/exit')}              ${pc.dim('Exit interactive mode')}`);
-  console.log();
+  logger.log(`  ${pc.cyan('/help')}              ${pc.dim('Show this help message')}`);
+  logger.log(`  ${pc.cyan('/clear')}             ${pc.dim('Clear the screen')}`);
+  logger.log(`  ${pc.cyan('/exit')}              ${pc.dim('Exit interactive mode')}`);
+  logger.line();
 
   // Registered commands
   const commandNames = Object.keys(COMMANDS).filter(
@@ -39,86 +39,86 @@ registerInteractiveCommand('help', 'Show available commands', async () => {
   );
 
   if (commandNames.length > 0) {
-    console.log(pc.bold('  CLI Commands:'));
-    console.log();
+    logger.bold('  CLI Commands:');
+    logger.line();
     for (const name of commandNames.sort()) {
       const cmd = COMMANDS[name];
       const paddedName = `/${name}`.padEnd(18);
-      console.log(`  ${pc.cyan(paddedName)} ${pc.dim(cmd?.description ?? '')}`);
+      logger.log(`  ${pc.cyan(paddedName)} ${pc.dim(cmd?.description ?? '')}`);
     }
-    console.log();
+    logger.line();
   }
 });
 
-registerInteractiveCommand('clear', 'Clear the screen', async () => {
-  console.clear();
+registerInteractiveCommand('clear', 'Clear the screen', () => {
+  logger.clear();
   showBanner();
 });
 
-registerInteractiveCommand('exit', 'Exit interactive mode', async () => {
-  console.log();
+registerInteractiveCommand('exit', 'Exit interactive mode', () => {
+  logger.line();
   showInfo('Goodbye! Run `synapsync` to start again.');
-  console.log();
+  logger.line();
   process.exit(0);
 });
 
 // Placeholder commands - will be replaced when actual commands are implemented
-registerInteractiveCommand('init', 'Initialize a new project', async () => {
+registerInteractiveCommand('init', 'Initialize a new project', () => {
   showInfo('Command not yet implemented. Coming in Phase 1 Week 2.');
 });
 
-registerInteractiveCommand('config', 'Manage configuration', async () => {
+registerInteractiveCommand('config', 'Manage configuration', () => {
   showInfo('Command not yet implemented. Coming in Phase 1 Week 2.');
 });
 
-registerInteractiveCommand('connect', 'Connect to AI providers', async () => {
+registerInteractiveCommand('connect', 'Connect to AI providers', () => {
   showInfo('Command not yet implemented. Coming in Phase 1 Week 3.');
 });
 
-registerInteractiveCommand('disconnect', 'Disconnect from a provider', async () => {
+registerInteractiveCommand('disconnect', 'Disconnect from a provider', () => {
   showInfo('Command not yet implemented. Coming in Phase 1 Week 3.');
 });
 
-registerInteractiveCommand('providers', 'List connected providers', async () => {
+registerInteractiveCommand('providers', 'List connected providers', () => {
   showInfo('Command not yet implemented. Coming in Phase 1 Week 3.');
 });
 
-registerInteractiveCommand('search', 'Search for skills', async () => {
+registerInteractiveCommand('search', 'Search for skills', () => {
   showInfo('Command not yet implemented. Coming in Phase 1 Week 4.');
 });
 
-registerInteractiveCommand('install', 'Install a skill', async () => {
+registerInteractiveCommand('install', 'Install a skill', () => {
   showInfo('Command not yet implemented. Coming in Phase 1 Week 4.');
 });
 
-registerInteractiveCommand('list', 'List installed skills', async () => {
+registerInteractiveCommand('list', 'List installed skills', () => {
   showInfo('Command not yet implemented. Coming in Phase 1 Week 4.');
 });
 
-registerInteractiveCommand('info', 'Show skill information', async () => {
+registerInteractiveCommand('info', 'Show skill information', () => {
   showInfo('Command not yet implemented. Coming in Phase 1 Week 4.');
 });
 
-registerInteractiveCommand('uninstall', 'Uninstall a skill', async () => {
+registerInteractiveCommand('uninstall', 'Uninstall a skill', () => {
   showInfo('Command not yet implemented. Coming in Phase 1 Week 4.');
 });
 
-registerInteractiveCommand('sync', 'Sync skills to providers', async () => {
+registerInteractiveCommand('sync', 'Sync skills to providers', () => {
   showInfo('Command not yet implemented. Coming in Phase 2 Week 6.');
 });
 
-registerInteractiveCommand('status', 'Show project status', async () => {
+registerInteractiveCommand('status', 'Show project status', () => {
   showInfo('Command not yet implemented. Coming in Phase 2 Week 6.');
 });
 
 registerInteractiveCommand('version', 'Show version information', async () => {
   const { version } = await import('../version.js');
-  console.log();
-  console.log(`${pc.bold('SynapSync CLI')} ${pc.cyan(`v${version}`)}`);
-  console.log();
-  console.log(`${pc.dim('Node.js:')}    ${process.version}`);
-  console.log(`${pc.dim('Platform:')}   ${process.platform} ${process.arch}`);
-  console.log();
+  logger.line();
+  logger.log(`${pc.bold('SynapSync CLI')} ${pc.cyan(`v${version}`)}`);
+  logger.line();
+  logger.label('Node.js', process.version);
+  logger.label('Platform', `${process.platform} ${process.arch}`);
+  logger.line();
 });
 
 /**
@@ -134,14 +134,13 @@ async function executeCommand(input: string): Promise<void> {
   // Commands must start with /
   if (!trimmed.startsWith('/')) {
     showError(`Unknown input. Commands must start with /`);
-    console.log(`${pc.dim('Type')} ${pc.cyan('/help')} ${pc.dim('for available commands.')}`);
+    logger.log(`${pc.dim('Type')} ${pc.cyan('/help')} ${pc.dim('for available commands.')}`);
     return;
   }
 
   // Parse command and arguments
   const parts = trimmed.slice(1).split(/\s+/);
   const commandName = parts[0]?.toLowerCase();
-  const args = parts.slice(1);
 
   if (!commandName) {
     return;
@@ -151,12 +150,12 @@ async function executeCommand(input: string): Promise<void> {
 
   if (!command) {
     showError(`Unknown command: /${commandName}`);
-    console.log(`${pc.dim('Type')} ${pc.cyan('/help')} ${pc.dim('for available commands.')}`);
+    logger.log(`${pc.dim('Type')} ${pc.cyan('/help')} ${pc.dim('for available commands.')}`);
     return;
   }
 
   try {
-    await command.handler(args);
+    await command.handler();
   } catch (error) {
     if (error instanceof Error) {
       showError(error.message);
@@ -169,14 +168,14 @@ async function executeCommand(input: string): Promise<void> {
 /**
  * Start the interactive REPL
  */
-export async function startInteractiveMode(): Promise<void> {
+export function startInteractiveMode(): void {
   // Show banner first
   showBanner();
 
-  console.log(
+  logger.log(
     `${pc.dim('Type')} ${pc.cyan('/help')} ${pc.dim('for commands,')} ${pc.cyan('/exit')} ${pc.dim('to quit.')}`
   );
-  console.log();
+  logger.line();
 
   // Create readline interface
   const rl = readline.createInterface({
@@ -187,22 +186,23 @@ export async function startInteractiveMode(): Promise<void> {
   });
 
   // Handle line input
-  rl.on('line', async (line) => {
-    await executeCommand(line);
-    rl.prompt();
+  rl.on('line', (line) => {
+    void executeCommand(line).then(() => {
+      rl.prompt();
+    });
   });
 
   // Handle close (Ctrl+C, Ctrl+D)
   rl.on('close', () => {
-    console.log();
+    logger.line();
     showInfo('Goodbye!');
     process.exit(0);
   });
 
   // Handle SIGINT (Ctrl+C)
   rl.on('SIGINT', () => {
-    console.log();
-    console.log(pc.dim('(Use /exit to quit or Ctrl+D)'));
+    logger.line();
+    logger.hint('(Use /exit to quit or Ctrl+D)');
     rl.prompt();
   });
 
