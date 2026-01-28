@@ -9,3 +9,4 @@ export * from './manifest/index.js';
 export * from './scanner/index.js';
 export * from './sync/index.js';
 export * from './symlink/index.js';
+export * from './maintenance/index.js';
