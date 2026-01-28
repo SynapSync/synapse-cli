@@ -1,14 +1,11 @@
 /**
- * SynapSync CLI - Entry Point
- *
- * Neural AI Orchestration Platform
- * Manage AI skills across multiple providers
+ * SynapSync CLI - Entry point
  */
 
 import { runCLI } from './cli.js';
+import { logger } from './utils/logger.js';
 
-// Run the CLI
 runCLI().catch((error) => {
-  console.error('Fatal error:', error);
+  logger.error(`Fatal error: ${error}`);
   process.exit(1);
 });

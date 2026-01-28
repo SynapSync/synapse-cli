@@ -4,6 +4,7 @@
 
 import type { Command } from 'commander';
 import pc from 'picocolors';
+import { logger } from '../utils/logger.js';
 
 export function registerHelpCommand(program: Command): void {
   program
@@ -15,9 +16,9 @@ export function registerHelpCommand(program: Command): void {
         if (cmd) {
           cmd.outputHelp();
         } else {
-          console.log(pc.red(`Unknown command: ${commandName}`));
-          console.log();
-          console.log(`Run ${pc.cyan('synapsync --help')} to see available commands.`);
+          logger.error(`Unknown command: ${commandName}`);
+          logger.line();
+          logger.log(`Run ${pc.cyan('synapsync --help')} to see available commands.`);
         }
       } else {
         program.outputHelp();

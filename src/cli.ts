@@ -6,6 +6,7 @@ import { Command } from 'commander';
 import { CLI_NAME, CLI_DESCRIPTION } from './core/constants.js';
 import { startInteractiveMode } from './ui/repl.js';
 import { version } from './version.js';
+import { logger } from './utils/logger.js';
 
 // Import commands
 import { registerHelpCommand } from './commands/help.js';
@@ -25,8 +26,8 @@ export function createCLI(): Command {
     });
 
   // Enter interactive mode when no command is provided
-  program.action(async () => {
-    await startInteractiveMode();
+  program.action(() => {
+    startInteractiveMode();
   });
 
   // Register commands
@@ -58,10 +59,8 @@ export async function runCLI(args: string[] = process.argv): Promise<void> {
     await program.parseAsync(args);
   } catch (error) {
     if (error instanceof Error) {
-      console.error(`Error: ${error.message}`);
-      if (process.env['DEBUG']) {
-        console.error(error.stack);
-      }
+      logger.error(`Error: ${error.message}`);
+      logger.debug(error.stack ?? '');
     }
     process.exit(1);
   }

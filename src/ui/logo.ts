@@ -3,7 +3,7 @@
  * Inspired by vercel-labs/skills pattern
  */
 
-import { RESET } from '../core/constants.js';
+import { logger } from '../utils/logger.js';
 
 // SynapSync ASCII art logo
 const LOGO_LINES = [
@@ -32,11 +32,9 @@ const COMPACT_LOGO_LINES = [
   '╚═╝ ┴ ┘└┘┴ ┴┴  ╚═╝ ┴ ┘└┘└─┘',
 ];
 
-const COMPACT_COLORS = [
-  '\x1b[38;5;39m',
-  '\x1b[38;5;37m',
-  '\x1b[38;5;34m',
-];
+const COMPACT_COLORS = ['\x1b[38;5;39m', '\x1b[38;5;37m', '\x1b[38;5;34m'];
+
+const RESET = '\x1b[0m';
 
 /**
  * Get terminal width, defaulting to 80 if unavailable
@@ -52,17 +50,17 @@ export function showLogo(): void {
   const termWidth = getTerminalWidth();
   const useCompact = termWidth < 85;
 
-  console.log();
+  logger.line();
 
   if (useCompact) {
     COMPACT_LOGO_LINES.forEach((line, index) => {
-      const color = COMPACT_COLORS[index % COMPACT_COLORS.length];
-      console.log(`${color}${line}${RESET}`);
+      const color = COMPACT_COLORS[index % COMPACT_COLORS.length] ?? '';
+      logger.gradient(line, color);
     });
   } else {
     LOGO_LINES.forEach((line, index) => {
-      const color = GRADIENT_COLORS[index % GRADIENT_COLORS.length];
-      console.log(`${color}${line}${RESET}`);
+      const color = GRADIENT_COLORS[index % GRADIENT_COLORS.length] ?? '';
+      logger.gradient(line, color);
     });
   }
 }
