@@ -43,6 +43,7 @@ temp/
 *.tmp
 
 # SynapSync specific
+.synapsync/
 .synapsync/cache/
 .synapsync/logs/
 synapsync-reports/
