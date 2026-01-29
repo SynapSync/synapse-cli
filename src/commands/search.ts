@@ -182,7 +182,7 @@ function displaySearchResults(
   }
 
   logger.line();
-  logger.hint('Run synapsync install <name> to install a cognitive.');
+  logger.hint('Run synapsync add <name> to add a cognitive.');
 }
 
 function displayCognitive(cognitive: RegistryCognitiveEntry): void {

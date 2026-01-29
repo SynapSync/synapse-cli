@@ -14,7 +14,7 @@ import { executeConfigCommand } from '../commands/config.js';
 import { executeStatusCommand } from '../commands/status.js';
 import { executeProvidersCommand } from '../commands/providers.js';
 import { executeSearchCommand } from '../commands/search.js';
-import { executeInstallCommand } from '../commands/install.js';
+import { executeAddCommand } from '../commands/add.js';
 import { executeListCommand } from '../commands/list.js';
 import { executeUninstallCommand } from '../commands/uninstall.js';
 import { executeSyncCommand, executeSyncStatusCommand } from '../commands/sync.js';
@@ -119,8 +119,8 @@ registerInteractiveCommand(
       'Information': ['info', 'version'],
       'Project': ['init', 'config', 'status'],
       'Providers': ['providers'],
-      'Cognitives': ['search', 'install', 'list', 'uninstall', 'create'],
-      'Sync': ['sync', 'push', 'pull'],
+      'Cognitives': ['search', 'add', 'list', 'uninstall'],
+      'Sync': ['sync'],
       'Maintenance': ['update', 'doctor', 'clean'],
     };
 
@@ -144,7 +144,7 @@ registerInteractiveCommand(
   },
   {
     usage: '/help [command]',
-    examples: ['/help', '/help info', '/help install'],
+    examples: ['/help', '/help info', '/help add'],
   }
 );
 
@@ -170,13 +170,13 @@ registerInteractiveCommand(
     usage: '/info [--topic]',
     options: [
       { flag: '--cognitives', description: 'Types of AI cognitives (skills, agents, etc.)' },
-      { flag: '--install', description: 'How to install from registry, GitHub, local' },
+      { flag: '--add', description: 'How to add from registry, GitHub, local' },
       { flag: '--providers', description: 'Supported AI providers' },
       { flag: '--categories', description: 'Cognitive organization categories' },
       { flag: '--sync', description: 'How synchronization works' },
       { flag: '--structure', description: 'Project directory structure' },
     ],
-    examples: ['/info', '/info --cognitives', '/info --install'],
+    examples: ['/info', '/info --cognitives', '/info --add'],
   }
 );
 
@@ -304,8 +304,8 @@ registerInteractiveCommand(
 );
 
 registerInteractiveCommand(
-  'install',
-  'Install a cognitive from registry, local path, or GitHub',
+  'add',
+  'Add a cognitive from registry, local path, or GitHub',
   async (args) => {
     const parts = args.split(/\s+/);
     let source: string | undefined;
@@ -329,15 +329,15 @@ registerInteractiveCommand(
     }
 
     if (source === undefined || source === '') {
-      logger.error('Please specify a cognitive to install.');
-      logger.hint('Usage: /install <name|path|github:user/repo>');
+      logger.error('Please specify a cognitive to add.');
+      logger.hint('Usage: /add <name|path|github:user/repo>');
       return;
     }
 
-    await executeInstallCommand(source, options);
+    await executeAddCommand(source, options);
   },
   {
-    usage: '/install <source> [options]',
+    usage: '/add <source> [options]',
     options: [
       { flag: '-t, --type <type>', description: 'Cognitive type (skill, agent, etc.)' },
       { flag: '-c, --category <cat>', description: 'Category (overrides default)' },
@@ -345,11 +345,11 @@ registerInteractiveCommand(
       { flag: '-s, --sync', description: 'Sync to providers after installation' },
     ],
     examples: [
-      '/install skill-creator',
-      '/install skill-creator --sync',
-      '/install ./my-skill',
-      '/install github:user/repo',
-      '/install skill-creator --force',
+      '/add skill-creator',
+      '/add skill-creator --sync',
+      '/add ./my-skill',
+      '/add github:user/repo',
+      '/add skill-creator --force',
     ],
   }
 );
@@ -429,10 +429,6 @@ registerInteractiveCommand(
   }
 );
 
-registerInteractiveCommand('create', 'Create a new asset', (_args) => {
-  showInfo('Command not yet implemented. Coming in Phase 2.');
-});
-
 // ============================================
 // Sync Commands
 // ============================================
@@ -493,14 +489,6 @@ registerInteractiveCommand(
     examples: ['/sync', '/sync status', '/sync --dry-run', '/sync --provider claude'],
   }
 );
-
-registerInteractiveCommand('push', 'Push local cognitives to registry', (_args) => {
-  showInfo('Command not yet implemented. Coming in Phase 3.');
-});
-
-registerInteractiveCommand('pull', 'Pull latest cognitives from registry', (_args) => {
-  showInfo('Command not yet implemented. Coming in Phase 3.');
-});
 
 // ============================================
 // Maintenance Commands

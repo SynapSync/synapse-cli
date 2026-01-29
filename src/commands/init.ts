@@ -295,9 +295,9 @@ function showSuccessMessage(
   logger.log(`  ${pc.cyan('1.')} Connect to providers:`);
   logger.log(`     ${pc.dim('$')} synapsync connect claude`);
   logger.line();
-  logger.log(`  ${pc.cyan('2.')} Install cognitives:`);
-  logger.log(`     ${pc.dim('$')} synapsync install code-reviewer`);
-  logger.log(`     ${pc.dim('$')} synapsync install github:user/my-skill`);
+  logger.log(`  ${pc.cyan('2.')} Add cognitives:`);
+  logger.log(`     ${pc.dim('$')} synapsync add code-reviewer`);
+  logger.log(`     ${pc.dim('$')} synapsync add github:user/my-skill`);
   logger.line();
   logger.log(`  ${pc.cyan('3.')} Sync to providers:`);
   logger.log(`     ${pc.dim('$')} synapsync sync`);

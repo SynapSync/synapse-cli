@@ -181,7 +181,7 @@ function displayRemoteCognitives(cognitives: RegistryCognitiveEntry[]): void {
   // Summary
   logger.log(`  ${pc.dim(`Total: ${cognitives.length} cognitive${cognitives.length === 1 ? '' : 's'} available`)}`);
   logger.line();
-  logger.hint('Run synapsync install <name> to install a cognitive.');
+  logger.hint('Run synapsync add <name> to add a cognitive.');
 }
 
 // ============================================
@@ -280,7 +280,7 @@ function displayCognitives(manifest: ProjectManifest, options: ValidatedOptions)
     if (cognitives.length === 0) {
       logger.log(`  ${pc.dim('No cognitives installed yet.')}`);
       logger.line();
-      logger.hint('Run synapsync search to find cognitives to install.');
+      logger.hint('Run synapsync search to find cognitives to add.');
     } else {
       logger.log(`  ${pc.dim('No cognitives match the specified filters.')}`);
       logger.line();

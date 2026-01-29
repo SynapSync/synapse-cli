@@ -73,7 +73,7 @@ export async function executeUpdateCommand(
       console.log(JSON.stringify({ message: 'No cognitives installed' }));
     } else {
       logger.log(`  ${pc.dim('No cognitives installed.')}`);
-      logger.hint('Run synapsync install <name> to install a cognitive.');
+      logger.hint('Run synapsync add <name> to add a cognitive.');
     }
     return;
   }

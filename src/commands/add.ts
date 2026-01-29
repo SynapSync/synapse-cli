@@ -1,7 +1,7 @@
 /**
- * Install Command
+ * Add Command
  *
- * Install cognitives from registry, local path, or GitHub
+ * Add cognitives from registry, local path, or GitHub
  */
 
 import * as fs from 'fs';
@@ -23,11 +23,10 @@ import { logger } from '../utils/logger.js';
 // Types
 // ============================================
 
-interface InstallCommandOptions {
+interface AddCommandOptions {
   type?: string;
   category?: string;
   force?: boolean;
-  global?: boolean;
   sync?: boolean;
 }
 
@@ -44,11 +43,11 @@ interface InstallSource {
 // ============================================
 
 /**
- * Execute the install command
+ * Execute the add command
  */
-export async function executeInstallCommand(
+export async function executeAddCommand(
   source: string,
-  options: InstallCommandOptions
+  options: AddCommandOptions
 ): Promise<void> {
   logger.line();
 
@@ -173,7 +172,7 @@ function parseSource(source: string): InstallSource {
 
 async function installFromRegistry(
   name: string,
-  options: InstallCommandOptions,
+  options: AddCommandOptions,
   configManager: ConfigManager
 ): Promise<boolean> {
   const client = new RegistryClient();
@@ -254,7 +253,7 @@ async function downloadAssets(
 
 function installFromLocal(
   sourcePath: string,
-  options: InstallCommandOptions,
+  options: AddCommandOptions,
   configManager: ConfigManager
 ): boolean {
   const absolutePath = path.resolve(process.cwd(), sourcePath);
@@ -429,14 +428,14 @@ function parseMetadata(content: string): Record<string, unknown> {
 
 function installFromGitHub(
   _source: InstallSource,
-  _options: InstallCommandOptions,
+  _options: AddCommandOptions,
   _configManager: ConfigManager
 ): boolean {
   // For now, we'll use raw GitHub URLs similar to registry
   // This is a simplified implementation
   logger.line();
   logger.error('GitHub installation is not yet fully implemented.');
-  logger.hint('For now, clone the repo locally and use: synapsync install ./path/to/cognitive');
+  logger.hint('For now, clone the repo locally and use: synapsync add ./path/to/cognitive');
   return false;
 }
 
@@ -530,18 +529,17 @@ function updateProjectManifest(
 // ============================================
 
 /**
- * Register install command with Commander
+ * Register add command with Commander
  */
-export function registerInstallCommand(program: Command): void {
+export function registerAddCommand(program: Command): void {
   program
-    .command('install <source>')
-    .description('Install a cognitive from registry, local path, or GitHub')
+    .command('add <source>')
+    .description('Add a cognitive from registry, local path, or GitHub')
     .option('-t, --type <type>', 'Cognitive type (skill, agent, prompt, workflow, tool)')
     .option('-c, --category <category>', 'Category (overrides default)')
     .option('-f, --force', 'Overwrite if already installed')
     .option('-s, --sync', 'Sync to providers after installation')
-    .option('-g, --global', 'Install globally (not yet implemented)')
-    .action(async (source: string, options: InstallCommandOptions) => {
-      await executeInstallCommand(source, options);
+    .action(async (source: string, options: AddCommandOptions) => {
+      await executeAddCommand(source, options);
     });
 }

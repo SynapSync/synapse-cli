@@ -22,10 +22,10 @@ const INFO_TOPICS: Record<string, InfoTopic> = {
     description: 'Types of AI cognitives managed by SynapSync',
     content: showCognitivesInfo,
   },
-  install: {
-    name: 'Install',
-    description: 'How to install cognitives from different sources',
-    content: showInstallInfo,
+  add: {
+    name: 'Add',
+    description: 'How to add cognitives from different sources',
+    content: showAddInfo,
   },
   providers: {
     name: 'Providers',
@@ -116,8 +116,8 @@ function showCognitivesInfo(): void {
   // Usage examples
   logger.log(pc.bold('  Usage Examples:'));
   logger.line();
-  logger.log(`  ${pc.dim('$')} ${pc.cyan('synapsync install')} code-reviewer      ${pc.dim('# Install a skill')}`);
-  logger.log(`  ${pc.dim('$')} ${pc.cyan('synapsync install')} ci-agent           ${pc.dim('# Install an agent')}`);
+  logger.log(`  ${pc.dim('$')} ${pc.cyan('synapsync add')} code-reviewer      ${pc.dim('# Add a skill')}`);
+  logger.log(`  ${pc.dim('$')} ${pc.cyan('synapsync add')} ci-agent           ${pc.dim('# Add an agent')}`);
   logger.log(`  ${pc.dim('$')} ${pc.cyan('synapsync list')} --type agent          ${pc.dim('# List only agents')}`);
   logger.log(`  ${pc.dim('$')} ${pc.cyan('synapsync sync')} --type skill          ${pc.dim('# Sync only skills')}`);
   logger.line();
@@ -132,7 +132,7 @@ function showCognitivesInfo(): void {
   // Detection
   logger.log(pc.bold('  Type Detection:'));
   logger.line();
-  logger.dim('  When installing, SynapSync detects the cognitive type automatically:');
+  logger.dim('  When adding, SynapSync detects the cognitive type automatically:');
   logger.line();
   logger.log(`  ${pc.cyan('1.')} ${pc.white('Flag')}       ${pc.dim('--type skill (explicit, highest priority)')}`);
   logger.log(`  ${pc.cyan('2.')} ${pc.white('Registry')}   ${pc.dim('Metadata from the registry')}`);
@@ -141,11 +141,11 @@ function showCognitivesInfo(): void {
   logger.line();
 }
 
-function showInstallInfo(): void {
+function showAddInfo(): void {
   logger.line();
   logger.log(pc.bold(pc.cyan('  Installation Sources')));
   logger.line();
-  logger.dim('  SynapSync can install cognitives from multiple sources:');
+  logger.dim('  SynapSync can add cognitives from multiple sources:');
   logger.line();
 
   // Sources table
@@ -155,32 +155,32 @@ function showInstallInfo(): void {
   const sources = [
     {
       source: 'Registry',
-      format: 'synapsync install code-reviewer',
+      format: 'synapsync add code-reviewer',
       description: 'From the SynapSync registry',
     },
     {
       source: 'Local',
-      format: 'synapsync install ./path/to/cognitive',
+      format: 'synapsync add ./path/to/cognitive',
       description: 'From local file system',
     },
     {
       source: 'GitHub',
-      format: 'synapsync install github:user/repo',
+      format: 'synapsync add github:user/repo',
       description: 'From a GitHub repository',
     },
     {
       source: 'GitHub Path',
-      format: 'synapsync install github:user/repo/cognitives/skill',
+      format: 'synapsync add github:user/repo/cognitives/skill',
       description: 'Specific path in repo',
     },
     {
       source: 'GitHub Branch',
-      format: 'synapsync install github:user/repo#develop',
+      format: 'synapsync add github:user/repo#develop',
       description: 'Specific branch or tag',
     },
     {
       source: 'GitHub URL',
-      format: 'synapsync install https://github.com/user/repo',
+      format: 'synapsync add https://github.com/user/repo',
       description: 'Full GitHub URL',
     },
   ];
@@ -197,7 +197,7 @@ function showInstallInfo(): void {
   logger.dim('  SynapSync automatically detects the cognitive type using:');
   logger.line();
 
-  logger.log(`  ${pc.cyan('1.')} ${pc.white('Explicit flag')}     ${pc.dim('synapsync install code-reviewer --type skill')}`);
+  logger.log(`  ${pc.cyan('1.')} ${pc.white('Explicit flag')}     ${pc.dim('synapsync add code-reviewer --type skill')}`);
   logger.log(`  ${pc.cyan('2.')} ${pc.white('Registry lookup')}   ${pc.dim('Registry provides type metadata')}`);
   logger.log(`  ${pc.cyan('3.')} ${pc.white('File detection')}    ${pc.dim('Scans for SKILL.md, AGENT.md, etc.')}`);
   logger.log(`  ${pc.cyan('4.')} ${pc.white('Interactive')}       ${pc.dim('Prompts you to select if unknown')}`);
@@ -206,9 +206,9 @@ function showInstallInfo(): void {
   // Version
   logger.log(pc.bold('  Version Specification:'));
   logger.line();
-  logger.log(`  ${pc.dim('$')} ${pc.cyan('synapsync install')} code-reviewer          ${pc.dim('# Latest version')}`);
-  logger.log(`  ${pc.dim('$')} ${pc.cyan('synapsync install')} code-reviewer@1.2.0    ${pc.dim('# Specific version')}`);
-  logger.log(`  ${pc.dim('$')} ${pc.cyan('synapsync install')} code-reviewer@^1.0.0   ${pc.dim('# Version range')}`);
+  logger.log(`  ${pc.dim('$')} ${pc.cyan('synapsync add')} code-reviewer          ${pc.dim('# Latest version')}`);
+  logger.log(`  ${pc.dim('$')} ${pc.cyan('synapsync add')} code-reviewer@1.2.0    ${pc.dim('# Specific version')}`);
+  logger.log(`  ${pc.dim('$')} ${pc.cyan('synapsync add')} code-reviewer@^1.0.0   ${pc.dim('# Version range')}`);
   logger.line();
 
   // Options
@@ -216,7 +216,6 @@ function showInstallInfo(): void {
   logger.line();
   logger.log(`  ${pc.yellow('--type <type>')}       ${pc.dim('Explicit cognitive type (skill, agent, prompt, workflow, tool)')}`);
   logger.log(`  ${pc.yellow('--category <cat>')}    ${pc.dim('Explicit category (frontend, backend, etc.)')}`);
-  logger.log(`  ${pc.yellow('--global')}            ${pc.dim('Install globally for all projects')}`);
   logger.log(`  ${pc.yellow('--force')}             ${pc.dim('Force reinstall even if exists')}`);
   logger.line();
 }
@@ -297,7 +296,7 @@ function showCategoriesInfo(): void {
   // Usage
   logger.log(pc.bold('  Usage:'));
   logger.line();
-  logger.log(`  ${pc.dim('$')} ${pc.cyan('synapsync install')} react-patterns ${pc.dim('--category frontend')}`);
+  logger.log(`  ${pc.dim('$')} ${pc.cyan('synapsync add')} react-patterns ${pc.dim('--category frontend')}`);
   logger.log(`  ${pc.dim('$')} ${pc.cyan('synapsync list')} --category devops`);
   logger.log(`  ${pc.dim('$')} ${pc.cyan('synapsync search')} --category security`);
   logger.line();
@@ -388,7 +387,7 @@ function showAllTopics(): void {
 
   const topics = [
     { flag: '--cognitives', desc: 'Types of AI cognitives (skills, agents, prompts, etc.)' },
-    { flag: '--install', desc: 'How to install from registry, GitHub, local' },
+    { flag: '--add', desc: 'How to add from registry, GitHub, local' },
     { flag: '--providers', desc: 'Supported AI providers (Claude, OpenAI, etc.)' },
     { flag: '--categories', desc: 'Cognitive organization categories' },
     { flag: '--sync', desc: 'How synchronization works' },
@@ -460,7 +459,7 @@ export function registerInfoCommand(program: Command): void {
     .command('info')
     .description('Show information about SynapSync concepts')
     .option('--cognitives', 'Show cognitive types information')
-    .option('--install', 'Show installation sources and detection')
+    .option('--add', 'Show installation sources and detection')
     .option('--providers', 'Show supported providers')
     .option('--categories', 'Show cognitive categories')
     .option('--sync', 'Show sync information')
