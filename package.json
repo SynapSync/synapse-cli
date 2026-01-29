@@ -59,7 +59,7 @@
   "bugs": {
     "url": "https://github.com/synapsync/cli/issues"
   },
-  "homepage": "https://synapsync.github.io/docs/",
+  "homepage": "https://synapsync.github.io/synapsync-cli/",
   "dependencies": {
     "@clack/prompts": "^0.11.0",
     "commander": "^12.1.0",

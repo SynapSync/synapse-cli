@@ -12,10 +12,10 @@ const config: Config = {
   },
 
   url: 'https://synapsync.github.io',
-  baseUrl: '/docs/',
+  baseUrl: '/synapsync-cli/',
 
   organizationName: 'SynapSync',
-  projectName: 'synapse-cli',
+  projectName: 'synapsync-cli',
 
   deploymentBranch: 'gh-pages',
   trailingSlash: false,
