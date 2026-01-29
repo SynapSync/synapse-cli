@@ -59,8 +59,8 @@ export function executePurgeCommand(options: PurgeCommandOptions): void {
   let removedCount = 0;
 
   try {
-    // 1. Remove provider synced content
-    removedCount += removeProviderContent(projectRoot);
+    // 1. Remove only symlinks pointing to .synapsync
+    removedCount += removeProviderSymlinks(projectRoot, synapSyncDir);
 
     // 2. Remove .synapsync directory
     if (fs.existsSync(synapSyncDir)) {
@@ -108,15 +108,10 @@ export function executePurgeCommand(options: PurgeCommandOptions): void {
 function collectItemsToRemove(projectRoot: string, synapSyncDir: string): string[] {
   const items: string[] = [];
 
-  // Provider content
-  for (const provider of SUPPORTED_PROVIDERS) {
-    const providerPaths = PROVIDER_PATHS[provider];
-    for (const type of COGNITIVE_TYPES) {
-      const typePath = path.join(projectRoot, providerPaths[type]);
-      if (fs.existsSync(typePath)) {
-        items.push(path.relative(projectRoot, typePath) + '/');
-      }
-    }
+  // Symlinks pointing to .synapsync
+  const symlinks = findSynapSyncSymlinks(projectRoot, synapSyncDir);
+  for (const link of symlinks) {
+    items.push(`${path.relative(projectRoot, link)} (symlink)`);
   }
 
   // .synapsync directory
@@ -146,39 +141,51 @@ function collectItemsToRemove(projectRoot: string, synapSyncDir: string): string
 // Removal Functions
 // ============================================
 
-function removeProviderContent(projectRoot: string): number {
-  let removed = 0;
+/**
+ * Find all symlinks under provider directories that point to .synapsync/
+ */
+function findSynapSyncSymlinks(projectRoot: string, synapSyncDir: string): string[] {
+  const symlinks: string[] = [];
+  const resolvedSynapSync = path.resolve(synapSyncDir);
 
   for (const provider of SUPPORTED_PROVIDERS) {
     const providerPaths = PROVIDER_PATHS[provider];
-
     for (const type of COGNITIVE_TYPES) {
       const typePath = path.join(projectRoot, providerPaths[type]);
-      if (fs.existsSync(typePath)) {
-        fs.rmSync(typePath, { recursive: true, force: true });
-        logger.log(`  ${pc.red('✗')} Removed ${path.relative(projectRoot, typePath)}/`);
-        removed++;
-      }
-    }
+      if (!fs.existsSync(typePath)) continue;
 
-    // Remove empty provider directory
-    const providerDir = path.join(projectRoot, providerPaths[COGNITIVE_TYPES[0]], '..');
-    const resolvedDir = path.resolve(providerDir);
-    if (fs.existsSync(resolvedDir)) {
       try {
-        const remaining = fs.readdirSync(resolvedDir);
-        if (remaining.length === 0) {
-          fs.rmdirSync(resolvedDir);
-          logger.log(`  ${pc.red('✗')} Removed empty ${path.relative(projectRoot, resolvedDir)}/`);
-          removed++;
+        const entries = fs.readdirSync(typePath, { withFileTypes: true });
+        for (const entry of entries) {
+          const fullPath = path.join(typePath, entry.name);
+          if (entry.isSymbolicLink()) {
+            const target = path.resolve(typePath, fs.readlinkSync(fullPath));
+            if (target.startsWith(resolvedSynapSync)) {
+              symlinks.push(fullPath);
+            }
+          }
         }
       } catch {
-        // Directory not empty or other error, skip
+        // Cannot read directory, skip
       }
     }
   }
 
-  return removed;
+  return symlinks;
+}
+
+/**
+ * Remove only symlinks that point to .synapsync/
+ */
+function removeProviderSymlinks(projectRoot: string, synapSyncDir: string): number {
+  const symlinks = findSynapSyncSymlinks(projectRoot, synapSyncDir);
+
+  for (const link of symlinks) {
+    fs.unlinkSync(link);
+    logger.log(`  ${pc.red('✗')} Removed symlink ${path.relative(projectRoot, link)}`);
+  }
+
+  return symlinks.length;
 }
 
 function cleanGitignore(projectRoot: string): boolean {

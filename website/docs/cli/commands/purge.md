@@ -21,12 +21,14 @@ synapsync purge [options]
 
 ## What Gets Removed
 
-| Item | Path |
-|------|------|
+| Item | Description |
+|------|-------------|
+| Symlinks to `.synapsync/` | Only symlinks in provider directories (`.claude/`, `.cursor/`, etc.) that point to `.synapsync/` |
 | Storage directory | `.synapsync/` |
 | Configuration | `synapsync.config.yaml` |
-| Provider content | `.claude/`, `.cursor/`, `.openai/`, etc. |
-| Gitignore entries | SynapSync lines in `.gitignore` |
+| Gitignore entries | SynapSync-specific lines in `.gitignore` |
+
+> **Note:** Provider directories themselves (`.claude/`, `.cursor/`, `.openai/`, etc.) are **not** removed. Only symlinks created by SynapSync are cleaned up, preserving any content you added independently.
 
 ## Examples
 
@@ -39,8 +41,8 @@ synapsync purge
 ```
   ! This will completely remove SynapSync from your project:
 
-    ✗ .claude/skills/
-    ✗ .claude/agents/
+    ✗ .claude/skills/code-reviewer.md (symlink)
+    ✗ .cursor/skills/react-patterns.md (symlink)
     ✗ .synapsync/
     ✗ synapsync.config.yaml
     ✗ .gitignore (SynapSync entries)
@@ -55,8 +57,8 @@ synapsync purge --force
 ```
 
 ```
-  ✗ Removed .claude/skills/
-  ✗ Removed .claude/agents/
+  ✗ Removed symlink .claude/skills/code-reviewer.md
+  ✗ Removed symlink .cursor/skills/react-patterns.md
   ✗ Removed .synapsync/
   ✗ Removed synapsync.config.yaml
   ✗ Cleaned SynapSync entries from .gitignore
@@ -67,6 +69,6 @@ synapsync purge --force
 ## Notes
 
 - Without `--force`, the command shows a preview of what will be removed
-- Provider directories are only removed if they become empty after cleanup
+- Only symlinks pointing to `.synapsync/` are removed — your own provider files are preserved
 - The `.gitignore` file is preserved; only SynapSync-specific entries are removed
 - This action is irreversible — all installed cognitives and configuration will be lost
