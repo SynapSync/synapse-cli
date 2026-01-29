@@ -9,7 +9,6 @@ import * as path from 'path';
 import type {
   SymlinkCreateResult,
   ProviderSyncResult,
-  SymlinkError,
   SymlinkInfo,
   SymlinkOptions,
   CognitiveSymlinkMapping,
@@ -104,7 +103,7 @@ export class SymlinkManager {
     for (const link of existingLinks) {
       const key = `${link.cognitiveType}/${link.cognitiveName}`;
       if (!expectedNames.has(key)) {
-        if (!options.dryRun) {
+        if (options.dryRun !== true) {
           try {
             this.removeLink(link.path);
             result.removed.push(link.cognitiveName);
@@ -132,14 +131,14 @@ export class SymlinkManager {
       const key = `${mapping.cognitiveType}/${mapping.cognitiveName}`;
       const existing = existingMap.get(key);
 
-      if (existing !== undefined && existing.isValid && !options.force) {
+      if (existing !== undefined && existing.isValid && options.force !== true) {
         // Already exists and valid
         result.skipped.push(mapping.cognitiveName);
         continue;
       }
 
       // Create the link
-      if (!options.dryRun) {
+      if (options.dryRun !== true) {
         const createResult = this.createLink(mapping, options);
         result.created.push(createResult);
 
@@ -318,7 +317,7 @@ export class SymlinkManager {
 
       // Remove existing if force
       if (fs.existsSync(mapping.targetPath)) {
-        if (options.force) {
+        if (options.force === true) {
           this.removeLink(mapping.targetPath);
         } else {
           return {
@@ -353,7 +352,7 @@ export class SymlinkManager {
       };
     } catch (error) {
       // If symlink fails, try copy as fallback
-      if (method === 'symlink' && !options.copy) {
+      if (method === 'symlink' && options.copy !== true) {
         try {
           if (isFile) {
             fs.copyFileSync(mapping.sourcePath, mapping.targetPath);

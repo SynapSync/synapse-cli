@@ -64,16 +64,16 @@ export async function executeDoctorCommand(options: DoctorCommandOptions = {}): 
 
   // Run diagnostics
   const result = await doctor.diagnose({
-    checks: options.check,
-    verbose: options.verbose,
+    ...(options.check !== undefined && { checks: options.check }),
+    ...(options.verbose !== undefined && { verbose: options.verbose }),
   });
 
   // If fix mode, apply fixes
   let fixResult: FixResult | undefined;
   if (options.fix === true && result.failed > 0) {
     fixResult = await doctor.fix({
-      checks: options.check,
-      verbose: options.verbose,
+      ...(options.check !== undefined && { checks: options.check }),
+      ...(options.verbose !== undefined && { verbose: options.verbose }),
     });
   }
 

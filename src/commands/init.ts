@@ -64,7 +64,7 @@ export async function executeInitCommand(options: InitOptions = {}): Promise<Ini
   if (options.yes === true) {
     return initializeProject({
       name: options.name ?? path.basename(projectRoot),
-      description: options.description,
+      ...(options.description !== undefined && { description: options.description }),
       providers: options.providers ?? ['claude'],
     });
   }
@@ -323,10 +323,10 @@ export function registerInitCommand(program: Command): void {
     .option('-y, --yes', 'Skip prompts and use defaults')
     .action(async (options: { name?: string; description?: string; provider?: string[]; yes?: boolean }) => {
       await executeInitCommand({
-        name: options.name,
-        description: options.description,
-        providers: options.provider as SupportedProvider[] | undefined,
-        yes: options.yes,
+        ...(options.name !== undefined && { name: options.name }),
+        ...(options.description !== undefined && { description: options.description }),
+        ...(options.provider !== undefined && { providers: options.provider as SupportedProvider[] }),
+        ...(options.yes !== undefined && { yes: options.yes }),
       });
     });
 }

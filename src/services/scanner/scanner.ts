@@ -7,13 +7,12 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as crypto from 'crypto';
-import type { ScannedCognitive, ScanResult, ScanOptions, CognitiveMetadata } from './types.js';
+import type { ScannedCognitive, ScanResult, ScanOptions } from './types.js';
 import { parseFrontmatter, extractVersion, extractName } from './parser.js';
 import {
   COGNITIVE_TYPES,
   COGNITIVE_FILE_NAMES,
   COGNITIVE_FILE_EXTENSIONS,
-  CATEGORIES,
 } from '../../core/constants.js';
 import type { CognitiveType, Category } from '../../core/constants.js';
 import type { ManifestCognitive } from '../manifest/types.js';
@@ -48,7 +47,7 @@ export class CognitiveScanner {
         // Skip if filtering by category and this isn't included
         if (
           options.categories !== undefined &&
-          !options.categories.includes(category as Category)
+          !options.categories.includes(category)
         ) {
           continue;
         }
@@ -61,7 +60,7 @@ export class CognitiveScanner {
             const cognitive = this.scanCognitive(
               path.join(categoryDir, cognitiveDir),
               type,
-              category as Category
+              category
             );
             if (cognitive !== null) {
               cognitives.push(cognitive);

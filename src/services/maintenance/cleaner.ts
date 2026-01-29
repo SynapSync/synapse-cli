@@ -49,7 +49,7 @@ export class CleanerService {
     }
 
     // Default to cache if nothing specified
-    if (!options.cache && !options.orphans && !options.temp) {
+    if (options.cache !== true && options.orphans !== true && options.temp !== true) {
       options.cache = true;
     }
 

@@ -10,7 +10,7 @@ import type { Command } from 'commander';
 import pc from 'picocolors';
 import { ConfigManager } from '../services/config/manager.js';
 import { SyncEngine } from '../services/sync/engine.js';
-import type { SyncOptions, SyncResult, SyncAction } from '../services/sync/types.js';
+import type { SyncResult, SyncAction, SyncOptions } from '../services/sync/types.js';
 import type { ProviderSyncResult } from '../services/symlink/types.js';
 import { COGNITIVE_TYPES, CATEGORIES, SUPPORTED_PROVIDERS } from '../core/constants.js';
 import type { CognitiveType, Category, SupportedProvider } from '../core/constants.js';
@@ -38,7 +38,7 @@ interface SyncCommandOptions {
 /**
  * Execute the sync command
  */
-export async function executeSyncCommand(options: SyncCommandOptions): Promise<void> {
+export function executeSyncCommand(options: SyncCommandOptions): void {
   logger.line();
 
   // Check if project is initialized
@@ -72,16 +72,16 @@ export async function executeSyncCommand(options: SyncCommandOptions): Promise<v
   }
 
   // Perform sync
+  const syncOpts: SyncOptions = {};
+  if (options.dryRun !== undefined) syncOpts.dryRun = options.dryRun;
+  if (validatedOptions.types !== undefined) syncOpts.types = validatedOptions.types;
+  if (validatedOptions.categories !== undefined) syncOpts.categories = validatedOptions.categories;
+  if (validatedOptions.provider !== undefined) syncOpts.provider = validatedOptions.provider;
+  if (options.copy !== undefined) syncOpts.copy = options.copy;
+  if (options.force !== undefined) syncOpts.force = options.force;
+  if (options.verbose !== undefined) syncOpts.verbose = options.verbose;
   const result = syncEngine.sync(
-    {
-      dryRun: options.dryRun,
-      types: validatedOptions.types,
-      categories: validatedOptions.categories,
-      provider: validatedOptions.provider,
-      copy: options.copy,
-      force: options.force,
-      verbose: options.verbose,
-    },
+    syncOpts,
     options.json !== true
       ? (status) => {
           if (options.verbose === true) {
@@ -125,7 +125,7 @@ function validateOptions(options: SyncCommandOptions): ValidatedSyncOptions | nu
 
   // Validate category
   if (options.category !== undefined) {
-    if (!CATEGORIES.includes(options.category as Category)) {
+    if (!(CATEGORIES as readonly string[]).includes(options.category)) {
       logger.error(`Invalid category: ${options.category}`);
       logger.hint(`Valid categories: ${CATEGORIES.join(', ')}`);
       return null;
@@ -155,16 +155,16 @@ function displayResults(result: SyncResult, options: SyncCommandOptions): void {
   const hasProviderResults = result.providerResults !== undefined && result.providerResults.length > 0;
 
   // Check if there are any provider changes
-  const hasProviderChanges = hasProviderResults && result.providerResults!.some(
+  const hasProviderChanges = hasProviderResults && result.providerResults?.some(
     (pr) => pr.created.length > 0 || pr.removed.length > 0
   );
 
-  if (!hasManifestChanges && !hasProviderChanges) {
+  if (!hasManifestChanges && hasProviderChanges !== true) {
     logger.log(`  ${pc.green('✓')} Everything is in sync`);
     logger.line();
     logger.log(`  ${pc.dim(`${result.total} cognitives in manifest`)}`);
-    if (hasProviderResults) {
-      const syncedProviders = result.providerResults!.filter((pr) => pr.skipped.length > 0 || pr.created.length > 0);
+    if (hasProviderResults && result.providerResults !== undefined) {
+      const syncedProviders = result.providerResults.filter((pr) => pr.skipped.length > 0 || pr.created.length > 0);
       if (syncedProviders.length > 0) {
         logger.log(`  ${pc.dim(`${syncedProviders.length} provider(s) synced`)}`);
       }
@@ -210,7 +210,7 @@ function displayResults(result: SyncResult, options: SyncCommandOptions): void {
     logger.bold('  Provider sync:');
     logger.line();
 
-    for (const providerResult of result.providerResults!) {
+    for (const providerResult of result.providerResults ?? []) {
       displayProviderResult(providerResult, options);
     }
   }
@@ -296,7 +296,7 @@ function displayProviderResult(result: ProviderSyncResult, options: SyncCommandO
 /**
  * Execute the sync status subcommand
  */
-export async function executeSyncStatusCommand(options: { json?: boolean }): Promise<void> {
+export function executeSyncStatusCommand(options: { json?: boolean }): void {
   logger.line();
 
   // Check if project is initialized
@@ -416,8 +416,8 @@ export function registerSyncCommand(program: Command): void {
     .option('-f, --force', 'Force sync even if already synced')
     .option('-v, --verbose', 'Show detailed output')
     .option('--json', 'Output as JSON')
-    .action(async (options: SyncCommandOptions) => {
-      await executeSyncCommand(options);
+    .action((options: SyncCommandOptions) => {
+      executeSyncCommand(options);
     });
 
   // Status subcommand
@@ -425,7 +425,7 @@ export function registerSyncCommand(program: Command): void {
     .command('status')
     .description('Show sync status between filesystem, manifest, and providers')
     .option('--json', 'Output as JSON')
-    .action(async (options: { json?: boolean }) => {
-      await executeSyncStatusCommand(options);
+    .action((options: { json?: boolean }) => {
+      executeSyncStatusCommand(options);
     });
 }

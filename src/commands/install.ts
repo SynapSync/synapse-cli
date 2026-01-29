@@ -12,13 +12,11 @@ import { RegistryClient, CognitiveNotFoundError, RegistryError } from '../servic
 import { ConfigManager } from '../services/config/manager.js';
 import { SyncEngine } from '../services/sync/engine.js';
 import {
-  DEFAULT_SYNAPSYNC_DIR,
   COGNITIVE_TYPES,
-  CATEGORIES,
   COGNITIVE_FILE_NAMES,
 } from '../core/constants.js';
 import type { CognitiveType, Category } from '../core/constants.js';
-import type { InstalledCognitive, CognitiveManifest, RegistryCognitiveEntry } from '../types/index.js';
+import type { InstalledCognitive, CognitiveManifest } from '../types/index.js';
 import { logger } from '../utils/logger.js';
 
 // ============================================
@@ -74,10 +72,12 @@ export async function executeInstallCommand(
         success = await installFromRegistry(parsedSource.name, options, configManager);
         break;
       case 'local':
-        success = await installFromLocal(parsedSource.path!, options, configManager);
+        if (parsedSource.path !== undefined) {
+          success = installFromLocal(parsedSource.path, options, configManager);
+        }
         break;
       case 'github':
-        success = await installFromGitHub(parsedSource, options, configManager);
+        success = installFromGitHub(parsedSource, options, configManager);
         break;
     }
 
@@ -88,7 +88,7 @@ export async function executeInstallCommand(
       const projectRoot = configManager.getProjectRoot();
       const config = configManager.getConfig();
       const syncEngine = new SyncEngine(synapSyncDir, projectRoot, config);
-      const result = syncEngine.sync({ force: options.force });
+      const result = syncEngine.sync({ force: options.force ?? false });
 
       if (result.providerResults && result.providerResults.length > 0) {
         for (const pr of result.providerResults) {
@@ -199,7 +199,7 @@ async function installFromRegistry(
   const assets = await downloadAssets(client, name, manifest);
 
   // Save files
-  await saveCognitive(targetDir, manifest, downloaded.content, assets);
+  saveCognitive(targetDir, manifest, downloaded.content, assets);
 
   // Update manifest.json
   updateProjectManifest(configManager, manifest, 'registry');
@@ -222,7 +222,7 @@ async function installFromRegistry(
 async function downloadAssets(
   client: RegistryClient,
   name: string,
-  manifest: CognitiveManifest
+  _manifest: CognitiveManifest
 ): Promise<Map<string, string>> {
   const assets = new Map<string, string>();
 
@@ -252,11 +252,11 @@ async function downloadAssets(
 // Local Installation
 // ============================================
 
-async function installFromLocal(
+function installFromLocal(
   sourcePath: string,
   options: InstallCommandOptions,
   configManager: ConfigManager
-): Promise<boolean> {
+): boolean {
   const absolutePath = path.resolve(process.cwd(), sourcePath);
 
   if (!fs.existsSync(absolutePath)) {
@@ -284,20 +284,20 @@ async function installFromLocal(
 
   const content = fs.readFileSync(filePath, 'utf-8');
   const metadata = parseMetadata(content);
-  const name = (metadata.name as string) ?? path.basename(absolutePath);
-  const category = (options.category as Category) ?? (metadata.category as Category) ?? 'general';
+  const name = (metadata['name'] as string) ?? path.basename(absolutePath);
+  const category = (options.category as Category) ?? (metadata['category'] as Category) ?? 'general';
 
   // Create manifest from metadata - use original filename
   const manifest: CognitiveManifest = {
     name,
     type: cognitiveType,
-    version: (metadata.version as string) ?? '1.0.0',
-    description: (metadata.description as string) ?? '',
-    author: (metadata.author as string) ?? 'local',
-    license: (metadata.license as string) ?? 'MIT',
+    version: (metadata['version'] as string) ?? '1.0.0',
+    description: (metadata['description'] as string) ?? '',
+    author: (metadata['author'] as string) ?? 'local',
+    license: (metadata['license'] as string) ?? 'MIT',
     category,
-    tags: (metadata.tags as string[]) ?? [],
-    providers: (metadata.providers as string[]) ?? [],
+    tags: (metadata['tags'] as string[]) ?? [],
+    providers: ((metadata['providers'] as string[]) ?? []) as CognitiveManifest['providers'],
     file: fileName, // Use the original filename
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
@@ -325,7 +325,7 @@ async function installFromLocal(
   }
 
   // Save files
-  await saveCognitive(targetDir, manifest, content, assets);
+  saveCognitive(targetDir, manifest, content, assets);
 
   // Update manifest.json
   updateProjectManifest(configManager, manifest, 'local');
@@ -377,7 +377,7 @@ function detectCognitiveType(dirPath: string): { type: CognitiveType; fileName: 
     if (file.endsWith('.md') && !file.startsWith('.')) {
       const content = fs.readFileSync(path.join(dirPath, file), 'utf-8');
       const metadata = parseMetadata(content);
-      const detectedType = (metadata.type as CognitiveType) ?? 'skill'; // Default to skill
+      const detectedType = (metadata['type'] as CognitiveType) ?? 'skill'; // Default to skill
       if (COGNITIVE_TYPES.includes(detectedType)) {
         return { type: detectedType, fileName: file };
       }
@@ -390,7 +390,7 @@ function detectCognitiveType(dirPath: string): { type: CognitiveType; fileName: 
 function parseMetadata(content: string): Record<string, unknown> {
   // Parse YAML frontmatter
   const match = content.match(/^---\n([\s\S]*?)\n---/);
-  if (match === null || match[1] === undefined) {
+  if (match?.[1] === undefined) {
     return {};
   }
 
@@ -427,11 +427,11 @@ function parseMetadata(content: string): Record<string, unknown> {
 // GitHub Installation
 // ============================================
 
-async function installFromGitHub(
-  source: InstallSource,
-  options: InstallCommandOptions,
-  configManager: ConfigManager
-): Promise<boolean> {
+function installFromGitHub(
+  _source: InstallSource,
+  _options: InstallCommandOptions,
+  _configManager: ConfigManager
+): boolean {
   // For now, we'll use raw GitHub URLs similar to registry
   // This is a simplified implementation
   logger.line();
@@ -454,12 +454,12 @@ function getTargetDir(
   return path.join(synapSyncDir, `${type}s`, category, name);
 }
 
-async function saveCognitive(
+function saveCognitive(
   targetDir: string,
   manifest: CognitiveManifest,
   content: string,
   assets: Map<string, string>
-): Promise<void> {
+): void {
   // Create directory structure
   fs.mkdirSync(targetDir, { recursive: true });
 
@@ -494,7 +494,7 @@ function updateProjectManifest(
 
   if (fs.existsSync(manifestPath)) {
     const content = fs.readFileSync(manifestPath, 'utf-8');
-    projectManifest = JSON.parse(content);
+    projectManifest = JSON.parse(content) as typeof projectManifest;
   } else {
     projectManifest = {
       version: '1.0.0',
@@ -505,15 +505,19 @@ function updateProjectManifest(
   }
 
   // Add or update cognitive entry
-  projectManifest.cognitives[manifest.name] = {
+  const mappedSource = source === 'github' ? 'git' as const : source;
+  const entry: InstalledCognitive = {
     name: manifest.name,
     type: manifest.type,
     category: manifest.category,
     version: manifest.version,
     installedAt: new Date(),
-    source,
-    sourceUrl: source === 'registry' ? 'https://github.com/SynapSync/synapse-registry' : undefined,
+    source: mappedSource,
   };
+  if (source === 'registry') {
+    entry.sourceUrl = 'https://github.com/SynapSync/synapse-registry';
+  }
+  projectManifest.cognitives[manifest.name] = entry;
 
   projectManifest.lastUpdated = new Date().toISOString();
 

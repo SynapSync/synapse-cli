@@ -20,18 +20,16 @@ import { SymlinkManager } from '../symlink/manager.js';
 import type { ScannedCognitive } from '../scanner/types.js';
 import type { ProviderSyncResult } from '../symlink/types.js';
 import type { SupportedProvider } from '../../core/constants.js';
-import type { ProjectConfig, ProviderSyncConfig } from '../config/schema.js';
+import type { ProjectConfig } from '../config/schema.js';
 
 export class SyncEngine {
   private scanner: CognitiveScanner;
   private manifest: ManifestManager;
   private symlink: SymlinkManager;
-  private synapSyncDir: string;
   private projectRoot: string;
   private config: ProjectConfig | null;
 
   constructor(synapSyncDir: string, projectRoot?: string, config?: ProjectConfig) {
-    this.synapSyncDir = synapSyncDir;
     this.projectRoot = projectRoot ?? path.dirname(synapSyncDir);
     this.config = config ?? null;
     this.scanner = new CognitiveScanner(synapSyncDir);
@@ -55,10 +53,10 @@ export class SyncEngine {
         message: 'Scanning filesystem for cognitives...',
       });
 
-      const scanned = this.scanner.scan({
-        types: options.types,
-        categories: options.categories,
-      });
+      const scanOpts: import('../scanner/types.js').ScanOptions = {};
+      if (options.types !== undefined) scanOpts.types = options.types;
+      if (options.categories !== undefined) scanOpts.categories = options.categories;
+      const scanned = this.scanner.scan(scanOpts);
 
       onProgress?.({
         phase: 'scanning',
@@ -106,7 +104,7 @@ export class SyncEngine {
       });
 
       // Phase 3: Apply manifest changes (unless dry run)
-      if (!options.dryRun && actions.length > 0) {
+      if (options.dryRun !== true && actions.length > 0) {
         onProgress?.({
           phase: 'reconciling',
           message: 'Applying changes to manifest...',
@@ -145,7 +143,7 @@ export class SyncEngine {
       }
 
       // Phase 4: Provider sync (unless manifestOnly)
-      if (!options.manifestOnly) {
+      if (options.manifestOnly !== true) {
         providerResults = this.syncProviders(scanned, options, onProgress);
 
         // Add provider errors to main errors
@@ -160,7 +158,7 @@ export class SyncEngine {
         }
 
         // Update provider sync state in manifest
-        if (!options.dryRun) {
+        if (options.dryRun !== true) {
           this.updateProviderSyncState(providerResults, scanned);
           this.manifest.save();
         }
@@ -168,12 +166,12 @@ export class SyncEngine {
 
       onProgress?.({
         phase: 'complete',
-        message: options.dryRun ? 'Dry run complete' : 'Sync complete',
+        message: options.dryRun === true ? 'Dry run complete' : 'Sync complete',
       });
 
       const duration = Date.now() - startTime;
 
-      return {
+      const result: SyncResult = {
         success: errors.length === 0,
         added: comparison.new.length,
         removed: comparison.removed.length,
@@ -183,15 +181,18 @@ export class SyncEngine {
         errors,
         actions,
         duration,
-        providerResults,
       };
+      if (providerResults !== undefined) {
+        result.providerResults = providerResults;
+      }
+      return result;
     } catch (error) {
       errors.push({
         message: error instanceof Error ? error.message : 'Unknown error',
         code: 'SCAN_FAILED',
       });
 
-      return {
+      const result: SyncResult = {
         success: false,
         added: 0,
         removed: 0,
@@ -201,8 +202,11 @@ export class SyncEngine {
         errors,
         actions,
         duration: Date.now() - startTime,
-        providerResults,
       };
+      if (providerResults !== undefined) {
+        result.providerResults = providerResults;
+      }
+      return result;
     }
   }
 
@@ -233,11 +237,11 @@ export class SyncEngine {
         current: provider,
       });
 
-      const result = this.symlink.syncProvider(provider, cognitives, {
-        copy: options.copy,
-        dryRun: options.dryRun,
-        force: options.force,
-      });
+      const symlinkOpts: import('../symlink/types.js').SymlinkOptions = {};
+      if (options.copy !== undefined) symlinkOpts.copy = options.copy;
+      if (options.dryRun !== undefined) symlinkOpts.dryRun = options.dryRun;
+      if (options.force !== undefined) symlinkOpts.force = options.force;
+      const result = this.symlink.syncProvider(provider, cognitives, symlinkOpts);
 
       results.push(result);
     }
@@ -258,7 +262,7 @@ export class SyncEngine {
     const enabled: SupportedProvider[] = [];
 
     for (const [name, config] of Object.entries(providers)) {
-      const providerConfig = config as ProviderSyncConfig;
+      const providerConfig = config;
       if (providerConfig.enabled === true) {
         // If filtering by provider, only include that one
         if (filterProvider !== undefined && filterProvider !== name) {

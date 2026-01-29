@@ -86,7 +86,7 @@ function getProjectStatus(): ProjectStatus {
   // Get last sync from manifest
   const lastSync = getLastSyncTime(storagePath);
 
-  return {
+  const status: ProjectStatus = {
     initialized: true,
     projectName: config.name,
     projectRoot,
@@ -94,8 +94,11 @@ function getProjectStatus(): ProjectStatus {
     storagePath,
     cognitives,
     providers,
-    lastSync,
   };
+  if (lastSync !== undefined) {
+    status.lastSync = lastSync;
+  }
+  return status;
 }
 
 function createEmptyCognitiveCount(): Record<CognitiveType, number> {

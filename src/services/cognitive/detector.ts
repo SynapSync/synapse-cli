@@ -91,14 +91,15 @@ function parseGitHubSource(source: string): InstallSource {
   const repo = parts[1];
   const assetPath = parts.length > 2 ? parts.slice(2).join('/') : undefined;
 
-  return {
+  const result: InstallSource = {
     type: 'github',
     value: source,
-    owner,
-    repo,
-    path: assetPath,
-    ref,
   };
+  if (owner !== undefined) result.owner = owner;
+  if (repo !== undefined) result.repo = repo;
+  if (assetPath !== undefined) result.path = assetPath;
+  if (ref !== undefined) result.ref = ref;
+  return result;
 }
 
 /**
@@ -126,14 +127,15 @@ function parseGitHubUrl(url: string): InstallSource {
     }
   }
 
-  return {
+  const result: InstallSource = {
     type: 'github',
     value: url,
-    owner,
-    repo,
-    path: assetPath,
-    ref,
   };
+  if (owner !== undefined) result.owner = owner;
+  if (repo !== undefined) result.repo = repo;
+  if (assetPath !== undefined) result.path = assetPath;
+  if (ref !== undefined) result.ref = ref;
+  return result;
 }
 
 // ============================================
@@ -247,7 +249,7 @@ export async function detectFromGitHub(source: InstallSource): Promise<FileDetec
       return { found: false, type: null, fileName: null, filePath: null };
     }
 
-    const contents: Array<{ name: string; type: string; path: string }> = await response.json();
+    const contents = await response.json() as Array<{ name: string; type: string; path: string }>;
 
     // Check if response is an array (directory listing)
     if (!Array.isArray(contents)) {

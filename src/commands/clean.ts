@@ -31,7 +31,7 @@ interface CleanCommandOptions {
 /**
  * Execute the clean command
  */
-export async function executeCleanCommand(options: CleanCommandOptions = {}): Promise<void> {
+export function executeCleanCommand(options: CleanCommandOptions = {}): void {
   logger.line();
 
   // Check if project is initialized
@@ -66,11 +66,11 @@ export async function executeCleanCommand(options: CleanCommandOptions = {}): Pr
 
   // Run clean
   const result = cleaner.clean({
-    cache: options.cache,
-    orphans: options.orphans,
-    temp: options.temp,
-    all: options.all,
-    dryRun: options.dryRun,
+    cache: options.cache ?? false,
+    orphans: options.orphans ?? false,
+    temp: options.temp ?? false,
+    all: options.all ?? false,
+    dryRun: options.dryRun ?? false,
   });
 
   // JSON output
@@ -104,9 +104,7 @@ export async function executeCleanCommand(options: CleanCommandOptions = {}): Pr
 // Display Functions
 // ============================================
 
-function displayResults(result: CleanResult, options: CleanCommandOptions): void {
-  const verb = options.dryRun === true ? 'Would clean' : 'Cleaned';
-
+function displayResults(result: CleanResult, _options: CleanCommandOptions): void {
   // Group by type
   const byType = groupByType(result.cleaned);
 
@@ -195,7 +193,7 @@ export function registerCleanCommand(program: Command): void {
     .option('-a, --all', 'Clean everything')
     .option('-n, --dry-run', 'Preview what would be cleaned')
     .option('--json', 'Output as JSON')
-    .action(async (options: CleanCommandOptions) => {
-      await executeCleanCommand(options);
+    .action((options: CleanCommandOptions) => {
+      executeCleanCommand(options);
     });
 }

@@ -30,10 +30,10 @@ SynapSync CLI allows you to manage and synchronize AI cognitives across differen
 
 ```bash
 # Install globally
-npm install -g synapsync
+npm install -g @synapsync/cli
 
 # Or use npx
-npx synapsync
+npx @synapsync/cli
 ```
 
 ### Requirements
@@ -292,7 +292,7 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 ## Links
 
-- [Documentation](https://docs.synapsync.dev)
+- [Documentation](https://synapsync.github.io/synapse-docs/)
 - [Registry](https://registry.synapsync.dev)
 - [GitHub](https://github.com/synapsync/cli)
 - [Issues](https://github.com/synapsync/cli/issues)

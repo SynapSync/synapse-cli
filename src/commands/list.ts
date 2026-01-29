@@ -138,10 +138,8 @@ function displayRemoteCognitives(cognitives: RegistryCognitiveEntry[]): void {
   // Group by type
   const grouped: Record<string, RegistryCognitiveEntry[]> = {};
   for (const cognitive of cognitives) {
-    if (grouped[cognitive.type] === undefined) {
-      grouped[cognitive.type] = [];
-    }
-    grouped[cognitive.type].push(cognitive);
+    grouped[cognitive.type] ??= [];
+    (grouped[cognitive.type] as RegistryCognitiveEntry[]).push(cognitive);
   }
 
   for (const [type, items] of Object.entries(grouped)) {
@@ -171,7 +169,7 @@ function displayRemoteCognitives(cognitives: RegistryCognitiveEntry[]): void {
       logger.log(`      ${details.join(' · ')}`);
 
       // Tags
-      if (cognitive.tags && cognitive.tags.length > 0) {
+      if (cognitive.tags !== undefined && cognitive.tags.length > 0) {
         const tagsStr = cognitive.tags.slice(0, 5).join(' ');
         logger.log(`      ${pc.cyan(tagsStr)}`);
       }
@@ -210,7 +208,7 @@ function validateOptions(options: ListCommandOptions): ValidatedOptions | null {
 
   // Validate category
   if (options.category !== undefined) {
-    if (!CATEGORIES.includes(options.category as Category)) {
+    if (!(CATEGORIES as readonly string[]).includes(options.category)) {
       logger.error(`Invalid category: ${options.category}`);
       logger.hint(`Valid categories: ${CATEGORIES.join(', ')}`);
       return null;
@@ -316,10 +314,8 @@ function groupByType(cognitives: InstalledCognitive[]): Record<string, Installed
   const grouped: Record<string, InstalledCognitive[]> = {};
 
   for (const cognitive of cognitives) {
-    if (grouped[cognitive.type] === undefined) {
-      grouped[cognitive.type] = [];
-    }
-    grouped[cognitive.type].push(cognitive);
+    grouped[cognitive.type] ??= [];
+    (grouped[cognitive.type] as InstalledCognitive[]).push(cognitive);
   }
 
   return grouped;

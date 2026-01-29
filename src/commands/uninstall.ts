@@ -35,10 +35,10 @@ interface ProjectManifest {
 /**
  * Execute the uninstall command
  */
-export async function executeUninstallCommand(
+export function executeUninstallCommand(
   name: string,
   options: UninstallCommandOptions
-): Promise<void> {
+): void {
   logger.line();
 
   // Check if project is initialized
@@ -158,7 +158,7 @@ export function registerUninstallCommand(program: Command): void {
     .description('Uninstall a cognitive')
     .option('-f, --force', 'Skip confirmation')
     .option('--keep-files', 'Remove from manifest but keep files')
-    .action(async (name: string, options: UninstallCommandOptions) => {
-      await executeUninstallCommand(name, options);
+    .action((name: string, options: UninstallCommandOptions) => {
+      executeUninstallCommand(name, options);
     });
 }

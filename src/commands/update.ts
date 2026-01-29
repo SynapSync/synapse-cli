@@ -13,7 +13,7 @@ import { ManifestManager } from '../services/manifest/manager.js';
 import { UpdateChecker } from '../services/maintenance/update-checker.js';
 import { RegistryClient } from '../services/registry/client.js';
 import { SyncEngine } from '../services/sync/engine.js';
-import type { UpdateInfo, UpdateCheckResult } from '../services/maintenance/types.js';
+import type { UpdateCheckResult } from '../services/maintenance/types.js';
 import { COGNITIVE_FILE_NAMES } from '../core/constants.js';
 import { logger } from '../utils/logger.js';
 
@@ -81,7 +81,7 @@ export async function executeUpdateCommand(
   // Check for updates
   let checkResult: UpdateCheckResult;
 
-  if (cognitiveName !== undefined && !options.all) {
+  if (cognitiveName !== undefined && options.all !== true) {
     // Check specific cognitive
     const cognitive = installed.find((c) => c.name === cognitiveName);
     if (cognitive === undefined) {
@@ -173,7 +173,6 @@ export async function executeUpdateCommand(
       // Update manifest entry
       manifest.updateCognitive(update.name, {
         version: update.latestVersion,
-        hash: undefined, // Will be recalculated on next sync
       });
 
       updated.push(update.name);

@@ -17,7 +17,7 @@ import { ManifestManager } from '../manifest/manager.js';
 import { CognitiveScanner } from '../scanner/scanner.js';
 import { SymlinkManager } from '../symlink/manager.js';
 import { RegistryClient } from '../registry/client.js';
-import { SUPPORTED_PROVIDERS, COGNITIVE_TYPES } from '../../core/constants.js';
+import { COGNITIVE_TYPES } from '../../core/constants.js';
 import type { SupportedProvider } from '../../core/constants.js';
 
 export class DoctorService {
@@ -51,7 +51,8 @@ export class DoctorService {
     // Filter by requested checks
     let filteredChecks = checks;
     if (options.checks !== undefined && options.checks.length > 0) {
-      filteredChecks = checks.filter((c) => options.checks!.includes(c.id));
+      const requestedChecks = options.checks;
+      filteredChecks = checks.filter((c) => requestedChecks.includes(c.id));
     }
 
     const result: DiagnosticResult = {
@@ -86,7 +87,7 @@ export class DoctorService {
     for (const check of diagnosis.checks) {
       if (check.status === 'fail' && check.fixable) {
         try {
-          await this.fixCheck(check);
+          this.fixCheck(check);
           result.fixed.push(check.id);
         } catch (error) {
           result.failed.push({
@@ -437,26 +438,26 @@ export class DoctorService {
   // Fix Methods
   // ============================================
 
-  private async fixCheck(check: DiagnosticCheck): Promise<void> {
+  private fixCheck(check: DiagnosticCheck): void {
     switch (check.id) {
       case 'synapsync-dir':
-        await this.fixSynapSyncDir();
+        this.fixSynapSyncDir();
         break;
 
       case 'manifest-exists':
       case 'manifest-consistency':
-        await this.fixManifest();
+        this.fixManifest();
         break;
 
       default:
         if (check.id.startsWith('symlinks-')) {
           const provider = check.id.replace('symlinks-', '') as SupportedProvider;
-          await this.fixSymlinks(provider);
+          this.fixSymlinks(provider);
         }
     }
   }
 
-  private async fixSynapSyncDir(): Promise<void> {
+  private fixSynapSyncDir(): void {
     if (!fs.existsSync(this.synapSyncDir)) {
       fs.mkdirSync(this.synapSyncDir, { recursive: true });
     }
@@ -470,9 +471,9 @@ export class DoctorService {
     }
   }
 
-  private async fixManifest(): Promise<void> {
+  private fixManifest(): void {
     // Ensure directory exists
-    await this.fixSynapSyncDir();
+    this.fixSynapSyncDir();
 
     // Regenerate manifest from filesystem
     const scanner = new CognitiveScanner(this.synapSyncDir);
@@ -486,7 +487,7 @@ export class DoctorService {
     manifest.save();
   }
 
-  private async fixSymlinks(provider: SupportedProvider): Promise<void> {
+  private fixSymlinks(provider: SupportedProvider): void {
     const symlink = new SymlinkManager(this.projectRoot, this.synapSyncDir);
     symlink.cleanProvider(provider);
   }

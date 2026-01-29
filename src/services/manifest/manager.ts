@@ -174,14 +174,17 @@ export class ManifestManager {
     for (const cognitive of result.updated) {
       const existing = this.manifest.cognitives[cognitive.name];
       if (existing !== undefined) {
-        this.manifest.cognitives[cognitive.name] = {
+        const updated: ManifestCognitive = {
           ...existing,
           ...cognitive,
           // Keep original installation info
           installedAt: existing.installedAt,
           source: existing.source,
-          sourceUrl: existing.sourceUrl,
         };
+        if (existing.sourceUrl !== undefined) {
+          updated.sourceUrl = existing.sourceUrl;
+        }
+        this.manifest.cognitives[cognitive.name] = updated;
       }
     }
   }

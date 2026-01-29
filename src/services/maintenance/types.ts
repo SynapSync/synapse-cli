@@ -4,7 +4,7 @@
  * Type definitions for update, doctor, and clean services
  */
 
-import type { CognitiveType, Category, SupportedProvider } from '../../core/constants.js';
+import type { CognitiveType, Category } from '../../core/constants.js';
 
 // ============================================
 // Update Types

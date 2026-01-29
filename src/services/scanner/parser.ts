@@ -13,7 +13,7 @@ export function parseFrontmatter(content: string): CognitiveMetadata {
   // Match YAML frontmatter between ---
   const match = content.match(/^---\n([\s\S]*?)\n---/);
 
-  if (match === null || match[1] === undefined) {
+  if (match?.[1] === undefined) {
     return {};
   }
 
@@ -123,7 +123,7 @@ export function extractVersion(metadata: CognitiveMetadata, content: string): st
 
   // Try to find version in content
   const versionMatch = content.match(/version:\s*['"]?([0-9]+\.[0-9]+\.[0-9]+)['"]?/i);
-  if (versionMatch !== null && versionMatch[1] !== undefined) {
+  if (versionMatch?.[1] !== undefined) {
     return versionMatch[1];
   }
 
@@ -145,7 +145,7 @@ export function extractName(
 
   // Try to find name in content (# Title)
   const titleMatch = content.match(/^#\s+(.+)$/m);
-  if (titleMatch !== null && titleMatch[1] !== undefined) {
+  if (titleMatch?.[1] !== undefined) {
     // Convert title to kebab-case
     return titleMatch[1]
       .toLowerCase()

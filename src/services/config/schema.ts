@@ -71,9 +71,8 @@ export const DEFAULT_SYNC_CONFIG: SyncConfig = {
 };
 
 export function createDefaultConfig(name: string, description?: string): ProjectConfig {
-  return {
+  const config: ProjectConfig = {
     name,
-    description,
     version: '1.0.0',
     cli: { ...DEFAULT_CLI_CONFIG },
     storage: { ...DEFAULT_STORAGE_CONFIG },
@@ -82,6 +81,10 @@ export function createDefaultConfig(name: string, description?: string): Project
       providers: JSON.parse(JSON.stringify(DEFAULT_SYNC_CONFIG.providers)) as SyncConfig['providers'],
     },
   };
+  if (description !== undefined) {
+    config.description = description;
+  }
+  return config;
 }
 
 // ============================================

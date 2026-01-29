@@ -4,7 +4,7 @@
  * Checks for available updates to installed cognitives
  */
 
-import type { UpdateInfo, UpdateCheckResult, UpdateError } from './types.js';
+import type { UpdateInfo, UpdateCheckResult } from './types.js';
 import type { ManifestCognitive } from '../manifest/types.js';
 import { RegistryClient } from '../registry/client.js';
 
@@ -92,13 +92,17 @@ export class UpdateChecker {
       return v
         .replace(/^v/, '')
         .split('.')
-        .map((n) => parseInt(n, 10) || 0);
+        .map((n) => {
+          const num = parseInt(n, 10);
+          return Number.isNaN(num) ? 0 : num;
+        });
     };
 
     const aParts = parseVersion(a);
     const bParts = parseVersion(b);
 
-    for (let i = 0; i < Math.max(aParts.length, bParts.length); i++) {
+    const maxLen = Math.max(aParts.length, bParts.length);
+    for (let i = 0; i < maxLen; i++) {
       const aNum = aParts[i] ?? 0;
       const bNum = bParts[i] ?? 0;
 
