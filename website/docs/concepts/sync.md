@@ -121,10 +121,7 @@ Creates file copies instead of symlinks. Downsides:
 
 ## Best Practices
 
-1. **Use `--sync` with install**
-   ```bash
-   synapsync add code-reviewer --sync
-   ```
+1. **Sync happens automatically** when adding cognitives with `synapsync add`
 
 2. **Check status regularly**
    ```bash

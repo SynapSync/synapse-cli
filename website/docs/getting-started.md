@@ -63,21 +63,7 @@ Install one:
 synapsync add code-reviewer
 ```
 
-Install and sync in one step:
-
-```bash
-synapsync add code-reviewer --sync
-```
-
-## Sync to Providers
-
-If you didn't use `--sync`, run:
-
-```bash
-synapsync sync
-```
-
-Your cognitive is now available in your AI tools.
+Your cognitive is automatically synced to your configured providers.
 
 ## Verify Setup
 

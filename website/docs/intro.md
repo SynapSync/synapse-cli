@@ -29,7 +29,7 @@ npm install -g @synapsync/cli
 synapsync init
 
 # Add a cognitive from the registry
-synapsync add code-reviewer --sync
+synapsync add code-reviewer
 
 # Done! The cognitive is now available in your AI tools
 ```

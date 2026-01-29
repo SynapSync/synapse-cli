@@ -321,8 +321,6 @@ registerInteractiveCommand(
         options['category'] = parts[++i] ?? '';
       } else if (part === '--force' || part === '-f') {
         options['force'] = true;
-      } else if (part === '--sync' || part === '-s') {
-        options['sync'] = true;
       } else if (!part.startsWith('-')) {
         source = part;
       }
@@ -342,11 +340,9 @@ registerInteractiveCommand(
       { flag: '-t, --type <type>', description: 'Cognitive type (skill, agent, etc.)' },
       { flag: '-c, --category <cat>', description: 'Category (overrides default)' },
       { flag: '-f, --force', description: 'Overwrite if already installed' },
-      { flag: '-s, --sync', description: 'Sync to providers after installation' },
     ],
     examples: [
       '/add skill-creator',
-      '/add skill-creator --sync',
       '/add ./my-skill',
       '/add github:user/repo',
       '/add skill-creator --force',

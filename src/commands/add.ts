@@ -27,7 +27,6 @@ interface AddCommandOptions {
   type?: string;
   category?: string;
   force?: boolean;
-  sync?: boolean;
 }
 
 interface InstallSource {
@@ -80,8 +79,8 @@ export async function executeAddCommand(
         break;
     }
 
-    // Auto-sync if --sync flag is provided and installation succeeded
-    if (success && options.sync === true) {
+    // Auto-sync to providers after successful add
+    if (success) {
       logger.log(`  ${pc.dim('Syncing to providers...')}`);
       const synapSyncDir = configManager.getSynapSyncDir();
       const projectRoot = configManager.getProjectRoot();
@@ -210,11 +209,6 @@ async function installFromRegistry(
   logger.log(`    ${pc.dim('Category:')} ${category}`);
   logger.log(`    ${pc.dim('Location:')} ${path.relative(process.cwd(), targetDir)}`);
 
-  if (options.sync !== true) {
-    logger.line();
-    logger.hint('Run synapsync sync to sync to your providers.');
-  }
-
   return true;
 }
 
@@ -336,11 +330,6 @@ function installFromLocal(
   logger.log(`    ${pc.dim('Category:')} ${category}`);
   logger.log(`    ${pc.dim('Source:')} local`);
   logger.log(`    ${pc.dim('Location:')} ${path.relative(process.cwd(), targetDir)}`);
-
-  if (options.sync !== true) {
-    logger.line();
-    logger.hint('Run synapsync sync to sync to your providers.');
-  }
 
   return true;
 }
@@ -538,7 +527,6 @@ export function registerAddCommand(program: Command): void {
     .option('-t, --type <type>', 'Cognitive type (skill, agent, prompt, workflow, tool)')
     .option('-c, --category <category>', 'Category (overrides default)')
     .option('-f, --force', 'Overwrite if already installed')
-    .option('-s, --sync', 'Sync to providers after installation')
     .action(async (source: string, options: AddCommandOptions) => {
       await executeAddCommand(source, options);
     });

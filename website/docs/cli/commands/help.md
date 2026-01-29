@@ -71,7 +71,6 @@ Options:
   -t, --type        Cognitive type
   -c, --category    Category for organization
   -f, --force       Overwrite if exists
-  -s, --sync        Sync to providers after install
   -h, --help        Display help
 ```
 

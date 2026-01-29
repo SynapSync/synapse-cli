@@ -46,7 +46,7 @@ Visit [registry.synapsync.dev](https://registry.synapsync.dev) to browse cogniti
 synapsync add code-reviewer
 
 # Install and sync
-synapsync add code-reviewer --sync
+synapsync add code-reviewer
 
 # Install with category
 synapsync add react-patterns --category frontend

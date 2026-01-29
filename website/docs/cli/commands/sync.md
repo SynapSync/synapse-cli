@@ -161,6 +161,6 @@ synapsync sync status --json
 
 ## Notes
 
-- Run after `install` if you didn't use `--sync`
+- The `add` command syncs automatically, but you can run `sync` manually after editing cognitives
 - Orphaned symlinks (pointing to deleted cognitives) are reported but not auto-removed
 - Use `synapsync clean --orphans` to remove orphaned symlinks

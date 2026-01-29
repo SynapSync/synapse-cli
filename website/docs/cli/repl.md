@@ -57,7 +57,7 @@ Search Results
   react-patterns    skill    frontend
   react-testing     skill    testing
 
-synapsync > /add react-patterns --sync
+synapsync > /add react-patterns
 
 ✓ Installed react-patterns v2.1.0
 ✓ Synced to claude
@@ -103,7 +103,7 @@ synapsync > /sync
 REPL commands support the same options as CLI commands:
 
 ```
-synapsync > /add code-reviewer --sync --force
+synapsync > /add code-reviewer --force
 synapsync > /list --type skill --json
 synapsync > /sync --dry-run
 ```
