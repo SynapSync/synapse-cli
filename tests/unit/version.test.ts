@@ -3,6 +3,8 @@
  */
 
 import { describe, it, expect } from 'vitest';
+import { readFileSync } from 'fs';
+import { resolve } from 'path';
 import { version } from '../../src/version.js';
 
 describe('version', () => {
@@ -10,7 +12,8 @@ describe('version', () => {
     expect(version).toMatch(/^\d+\.\d+\.\d+$/);
   });
 
-  it('should be 0.1.0 initially', () => {
-    expect(version).toBe('0.1.0');
+  it('should match package.json version', () => {
+    const pkg = JSON.parse(readFileSync(resolve(__dirname, '../../package.json'), 'utf-8'));
+    expect(version).toBe(pkg.version);
   });
 });
