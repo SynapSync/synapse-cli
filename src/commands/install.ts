@@ -88,7 +88,7 @@ export async function executeInstallCommand(
       const projectRoot = configManager.getProjectRoot();
       const config = configManager.getConfig();
       const syncEngine = new SyncEngine(synapSyncDir, projectRoot, config);
-      const result = syncEngine.sync({ force: options.force });
+      const result = syncEngine.sync({ force: options.force ?? false });
 
       if (result.providerResults && result.providerResults.length > 0) {
         for (const pr of result.providerResults) {
@@ -284,20 +284,20 @@ function installFromLocal(
 
   const content = fs.readFileSync(filePath, 'utf-8');
   const metadata = parseMetadata(content);
-  const name = (metadata.name as string) ?? path.basename(absolutePath);
-  const category = (options.category as Category) ?? (metadata.category as Category) ?? 'general';
+  const name = (metadata['name'] as string) ?? path.basename(absolutePath);
+  const category = (options.category as Category) ?? (metadata['category'] as Category) ?? 'general';
 
   // Create manifest from metadata - use original filename
   const manifest: CognitiveManifest = {
     name,
     type: cognitiveType,
-    version: (metadata.version as string) ?? '1.0.0',
-    description: (metadata.description as string) ?? '',
-    author: (metadata.author as string) ?? 'local',
-    license: (metadata.license as string) ?? 'MIT',
+    version: (metadata['version'] as string) ?? '1.0.0',
+    description: (metadata['description'] as string) ?? '',
+    author: (metadata['author'] as string) ?? 'local',
+    license: (metadata['license'] as string) ?? 'MIT',
     category,
-    tags: (metadata.tags as string[]) ?? [],
-    providers: (metadata.providers as string[]) ?? [],
+    tags: (metadata['tags'] as string[]) ?? [],
+    providers: ((metadata['providers'] as string[]) ?? []) as CognitiveManifest['providers'],
     file: fileName, // Use the original filename
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
@@ -377,7 +377,7 @@ function detectCognitiveType(dirPath: string): { type: CognitiveType; fileName: 
     if (file.endsWith('.md') && !file.startsWith('.')) {
       const content = fs.readFileSync(path.join(dirPath, file), 'utf-8');
       const metadata = parseMetadata(content);
-      const detectedType = (metadata.type as CognitiveType) ?? 'skill'; // Default to skill
+      const detectedType = (metadata['type'] as CognitiveType) ?? 'skill'; // Default to skill
       if (COGNITIVE_TYPES.includes(detectedType)) {
         return { type: detectedType, fileName: file };
       }
@@ -505,15 +505,19 @@ function updateProjectManifest(
   }
 
   // Add or update cognitive entry
-  projectManifest.cognitives[manifest.name] = {
+  const mappedSource = source === 'github' ? 'git' as const : source;
+  const entry: InstalledCognitive = {
     name: manifest.name,
     type: manifest.type,
     category: manifest.category,
     version: manifest.version,
     installedAt: new Date(),
-    source,
-    sourceUrl: source === 'registry' ? 'https://github.com/SynapSync/synapse-registry' : undefined,
+    source: mappedSource,
   };
+  if (source === 'registry') {
+    entry.sourceUrl = 'https://github.com/SynapSync/synapse-registry';
+  }
+  projectManifest.cognitives[manifest.name] = entry;
 
   projectManifest.lastUpdated = new Date().toISOString();
 

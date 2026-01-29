@@ -6,8 +6,8 @@
   "license": "MIT",
   "type": "module",
   "bin": {
-    "synapse": "./dist/index.js",
-    "synapsync": "./dist/index.js"
+    "synapse": "dist/index.js",
+    "synapsync": "dist/index.js"
   },
   "files": [
     "dist"
@@ -49,7 +49,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/synapsync/cli.git"
+    "url": "git+https://github.com/synapsync/cli.git"
   },
   "bugs": {
     "url": "https://github.com/synapsync/cli/issues"

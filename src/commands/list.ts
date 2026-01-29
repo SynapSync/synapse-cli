@@ -139,7 +139,7 @@ function displayRemoteCognitives(cognitives: RegistryCognitiveEntry[]): void {
   const grouped: Record<string, RegistryCognitiveEntry[]> = {};
   for (const cognitive of cognitives) {
     grouped[cognitive.type] ??= [];
-    grouped[cognitive.type].push(cognitive);
+    (grouped[cognitive.type] as RegistryCognitiveEntry[]).push(cognitive);
   }
 
   for (const [type, items] of Object.entries(grouped)) {
@@ -208,12 +208,12 @@ function validateOptions(options: ListCommandOptions): ValidatedOptions | null {
 
   // Validate category
   if (options.category !== undefined) {
-    if (!CATEGORIES.includes(options.category)) {
+    if (!(CATEGORIES as readonly string[]).includes(options.category)) {
       logger.error(`Invalid category: ${options.category}`);
       logger.hint(`Valid categories: ${CATEGORIES.join(', ')}`);
       return null;
     }
-    validated.category = options.category;
+    validated.category = options.category as Category;
   }
 
   return validated;
@@ -315,7 +315,7 @@ function groupByType(cognitives: InstalledCognitive[]): Record<string, Installed
 
   for (const cognitive of cognitives) {
     grouped[cognitive.type] ??= [];
-    grouped[cognitive.type].push(cognitive);
+    (grouped[cognitive.type] as InstalledCognitive[]).push(cognitive);
   }
 
   return grouped;

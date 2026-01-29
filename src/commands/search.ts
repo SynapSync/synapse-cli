@@ -7,6 +7,7 @@
 import type { Command } from 'commander';
 import pc from 'picocolors';
 import { RegistryClient, RegistryError } from '../services/registry/client.js';
+import type { SearchOptions } from '../services/registry/client.js';
 import { COGNITIVE_TYPES, CATEGORIES } from '../core/constants.js';
 import type { CognitiveType, Category } from '../core/constants.js';
 import type { RegistryCognitiveEntry } from '../types/index.js';
@@ -61,12 +62,12 @@ export async function executeSearchCommand(
     }
 
     // Search
-    const result = await client.search(query, {
-      type: validatedOptions.type,
-      category: validatedOptions.category,
-      tag: validatedOptions.tag,
-      limit: validatedOptions.limit,
-    });
+    const searchOpts: SearchOptions = {};
+    if (validatedOptions.type !== undefined) searchOpts.type = validatedOptions.type;
+    if (validatedOptions.category !== undefined) searchOpts.category = validatedOptions.category;
+    if (validatedOptions.tag !== undefined) searchOpts.tag = validatedOptions.tag;
+    if (validatedOptions.limit !== undefined) searchOpts.limit = validatedOptions.limit;
+    const result = await client.search(query, searchOpts);
 
     // Clear the searching line
     process.stdout.write('\x1b[1A\x1b[2K');
@@ -117,12 +118,12 @@ function validateOptions(options: SearchCommandOptions): ValidatedOptions | null
 
   // Validate category
   if (options.category !== undefined) {
-    if (!CATEGORIES.includes(options.category)) {
+    if (!(CATEGORIES as readonly string[]).includes(options.category)) {
       logger.error(`Invalid category: ${options.category}`);
       logger.hint(`Valid categories: ${CATEGORIES.join(', ')}`);
       return null;
     }
-    validated.category = options.category;
+    validated.category = options.category as Category;
   }
 
   // Validate tag

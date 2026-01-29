@@ -45,13 +45,11 @@ export function registerInteractiveCommand(
     examples?: string[];
   }
 ): void {
-  COMMANDS[name] = {
-    description,
-    handler,
-    usage: options?.usage,
-    options: options?.options,
-    examples: options?.examples,
-  };
+  const def: CommandDef = { description, handler };
+  if (options?.usage !== undefined) def.usage = options.usage;
+  if (options?.options !== undefined) def.options = options.options;
+  if (options?.examples !== undefined) def.examples = options.examples;
+  COMMANDS[name] = def;
 }
 
 // Show detailed help for a specific command
@@ -276,15 +274,15 @@ registerInteractiveCommand(
       if (part === undefined || part === '') continue;
 
       if (part === '--type' || part === '-t') {
-        options.type = parts[++i] ?? '';
+        options['type'] = parts[++i] ?? '';
       } else if (part === '--category' || part === '-c') {
-        options.category = parts[++i] ?? '';
+        options['category'] = parts[++i] ?? '';
       } else if (part === '--tag') {
-        options.tag = parts[++i] ?? '';
+        options['tag'] = parts[++i] ?? '';
       } else if (part === '--limit' || part === '-l') {
-        options.limit = parts[++i] ?? '20';
+        options['limit'] = parts[++i] ?? '20';
       } else if (part === '--json') {
-        options.json = true;
+        options['json'] = true;
       } else if (!part.startsWith('-')) {
         query = part;
       }
@@ -318,13 +316,13 @@ registerInteractiveCommand(
       if (part === undefined || part === '') continue;
 
       if (part === '--type' || part === '-t') {
-        options.type = parts[++i] ?? '';
+        options['type'] = parts[++i] ?? '';
       } else if (part === '--category' || part === '-c') {
-        options.category = parts[++i] ?? '';
+        options['category'] = parts[++i] ?? '';
       } else if (part === '--force' || part === '-f') {
-        options.force = true;
+        options['force'] = true;
       } else if (part === '--sync' || part === '-s') {
-        options.sync = true;
+        options['sync'] = true;
       } else if (!part.startsWith('-')) {
         source = part;
       }
@@ -368,13 +366,13 @@ registerInteractiveCommand(
       if (part === undefined || part === '') continue;
 
       if (part === '--type' || part === '-t') {
-        options.type = parts[++i] ?? '';
+        options['type'] = parts[++i] ?? '';
       } else if (part === '--category' || part === '-c') {
-        options.category = parts[++i] ?? '';
+        options['category'] = parts[++i] ?? '';
       } else if (part === '--remote' || part === '-r') {
-        options.remote = true;
+        options['remote'] = true;
       } else if (part === '--json') {
-        options.json = true;
+        options['json'] = true;
       }
     }
 
@@ -405,9 +403,9 @@ registerInteractiveCommand(
       if (part === undefined || part === '') continue;
 
       if (part === '--force' || part === '-f') {
-        options.force = true;
+        options['force'] = true;
       } else if (part === '--keep-files') {
-        options.keepFiles = true;
+        options['keepFiles'] = true;
       } else if (!part.startsWith('-')) {
         name = part;
       }
@@ -454,27 +452,27 @@ registerInteractiveCommand(
       if (part === 'status') {
         subcommand = 'status';
       } else if (part === '--dry-run' || part === '-n') {
-        options.dryRun = true;
+        options['dryRun'] = true;
       } else if (part === '--type' || part === '-t') {
-        options.type = parts[++i] ?? '';
+        options['type'] = parts[++i] ?? '';
       } else if (part === '--category' || part === '-c') {
-        options.category = parts[++i] ?? '';
+        options['category'] = parts[++i] ?? '';
       } else if (part === '--provider' || part === '-p') {
-        options.provider = parts[++i] ?? '';
+        options['provider'] = parts[++i] ?? '';
       } else if (part === '--copy') {
-        options.copy = true;
+        options['copy'] = true;
       } else if (part === '--force' || part === '-f') {
-        options.force = true;
+        options['force'] = true;
       } else if (part === '--verbose' || part === '-v') {
-        options.verbose = true;
+        options['verbose'] = true;
       } else if (part === '--json') {
-        options.json = true;
+        options['json'] = true;
       }
     }
 
     // Call the appropriate function based on subcommand
     if (subcommand === 'status') {
-      executeSyncStatusCommand({ json: options.json === true });
+      executeSyncStatusCommand({ json: options['json'] === true });
     } else {
       executeSyncCommand(options);
     }
@@ -521,13 +519,13 @@ registerInteractiveCommand(
       if (part === undefined || part === '') continue;
 
       if (part === '--all' || part === '-a') {
-        options.all = true;
+        options['all'] = true;
       } else if (part === '--force' || part === '-f') {
-        options.force = true;
+        options['force'] = true;
       } else if (part === '--dry-run' || part === '-n') {
-        options.dryRun = true;
+        options['dryRun'] = true;
       } else if (part === '--json') {
-        options.json = true;
+        options['json'] = true;
       } else if (!part.startsWith('-')) {
         name = part;
       }
@@ -559,11 +557,11 @@ registerInteractiveCommand(
       if (part === undefined || part === '') continue;
 
       if (part === '--fix') {
-        options.fix = true;
+        options['fix'] = true;
       } else if (part === '--verbose' || part === '-v') {
-        options.verbose = true;
+        options['verbose'] = true;
       } else if (part === '--json') {
-        options.json = true;
+        options['json'] = true;
       }
     }
 
@@ -592,13 +590,13 @@ registerInteractiveCommand(
       if (part === undefined || part === '') continue;
 
       if (part === '--dry-run' || part === '-n') {
-        options.dryRun = true;
+        options['dryRun'] = true;
       } else if (part === '--force' || part === '-f') {
-        options.force = true;
+        options['force'] = true;
       } else if (part === '--verbose' || part === '-v') {
-        options.verbose = true;
+        options['verbose'] = true;
       } else if (part === '--json') {
-        options.json = true;
+        options['json'] = true;
       }
     }
 

@@ -175,14 +175,14 @@ function parseConfigArgs(args: string): ConfigOptions {
   if (action === 'get') {
     return {
       action: 'get',
-      key: parts[1],
+      key: parts[1] ?? '',
     };
   }
 
   if (action === 'set') {
     return {
       action: 'set',
-      key: parts[1],
+      key: parts[1] ?? '',
       value: parts.slice(2).join(' '),
     };
   }

@@ -10,7 +10,7 @@ import type { Command } from 'commander';
 import pc from 'picocolors';
 import { ConfigManager } from '../services/config/manager.js';
 import { SyncEngine } from '../services/sync/engine.js';
-import type { SyncResult, SyncAction } from '../services/sync/types.js';
+import type { SyncResult, SyncAction, SyncOptions } from '../services/sync/types.js';
 import type { ProviderSyncResult } from '../services/symlink/types.js';
 import { COGNITIVE_TYPES, CATEGORIES, SUPPORTED_PROVIDERS } from '../core/constants.js';
 import type { CognitiveType, Category, SupportedProvider } from '../core/constants.js';
@@ -72,16 +72,16 @@ export function executeSyncCommand(options: SyncCommandOptions): void {
   }
 
   // Perform sync
+  const syncOpts: SyncOptions = {};
+  if (options.dryRun !== undefined) syncOpts.dryRun = options.dryRun;
+  if (validatedOptions.types !== undefined) syncOpts.types = validatedOptions.types;
+  if (validatedOptions.categories !== undefined) syncOpts.categories = validatedOptions.categories;
+  if (validatedOptions.provider !== undefined) syncOpts.provider = validatedOptions.provider;
+  if (options.copy !== undefined) syncOpts.copy = options.copy;
+  if (options.force !== undefined) syncOpts.force = options.force;
+  if (options.verbose !== undefined) syncOpts.verbose = options.verbose;
   const result = syncEngine.sync(
-    {
-      dryRun: options.dryRun,
-      types: validatedOptions.types,
-      categories: validatedOptions.categories,
-      provider: validatedOptions.provider,
-      copy: options.copy,
-      force: options.force,
-      verbose: options.verbose,
-    },
+    syncOpts,
     options.json !== true
       ? (status) => {
           if (options.verbose === true) {
@@ -125,12 +125,12 @@ function validateOptions(options: SyncCommandOptions): ValidatedSyncOptions | nu
 
   // Validate category
   if (options.category !== undefined) {
-    if (!CATEGORIES.includes(options.category)) {
+    if (!(CATEGORIES as readonly string[]).includes(options.category)) {
       logger.error(`Invalid category: ${options.category}`);
       logger.hint(`Valid categories: ${CATEGORIES.join(', ')}`);
       return null;
     }
-    validated.categories = [options.category];
+    validated.categories = [options.category as Category];
   }
 
   // Validate provider

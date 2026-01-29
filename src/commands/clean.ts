@@ -66,11 +66,11 @@ export function executeCleanCommand(options: CleanCommandOptions = {}): void {
 
   // Run clean
   const result = cleaner.clean({
-    cache: options.cache,
-    orphans: options.orphans,
-    temp: options.temp,
-    all: options.all,
-    dryRun: options.dryRun,
+    cache: options.cache ?? false,
+    orphans: options.orphans ?? false,
+    temp: options.temp ?? false,
+    all: options.all ?? false,
+    dryRun: options.dryRun ?? false,
   });
 
   // JSON output

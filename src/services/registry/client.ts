@@ -132,15 +132,16 @@ export class RegistryClient {
       results = results.slice(0, options.limit);
     }
 
+    const filters: { type?: CognitiveType; category?: Category; tag?: string } = {};
+    if (options.type !== undefined) filters.type = options.type;
+    if (options.category !== undefined) filters.category = options.category;
+    if (options.tag !== undefined) filters.tag = options.tag;
+
     return {
       cognitives: results,
       total,
-      query,
-      filters: {
-        type: options.type,
-        category: options.category,
-        tag: options.tag,
-      },
+      ...(query !== undefined ? { query } : {}),
+      filters,
     };
   }
 

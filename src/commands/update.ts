@@ -173,7 +173,6 @@ export async function executeUpdateCommand(
       // Update manifest entry
       manifest.updateCognitive(update.name, {
         version: update.latestVersion,
-        hash: undefined, // Will be recalculated on next sync
       });
 
       updated.push(update.name);

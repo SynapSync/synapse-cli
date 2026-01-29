@@ -270,7 +270,7 @@ function showProviderInfo(configManager: ConfigManager, provider: SupportedProvi
   logger.log(`  ${pc.dim('Paths:')}`);
   const cognitiveTypes = ['skill', 'agent', 'prompt', 'workflow', 'tool'] as const;
   for (const type of cognitiveTypes) {
-    const typePath = paths[type];
+    const typePath = paths[type] ?? '';
     const fullPath = path.join(projectRoot, typePath);
     const exists = fs.existsSync(fullPath);
     const existsIcon = exists ? pc.green('✓') : pc.dim('✗');
