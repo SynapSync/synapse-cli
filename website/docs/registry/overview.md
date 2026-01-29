@@ -42,13 +42,10 @@ Visit [registry.synapsync.dev](https://registry.synapsync.dev) to browse cogniti
 ## Installing from Registry
 
 ```bash
-# Basic install
+# Add from registry
 synapsync add code-reviewer
 
-# Install and sync
-synapsync add code-reviewer
-
-# Install with category
+# Add with category
 synapsync add react-patterns --category frontend
 ```
 

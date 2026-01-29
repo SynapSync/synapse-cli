@@ -38,6 +38,7 @@ const sidebars: SidebarsConfig = {
             'cli/commands/update',
             'cli/commands/doctor',
             'cli/commands/clean',
+            'cli/commands/purge',
             'cli/commands/help',
             'cli/commands/version',
             'cli/commands/info',

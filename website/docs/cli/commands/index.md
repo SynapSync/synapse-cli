@@ -40,6 +40,7 @@ Complete reference for all SynapSync CLI commands.
 |---------|-------------|
 | [`doctor`](/cli/commands/doctor) | Diagnose issues |
 | [`clean`](/cli/commands/clean) | Clean cache and orphans |
+| [`purge`](/cli/commands/purge) | Completely remove SynapSync from the project |
 
 ### Information
 | Command | Description |
