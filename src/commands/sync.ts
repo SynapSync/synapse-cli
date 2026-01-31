@@ -10,6 +10,7 @@ import type { Command } from 'commander';
 import pc from 'picocolors';
 import { ConfigManager } from '../services/config/manager.js';
 import { SyncEngine } from '../services/sync/engine.js';
+import { regenerateAgentsMd } from '../services/agents-md/generator.js';
 import type { SyncResult, SyncAction, SyncOptions } from '../services/sync/types.js';
 import type { ProviderSyncResult } from '../services/symlink/types.js';
 import { COGNITIVE_TYPES, CATEGORIES, SUPPORTED_PROVIDERS } from '../core/constants.js';
@@ -90,6 +91,13 @@ export function executeSyncCommand(options: SyncCommandOptions): void {
         }
       : undefined
   );
+
+  // Regenerate AGENTS.md after sync (unless dry run)
+  if (options.dryRun !== true) {
+    const synapSyncDir = configManager.getSynapSyncDir();
+    const projectRoot = configManager.getProjectRoot();
+    regenerateAgentsMd(projectRoot, synapSyncDir);
+  }
 
   // Output results
   if (options.json === true) {

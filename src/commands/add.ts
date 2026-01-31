@@ -11,6 +11,7 @@ import pc from 'picocolors';
 import { RegistryClient, CognitiveNotFoundError, RegistryError } from '../services/registry/client.js';
 import { ConfigManager } from '../services/config/manager.js';
 import { SyncEngine } from '../services/sync/engine.js';
+import { regenerateAgentsMd } from '../services/agents-md/generator.js';
 import {
   COGNITIVE_TYPES,
   COGNITIVE_FILE_NAMES,
@@ -99,6 +100,10 @@ export async function executeAddCommand(
           }
         }
       }
+
+      // Regenerate AGENTS.md
+      regenerateAgentsMd(projectRoot, synapSyncDir);
+
       logger.line();
     }
   } catch (error) {

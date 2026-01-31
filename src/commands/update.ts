@@ -13,6 +13,7 @@ import { ManifestManager } from '../services/manifest/manager.js';
 import { UpdateChecker } from '../services/maintenance/update-checker.js';
 import { RegistryClient } from '../services/registry/client.js';
 import { SyncEngine } from '../services/sync/engine.js';
+import { regenerateAgentsMd } from '../services/agents-md/generator.js';
 import type { UpdateCheckResult } from '../services/maintenance/types.js';
 import { COGNITIVE_FILE_NAMES } from '../core/constants.js';
 import { logger } from '../utils/logger.js';
@@ -195,6 +196,9 @@ export async function executeUpdateCommand(
   const config = configManager.getConfig();
   const syncEngine = new SyncEngine(synapSyncDir, projectRoot, config);
   syncEngine.sync();
+
+  // Regenerate AGENTS.md
+  regenerateAgentsMd(projectRoot, synapSyncDir);
 
   // Summary
   logger.line();

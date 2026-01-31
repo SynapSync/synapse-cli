@@ -10,6 +10,7 @@ import * as p from '@clack/prompts';
 import pc from 'picocolors';
 import type { Command } from 'commander';
 import { ConfigManager } from '../services/config/manager.js';
+import { AgentsMdGenerator } from '../services/agents-md/generator.js';
 import {
   COGNITIVE_TYPES,
   SUPPORTED_PROVIDERS,
@@ -164,7 +165,10 @@ function initializeProject(setup: ProjectSetup): InitResult {
     // 3. Create empty manifest
     createManifest(storagePath);
 
-    // 4. Update .gitignore if exists
+    // 4. Create initial AGENTS.md
+    new AgentsMdGenerator(projectRoot, storagePath).generateEmpty();
+
+    // 5. Update .gitignore if exists
     updateGitignore(projectRoot);
 
     s.stop('Project structure created!');

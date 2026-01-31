@@ -9,7 +9,7 @@ import * as path from 'path';
 import type { Command } from 'commander';
 import pc from 'picocolors';
 import { ConfigManager } from '../services/config/manager.js';
-import { SUPPORTED_PROVIDERS, PROVIDER_PATHS, COGNITIVE_TYPES } from '../core/constants.js';
+import { SUPPORTED_PROVIDERS, PROVIDER_PATHS, COGNITIVE_TYPES, AGENTS_MD_FILE_NAME } from '../core/constants.js';
 import { logger } from '../utils/logger.js';
 
 // ============================================
@@ -77,7 +77,15 @@ export function executePurgeCommand(options: PurgeCommandOptions): void {
       removedCount++;
     }
 
-    // 4. Clean .gitignore entries
+    // 4. Remove AGENTS.md
+    const agentsMdPath = path.join(projectRoot, AGENTS_MD_FILE_NAME);
+    if (fs.existsSync(agentsMdPath)) {
+      fs.unlinkSync(agentsMdPath);
+      logger.log(`  ${pc.red('✗')} Removed ${AGENTS_MD_FILE_NAME}`);
+      removedCount++;
+    }
+
+    // 5. Clean .gitignore entries
     if (cleanGitignore(projectRoot)) {
       logger.log(`  ${pc.red('✗')} Cleaned SynapSync entries from .gitignore`);
       removedCount++;
@@ -123,6 +131,12 @@ function collectItemsToRemove(projectRoot: string, synapSyncDir: string): string
   const configPath = path.join(projectRoot, 'synapsync.config.yaml');
   if (fs.existsSync(configPath)) {
     items.push('synapsync.config.yaml');
+  }
+
+  // AGENTS.md
+  const agentsMdPath = path.join(projectRoot, AGENTS_MD_FILE_NAME);
+  if (fs.existsSync(agentsMdPath)) {
+    items.push(AGENTS_MD_FILE_NAME);
   }
 
   // .gitignore entries

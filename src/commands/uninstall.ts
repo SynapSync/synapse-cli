@@ -9,6 +9,7 @@ import * as path from 'path';
 import type { Command } from 'commander';
 import pc from 'picocolors';
 import { ConfigManager } from '../services/config/manager.js';
+import { regenerateAgentsMd } from '../services/agents-md/generator.js';
 import type { InstalledCognitive } from '../types/index.js';
 import { logger } from '../utils/logger.js';
 
@@ -85,6 +86,9 @@ export function executeUninstallCommand(
     delete manifest.cognitives[name];
     manifest.lastUpdated = new Date().toISOString();
     saveManifest(configManager, manifest);
+
+    // Regenerate AGENTS.md
+    regenerateAgentsMd(configManager.getProjectRoot(), configManager.getSynapSyncDir());
 
     // Success
     logger.line();

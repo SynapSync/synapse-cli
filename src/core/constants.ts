@@ -47,6 +47,7 @@ export const DEFAULT_SYNAPSYNC_DIR = process.env['SYNAPSYNC_DIR'] ?? '.synapsync
 export const MANIFEST_FILE_NAME = 'manifest.json';
 export const CONFIG_FILE_NAME = 'synapsync.config.yaml';
 export const LOCK_FILE_NAME = 'synapsync.lock';
+export const AGENTS_MD_FILE_NAME = 'AGENTS.md';
 
 // Legacy support (will be deprecated)
 export const DEFAULT_AGENTS_DIR = process.env['SYNAPSYNC_AGENTS_DIR'] ?? '.agents';
