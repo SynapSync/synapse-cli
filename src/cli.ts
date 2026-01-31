@@ -16,7 +16,6 @@ import { registerInitCommand } from './commands/init.js';
 import { registerConfigCommand } from './commands/config.js';
 import { registerStatusCommand } from './commands/status.js';
 import { registerProvidersCommand } from './commands/providers.js';
-import { registerSearchCommand } from './commands/search.js';
 import { registerAddCommand } from './commands/add.js';
 import { registerListCommand } from './commands/list.js';
 import { registerUninstallCommand } from './commands/uninstall.js';
@@ -52,7 +51,6 @@ export function createCLI(): Command {
   registerConfigCommand(program);
   registerStatusCommand(program);
   registerProvidersCommand(program);
-  registerSearchCommand(program);
   registerAddCommand(program);
   registerListCommand(program);
   registerUninstallCommand(program);
@@ -69,7 +67,6 @@ export function createCLI(): Command {
   // registerConfigCommand(program);
   // registerConnectCommand(program);
   // registerProvidersCommand(program);
-  // registerSearchCommand(program);
   // registerAddCommand(program);
   // registerListCommand(program);
   // registerInfoCommand(program);

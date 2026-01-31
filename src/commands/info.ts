@@ -300,7 +300,7 @@ function showCategoriesInfo(): void {
   logger.line();
   logger.log(`  ${pc.dim('$')} ${pc.cyan('synapsync add')} react-patterns ${pc.dim('--category frontend')}`);
   logger.log(`  ${pc.dim('$')} ${pc.cyan('synapsync list')} --category devops`);
-  logger.log(`  ${pc.dim('$')} ${pc.cyan('synapsync search')} --category security`);
+  logger.log(`  ${pc.dim('$')} ${pc.cyan('synapsync list')} --remote --category security`);
   logger.line();
 }
 

@@ -22,6 +22,7 @@ import { logger } from '../utils/logger.js';
 interface ListCommandOptions {
   type?: string;
   category?: string;
+  tag?: string;
   json?: boolean;
   remote?: boolean;
 }
@@ -121,6 +122,9 @@ function filterRemoteCognitives(
     if (options.category !== undefined && c.category !== options.category) {
       return false;
     }
+    if (options.tag !== undefined && !c.tags.some((t) => t.toLowerCase() === options.tag!.toLowerCase())) {
+      return false;
+    }
     return true;
   });
 }
@@ -191,6 +195,7 @@ function displayRemoteCognitives(cognitives: RegistryCognitiveEntry[]): void {
 interface ValidatedOptions {
   type?: CognitiveType;
   category?: Category;
+  tag?: string;
 }
 
 function validateOptions(options: ListCommandOptions): ValidatedOptions | null {
@@ -214,6 +219,11 @@ function validateOptions(options: ListCommandOptions): ValidatedOptions | null {
       return null;
     }
     validated.category = options.category as Category;
+  }
+
+  // Validate tag
+  if (options.tag !== undefined) {
+    validated.tag = options.tag;
   }
 
   return validated;
@@ -280,7 +290,7 @@ function displayCognitives(manifest: ProjectManifest, options: ValidatedOptions)
     if (cognitives.length === 0) {
       logger.log(`  ${pc.dim('No cognitives installed yet.')}`);
       logger.line();
-      logger.hint('Run synapsync search to find cognitives to add.');
+      logger.hint('Run synapsync list --remote to browse available cognitives.');
     } else {
       logger.log(`  ${pc.dim('No cognitives match the specified filters.')}`);
       logger.line();
@@ -383,6 +393,7 @@ export function registerListCommand(program: Command): void {
     .description('List installed cognitives or browse registry')
     .option('-t, --type <type>', 'Filter by type (skill, agent, prompt, workflow, tool)')
     .option('-c, --category <category>', 'Filter by category')
+    .option('--tag <tag>', 'Filter by tag (remote only)')
     .option('-r, --remote', 'List all cognitives available in the registry')
     .option('--json', 'Output as JSON')
     .action(async (options: ListCommandOptions) => {

@@ -13,7 +13,6 @@ import { executeInitCommand } from '../commands/init.js';
 import { executeConfigCommand } from '../commands/config.js';
 import { executeStatusCommand } from '../commands/status.js';
 import { executeProvidersCommand } from '../commands/providers.js';
-import { executeSearchCommand } from '../commands/search.js';
 import { executeAddCommand } from '../commands/add.js';
 import { executeListCommand } from '../commands/list.js';
 import { executeUninstallCommand } from '../commands/uninstall.js';
@@ -120,7 +119,7 @@ registerInteractiveCommand(
       'Information': ['info', 'version'],
       'Project': ['init', 'config', 'status'],
       'Providers': ['providers'],
-      'Cognitives': ['search', 'add', 'list', 'uninstall'],
+      'Cognitives': ['add', 'list', 'uninstall'],
       'Sync': ['sync'],
       'Maintenance': ['update', 'doctor', 'clean', 'purge'],
     };
@@ -262,49 +261,6 @@ registerInteractiveCommand(
 // ============================================
 
 registerInteractiveCommand(
-  'search',
-  'Search for cognitives in the registry',
-  async (args) => {
-    // Parse args to extract query and options
-    const parts = args.split(/\s+/);
-    let query: string | undefined;
-    const options: Record<string, string | boolean> = {};
-
-    for (let i = 0; i < parts.length; i++) {
-      const part = parts[i];
-      if (part === undefined || part === '') continue;
-
-      if (part === '--type' || part === '-t') {
-        options['type'] = parts[++i] ?? '';
-      } else if (part === '--category' || part === '-c') {
-        options['category'] = parts[++i] ?? '';
-      } else if (part === '--tag') {
-        options['tag'] = parts[++i] ?? '';
-      } else if (part === '--limit' || part === '-l') {
-        options['limit'] = parts[++i] ?? '20';
-      } else if (part === '--json') {
-        options['json'] = true;
-      } else if (!part.startsWith('-')) {
-        query = part;
-      }
-    }
-
-    await executeSearchCommand(query, options);
-  },
-  {
-    usage: '/search [query] [options]',
-    options: [
-      { flag: '-t, --type <type>', description: 'Filter by type (skill, agent, prompt, etc.)' },
-      { flag: '-c, --category <cat>', description: 'Filter by category' },
-      { flag: '--tag <tag>', description: 'Filter by tag' },
-      { flag: '-l, --limit <n>', description: 'Limit results (default: 20)' },
-      { flag: '--json', description: 'Output as JSON' },
-    ],
-    examples: ['/search', '/search react', '/search --type skill', '/search api --category backend'],
-  }
-);
-
-registerInteractiveCommand(
   'add',
   'Add a cognitive from registry, local path, or GitHub',
   async (args) => {
@@ -366,6 +322,8 @@ registerInteractiveCommand(
         options['type'] = parts[++i] ?? '';
       } else if (part === '--category' || part === '-c') {
         options['category'] = parts[++i] ?? '';
+      } else if (part === '--tag') {
+        options['tag'] = parts[++i] ?? '';
       } else if (part === '--remote' || part === '-r') {
         options['remote'] = true;
       } else if (part === '--json') {
@@ -380,10 +338,11 @@ registerInteractiveCommand(
     options: [
       { flag: '-t, --type <type>', description: 'Filter by type (skill, agent, prompt, etc.)' },
       { flag: '-c, --category <cat>', description: 'Filter by category' },
+      { flag: '--tag <tag>', description: 'Filter by tag (remote only)' },
       { flag: '-r, --remote', description: 'Browse all cognitives in registry' },
       { flag: '--json', description: 'Output as JSON' },
     ],
-    examples: ['/list', '/list --remote', '/list --type skill', '/list --category backend'],
+    examples: ['/list', '/list --remote', '/list --remote --category planning', '/list --type skill'],
   }
 );
 

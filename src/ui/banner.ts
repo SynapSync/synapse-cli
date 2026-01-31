@@ -22,7 +22,7 @@ export function showBanner(): void {
   logger.line();
   logger.command('synapsync init', 'Initialize a new project');
   logger.command('synapsync connect', 'Connect to AI providers');
-  logger.command('synapsync search', 'Search registry for assets');
+  logger.command('synapsync list --remote', 'Browse registry for cognitives');
   logger.command('synapsync add <name>', 'Add skill, agent, or prompt');
   logger.command('synapsync sync', 'Sync assets to providers');
   logger.line();

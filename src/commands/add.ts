@@ -110,7 +110,7 @@ export async function executeAddCommand(
     logger.line();
     if (error instanceof CognitiveNotFoundError) {
       logger.error(`Cognitive '${error.cognitiveName}' not found in registry.`);
-      logger.hint('Run synapsync search to find available cognitives.');
+      logger.hint('Run synapsync list --remote to browse available cognitives.');
     } else if (error instanceof RegistryError) {
       logger.error(`Registry error: ${error.message}`);
     } else if (error instanceof Error) {
