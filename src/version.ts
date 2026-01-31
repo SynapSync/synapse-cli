@@ -3,4 +3,4 @@
  */
 
 // This will be replaced during build or read from package.json
-export const version = '0.1.5';
+export const version = '0.1.6';
