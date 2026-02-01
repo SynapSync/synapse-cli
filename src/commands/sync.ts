@@ -138,7 +138,7 @@ function validateOptions(options: SyncCommandOptions): ValidatedSyncOptions | nu
       logger.hint(`Valid categories: ${CATEGORIES.join(', ')}`);
       return null;
     }
-    validated.categories = [options.category as Category];
+    validated.categories = [options.category];
   }
 
   // Validate provider

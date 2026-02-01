@@ -122,8 +122,11 @@ function filterRemoteCognitives(
     if (options.category !== undefined && c.category !== options.category) {
       return false;
     }
-    if (options.tag !== undefined && !c.tags.some((t) => t.toLowerCase() === options.tag!.toLowerCase())) {
-      return false;
+    if (options.tag !== undefined) {
+      const tag = options.tag;
+      if (!c.tags.some((t) => t.toLowerCase() === tag.toLowerCase())) {
+        return false;
+      }
     }
     return true;
   });
@@ -218,7 +221,7 @@ function validateOptions(options: ListCommandOptions): ValidatedOptions | null {
       logger.hint(`Valid categories: ${CATEGORIES.join(', ')}`);
       return null;
     }
-    validated.category = options.category as Category;
+    validated.category = options.category;
   }
 
   // Validate tag
