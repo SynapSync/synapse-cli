@@ -1,6 +1,5 @@
-/**
- * CLI version - extracted from package.json
- */
+import { createRequire } from 'node:module';
 
-// This will be replaced during build or read from package.json
-export const version = '0.1.7';
+const require = createRequire(import.meta.url);
+
+export const version: string = (require('../package.json') as { version: string }).version;
