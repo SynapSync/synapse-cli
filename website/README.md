@@ -14,7 +14,7 @@ npm install
 npm start
 ```
 
-The dev server starts at `http://localhost:3000/synapsync-cli/`.
+The dev server starts at `http://localhost:3000/synapse-cli/`.
 
 ## Build
 

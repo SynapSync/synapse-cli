@@ -1,6 +1,6 @@
 {
   "name": "@synapsync/cli",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Neural AI Orchestration Platform - CLI for managing AI skills across multiple providers",
   "author": "SynapSync",
   "license": "MIT",
@@ -54,12 +54,12 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/synapsync/cli.git"
+    "url": "git+https://github.com/SynapSync/synapse-cli.git"
   },
   "bugs": {
-    "url": "https://github.com/synapsync/cli/issues"
+    "url": "https://github.com/SynapSync/synapse-cli/issues"
   },
-  "homepage": "https://synapsync.github.io/synapsync-cli/",
+  "homepage": "https://synapsync.github.io/synapse-cli/",
   "dependencies": {
     "@clack/prompts": "^0.11.0",
     "commander": "^12.1.0",

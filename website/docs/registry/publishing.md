@@ -9,7 +9,7 @@ Share your cognitives with the community by submitting them to the registry.
 
 ## Current Process
 
-The registry accepts contributions via **Pull Request** to the [synapse-registry](https://github.com/synapsync/synapse-registry) repository.
+The registry accepts contributions via **Pull Request** to the [synapse-registry](https://github.com/SynapSync/synapse-registry) repository.
 
 ## Submission Steps
 
@@ -58,7 +58,7 @@ Instructions for the AI...
 
 ### 4. Submit Pull Request
 
-1. Fork [synapse-registry](https://github.com/synapsync/synapse-registry)
+1. Fork [synapse-registry](https://github.com/SynapSync/synapse-registry)
 2. Add your cognitive to the appropriate folder:
    - `skills/` for skills
    - `agents/` for agents
@@ -125,4 +125,4 @@ synapsync login
 synapsync publish ./my-cognitive
 ```
 
-See [ideas/registry-publishing](https://github.com/synapsync/cli/blob/main/docs/ideas/registry-publishing.md) for the proposal.
+See [ideas/registry-publishing](https://github.com/SynapSync/synapse-cli/blob/main/docs/ideas/registry-publishing.md) for the proposal.

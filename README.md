@@ -267,8 +267,8 @@ synapsync --verbose <command>
 
 ```bash
 # Clone the repository
-git clone https://github.com/synapsync/cli.git
-cd cli
+git clone https://github.com/SynapSync/synapse-cli.git
+cd synapse-cli
 
 # Install dependencies
 npm install
@@ -292,7 +292,7 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 ## Links
 
-- [Documentation](https://synapsync.github.io/synapse-docs/)
+- [Documentation](https://synapsync.github.io/synapse-cli/)
 - [Registry](https://registry.synapsync.dev)
-- [GitHub](https://github.com/synapsync/cli)
-- [Issues](https://github.com/synapsync/cli/issues)
+- [GitHub](https://github.com/SynapSync/synapse-cli)
+- [Issues](https://github.com/SynapSync/synapse-cli/issues)

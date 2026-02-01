@@ -21,7 +21,7 @@ This project follows the [Contributor Covenant Code of Conduct](CODE_OF_CONDUCT.
 
 1. Fork the repository
 2. Clone your fork: `git clone https://github.com/YOUR_USERNAME/synapse-cli.git`
-3. Add upstream remote: `git remote add upstream https://github.com/synapsync/cli.git`
+3. Add upstream remote: `git remote add upstream https://github.com/SynapSync/synapse-cli.git`
 4. Create a branch: `git checkout -b feature/your-feature-name`
 
 ## Development Setup
@@ -188,7 +188,7 @@ describe('ServiceName', () => {
 
 ## Questions?
 
-- Open a [GitHub Issue](https://github.com/synapsync/cli/issues)
+- Open a [GitHub Issue](https://github.com/SynapSync/synapse-cli/issues)
 - Check existing issues and discussions
 
 Thank you for contributing! 🎉
