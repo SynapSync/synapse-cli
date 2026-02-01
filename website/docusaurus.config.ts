@@ -55,7 +55,7 @@ const config: Config = {
       title: 'SynapSync',
       logo: {
         alt: 'SynapSync Logo',
-        src: 'img/logo.svg',
+        src: 'img/logo.jpg',
       },
       items: [
         {
