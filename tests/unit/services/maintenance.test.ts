@@ -16,12 +16,14 @@ import type { ProjectConfig } from '../../../src/services/config/types.js';
 // Mock fs and RegistryClient
 vi.mock('fs');
 vi.mock('../../../src/services/registry/client.js', () => ({
-  RegistryClient: vi.fn().mockImplementation(() => ({
-    findByName: vi.fn(),
-    search: vi.fn(),
-    download: vi.fn(),
-    ping: vi.fn(),
-  })),
+  RegistryClient: vi.fn().mockImplementation(function () {
+    return {
+      findByName: vi.fn(),
+      search: vi.fn(),
+      download: vi.fn(),
+      ping: vi.fn(),
+    };
+  }),
 }));
 
 describe('UpdateChecker', () => {
