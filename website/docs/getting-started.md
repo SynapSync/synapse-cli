@@ -54,7 +54,7 @@ Uses defaults: project name from directory, Claude provider enabled.
 Browse available cognitives:
 
 ```bash
-synapsync search
+synapsync list --remote
 ```
 
 Install one:
@@ -110,6 +110,6 @@ your-project/
 
 ## Next Steps
 
-- [Browse the registry](/cli/commands/search) — Find more cognitives
+- [Browse the registry](/cli/commands/list) — Find more cognitives
 - [Configure providers](/concepts/providers) — Enable more AI tools
 - [Publishing cognitives](/registry/publishing) — Share with the community

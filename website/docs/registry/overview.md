@@ -25,14 +25,11 @@ The registry contains cognitives of all types:
 # List all cognitives
 synapsync list --remote
 
-# Search by query
-synapsync search react
-
 # Filter by type
-synapsync search --type skill
+synapsync list --remote --type skill
 
 # Filter by category
-synapsync search --category security
+synapsync list --remote --category security
 ```
 
 ### Online

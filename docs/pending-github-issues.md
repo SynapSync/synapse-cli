@@ -4,25 +4,9 @@ These issues need to be created manually after the repo is public.
 
 ---
 
-## Issue 1: Register more commands
+## ~~Issue 1: Register more commands~~ ✅ RESOLVED
 
-**Title:** `[TODO] Register more commands as they are implemented`
-
-**Labels:** `enhancement`
-
-**Body:**
-```
-**Location:** `src/cli.ts:63`
-
-**Current code:**
-```typescript
-// TODO: Register more commands as they are implemented
-```
-
-**Context:** This was a placeholder during initial development. Most commands have been registered.
-
-**Action:** Review if there are any missing commands that should be added, then remove the TODO comment.
-```
+All 15 commands registered. TODO comment and dead code removed from `src/cli.ts`.
 
 ---
 

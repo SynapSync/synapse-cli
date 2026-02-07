@@ -7,6 +7,49 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-02-06
+
+### Added
+
+#### Testing Suite Expansion
+- **41 new test files** covering commands, services, UI, and utilities
+  - All 14 CLI commands now have dedicated unit tests
+  - REPL modules: arg-parser, dispatcher, registry
+  - UI modules: banner, colors, logo
+  - Services: registry client, sync engine, symlink manager, detector, parser
+  - Utilities: logger
+- **Coverage increased from 31% to 80%** (515 tests across 33 files)
+
+#### CI/CD Pipeline
+- GitHub Actions workflow with 3 parallel jobs (lint, test, build)
+- Test matrix for Node.js 20 and 22
+- Coverage artifact upload on Node 22
+- Format checking step added to CI
+
+### Changed
+
+#### REPL Refactoring
+- Decomposed `src/ui/repl.ts` (688 lines) into 8 focused modules under `src/ui/repl/`
+  - `types.ts` - CommandDef, FlagDef, ParsedArgs interfaces
+  - `arg-parser.ts` - Declarative argument parser replacing duplicated parsing
+  - `registry.ts` - Command registry and registration function
+  - `help.ts` - Help system and /help command
+  - `commands.ts` - All 17 command handler registrations
+  - `dispatcher.ts` - Input parsing and command routing
+  - `loop.ts` - Readline event loop
+  - `index.ts` - Barrel with side-effect imports
+
+#### Dependency Updates
+- Upgraded vitest v2 → v4 (fixes 6 moderate security vulnerabilities via esbuild)
+- Updated commander 12 → 14, @clack/prompts 0.11 → 1.0, ora 8 → 9
+- Updated typescript 5.7 → 5.9, tsup 8.3 → 8.5, prettier 3.4 → 3.8
+- Updated @types/node 22 → 25, yaml 2.6 → 2.8
+- Updated @typescript-eslint/* 8.0 → 8.54, eslint-config-prettier 9 → 10
+
+### Fixed
+- Resolved `no-non-null-assertion` lint error in init.ts validator
+- Fixed @clack/prompts v1 breaking change (value possibly undefined in validators)
+
 ## [0.4.0] - 2026-01-28
 
 ### Added
@@ -191,7 +234,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-[Unreleased]: https://github.com/SynapSync/synapse-cli/compare/v0.4.0...HEAD
+[Unreleased]: https://github.com/SynapSync/synapse-cli/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/SynapSync/synapse-cli/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/SynapSync/synapse-cli/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/SynapSync/synapse-cli/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/SynapSync/synapse-cli/compare/v0.1.0...v0.2.0

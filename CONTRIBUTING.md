@@ -54,11 +54,29 @@ npm run lint
 
 ```
 src/
-├── cli.ts              # CLI entry point
-├── commands/           # Command implementations
+├── cli.ts              # CLI entry point (Commander.js setup)
+├── commands/           # Command implementations (add, init, sync, etc.)
 ├── services/           # Core business logic
-├── ui/                 # User interface (REPL, colors, banner)
-├── utils/              # Utility functions
+│   ├── config/         # Configuration management
+│   ├── registry/       # Registry client
+│   ├── scanner/        # Cognitive file scanner
+│   ├── symlink/        # Symlink management
+│   ├── sync/           # Sync engine
+│   ├── manifest/       # Manifest management
+│   └── maintenance/    # Doctor, clean, update services
+├── ui/                 # User interface
+│   ├── repl/           # Interactive REPL (modular)
+│   │   ├── arg-parser.ts   # Declarative argument parser
+│   │   ├── commands.ts     # Command registrations
+│   │   ├── dispatcher.ts   # Input routing
+│   │   ├── help.ts         # Help system
+│   │   ├── loop.ts         # Readline event loop
+│   │   ├── registry.ts     # Command registry
+│   │   └── types.ts        # REPL type definitions
+│   ├── banner.ts       # Banner and messages
+│   ├── colors.ts       # Color utilities
+│   └── logo.ts         # ASCII logo
+├── utils/              # Utility functions (logger)
 ├── core/               # Constants and core definitions
 └── types/              # TypeScript type definitions
 ```

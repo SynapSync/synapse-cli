@@ -60,20 +60,6 @@ export function createCLI(): Command {
   registerCleanCommand(program);
   registerPurgeCommand(program);
 
-  // TODO: Register more commands as they are implemented
-  // These commands will work both via CLI (synapsync init)
-  // and in interactive mode (/init)
-  // registerInitCommand(program);
-  // registerConfigCommand(program);
-  // registerConnectCommand(program);
-  // registerProvidersCommand(program);
-  // registerAddCommand(program);
-  // registerListCommand(program);
-  // registerInfoCommand(program);
-  // registerUninstallCommand(program);
-  // registerSyncCommand(program);
-  // registerStatusCommand(program);
-
   return program;
 }
 

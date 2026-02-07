@@ -32,30 +32,37 @@ All commands are prefixed with `/`:
 
 | Command | Description |
 |---------|-------------|
-| `/help` | Show available commands |
-| `/search [query]` | Search the registry |
+| `/help [command]` | Show available commands or help for a specific command |
+| `/info` | Show SynapSync concepts |
+| `/init` | Initialize a new project |
+| `/config` | Show/set configuration |
+| `/status` | Show project status |
+| `/providers` | Manage AI providers |
 | `/add <name>` | Add a cognitive |
 | `/list` | List installed cognitives |
 | `/list --remote` | Browse registry |
 | `/uninstall <name>` | Remove a cognitive |
 | `/sync` | Sync to providers |
-| `/status` | Show project status |
-| `/config` | Show configuration |
-| `/providers` | List providers |
+| `/update` | Update cognitives |
+| `/doctor` | Diagnose project issues |
+| `/clean` | Clean orphaned files |
+| `/purge` | Remove SynapSync from project |
+| `/version` | Show version info |
 | `/clear` | Clear screen |
 | `/exit` | Exit REPL |
 
 ## Examples
 
-### Search and Install
+### Browse and Install
 
 ```
-synapsync > /search react
+synapsync > /list --remote
 
-Search Results
-──────────────
+Registry Cognitives
+───────────────────
+  code-reviewer     skill    general
   react-patterns    skill    frontend
-  react-testing     skill    testing
+  api-designer      skill    backend
 
 synapsync > /add react-patterns
 

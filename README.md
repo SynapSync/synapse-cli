@@ -47,11 +47,11 @@ npx @synapsync/cli
 # Initialize a new project
 synapsync init
 
-# Search for cognitives
-synapsync search code review
+# Browse available cognitives
+synapsync list --remote
 
-# Install a cognitive
-synapsync install code-reviewer
+# Add a cognitive
+synapsync add code-reviewer
 
 # List installed cognitives
 synapsync list
@@ -85,9 +85,9 @@ synapsync sync
 
 | Command                        | Description                           |
 | ------------------------------ | ------------------------------------- |
-| `synapsync search [query]`     | Search for cognitives in the registry |
-| `synapsync install <source>`   | Install a cognitive                   |
+| `synapsync add <source>`       | Add a cognitive from registry or path |
 | `synapsync list`               | List installed cognitives             |
+| `synapsync list --remote`      | Browse all cognitives in the registry |
 | `synapsync uninstall <name>`   | Uninstall a cognitive                 |
 | `synapsync update [cognitive]` | Update cognitives to latest versions  |
 | `synapsync update --all`       | Update all cognitives                 |
@@ -116,10 +116,9 @@ synapsync sync
 | ----------------------------- | -------------------------------- |
 | `synapsync help [command]`    | Display help for a command       |
 | `synapsync version`           | Show version information         |
-| `synapsync version --check`   | Check for updates                |
 | `synapsync info`              | Show SynapSync concepts          |
 | `synapsync info --cognitives` | Learn about cognitive types      |
-| `synapsync info --install`    | Learn about installation sources |
+| `synapsync info --add`        | Learn about installation sources |
 | `synapsync info --providers`  | Learn about supported providers  |
 
 ## Installation Sources
@@ -128,22 +127,16 @@ SynapSync supports multiple installation sources:
 
 ```bash
 # From registry
-synapsync install code-reviewer
+synapsync add code-reviewer
 
 # From local path
-synapsync install ./my-cognitive
+synapsync add ./my-cognitive
 
 # From GitHub (shorthand)
-synapsync install github:user/repo
-
-# From GitHub with path
-synapsync install github:user/repo/cognitives/skill
-
-# From GitHub with branch
-synapsync install github:user/repo#develop
+synapsync add github:user/repo
 
 # From GitHub URL
-synapsync install https://github.com/user/repo
+synapsync add https://github.com/user/repo
 ```
 
 ## Cognitive Types
@@ -184,6 +177,7 @@ your-project/
 | Claude   | ✅ Supported | `.claude/commands/` |
 | Cursor   | ✅ Supported | `.cursor/`          |
 | OpenAI   | ✅ Supported | `.openai/`          |
+| Windsurf | ✅ Supported | `.windsurf/`        |
 | Gemini   | 🔜 Planned   | `.gemini/`          |
 | Copilot  | 🔜 Planned   | `.github/copilot/`  |
 

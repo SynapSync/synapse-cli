@@ -24,9 +24,9 @@ Complete reference for all SynapSync CLI commands.
 ### Cognitive Management
 | Command | Description |
 |---------|-------------|
-| [`search`](/cli/commands/search) | Search the registry |
-| [`add`](/cli/commands/add) | Add cognitives |
+| [`add`](/cli/commands/add) | Add cognitives from registry, local path, or GitHub |
 | [`list`](/cli/commands/list) | List installed cognitives |
+| [`list --remote`](/cli/commands/list) | Browse the registry |
 | [`uninstall`](/cli/commands/uninstall) | Remove cognitives |
 | [`update`](/cli/commands/update) | Update cognitives |
 
@@ -86,6 +86,6 @@ Filter by type or category:
 
 ```bash
 synapsync list --type skill
-synapsync search --category frontend
+synapsync list --remote --category frontend
 synapsync sync --type agent --provider claude
 ```
