@@ -84,7 +84,7 @@ export async function executeInitCommand(options: InitOptions = {}): Promise<Ini
           defaultValue: defaultName,
           validate: (value) => {
             // Use defaultValue if empty (user pressed Enter)
-            const finalValue = value.trim() === '' ? defaultName : value;
+            const finalValue = (value ?? '').trim() === '' ? defaultName : value!;
             if (!/^[a-z0-9-_]+$/i.test(finalValue)) {
               return 'Project name can only contain letters, numbers, hyphens, and underscores';
             }
