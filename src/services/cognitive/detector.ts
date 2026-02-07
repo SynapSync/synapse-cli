@@ -249,7 +249,7 @@ export async function detectFromGitHub(source: InstallSource): Promise<FileDetec
       return { found: false, type: null, fileName: null, filePath: null };
     }
 
-    const contents = await response.json() as Array<{ name: string; type: string; path: string }>;
+    const contents = (await response.json()) as Array<{ name: string; type: string; path: string }>;
 
     // Check if response is an array (directory listing)
     if (!Array.isArray(contents)) {

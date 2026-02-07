@@ -3,7 +3,11 @@
  */
 
 import type { CognitiveType, SupportedProvider } from '../../core/constants.js';
-import { SUPPORTED_PROVIDERS, PROVIDER_PATHS, DEFAULT_SYNAPSYNC_DIR } from '../../core/constants.js';
+import {
+  SUPPORTED_PROVIDERS,
+  PROVIDER_PATHS,
+  DEFAULT_SYNAPSYNC_DIR,
+} from '../../core/constants.js';
 
 // ============================================
 // Configuration Types
@@ -78,7 +82,9 @@ export function createDefaultConfig(name: string, description?: string): Project
     storage: { ...DEFAULT_STORAGE_CONFIG },
     sync: {
       method: DEFAULT_SYNC_CONFIG.method,
-      providers: JSON.parse(JSON.stringify(DEFAULT_SYNC_CONFIG.providers)) as SyncConfig['providers'],
+      providers: JSON.parse(
+        JSON.stringify(DEFAULT_SYNC_CONFIG.providers)
+      ) as SyncConfig['providers'],
     },
   };
   if (description !== undefined) {
@@ -117,7 +123,10 @@ export function validateConfig(config: unknown): ValidationError[] {
       errors.push({ path: 'cli', message: 'cli must be an object' });
     } else {
       const cli = cfg['cli'] as Record<string, unknown>;
-      if (cli['theme'] !== undefined && !['auto', 'light', 'dark'].includes(cli['theme'] as string)) {
+      if (
+        cli['theme'] !== undefined &&
+        !['auto', 'light', 'dark'].includes(cli['theme'] as string)
+      ) {
         errors.push({ path: 'cli.theme', message: 'theme must be auto, light, or dark' });
       }
     }
@@ -147,7 +156,10 @@ export function validateConfig(config: unknown): ValidationError[] {
               });
             }
             if (typeof value !== 'object' || value === null) {
-              errors.push({ path: `sync.providers.${key}`, message: 'Provider config must be an object' });
+              errors.push({
+                path: `sync.providers.${key}`,
+                message: 'Provider config must be an object',
+              });
             }
           }
         }

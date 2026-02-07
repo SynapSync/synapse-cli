@@ -30,11 +30,7 @@ export {
 } from './detector.js';
 
 // Prompter
-export {
-  promptForCognitiveType,
-  showDetectionResult,
-  confirmCognitiveType,
-} from './prompter.js';
+export { promptForCognitiveType, showDetectionResult, confirmCognitiveType } from './prompter.js';
 
 // ============================================
 // High-level API

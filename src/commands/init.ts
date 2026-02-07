@@ -277,11 +277,7 @@ function getProviderHint(provider: SupportedProvider): string {
   return hints[provider];
 }
 
-function showSuccessMessage(
-  setup: ProjectSetup,
-  configPath: string,
-  storagePath: string
-): void {
+function showSuccessMessage(setup: ProjectSetup, configPath: string, storagePath: string): void {
   logger.line();
   p.note(
     [
@@ -322,12 +318,21 @@ export function registerInitCommand(program: Command): void {
     .option('-d, --description <desc>', 'Project description')
     .option('-p, --provider <providers...>', 'Enable providers (claude, openai, etc.)')
     .option('-y, --yes', 'Skip prompts and use defaults')
-    .action(async (options: { name?: string; description?: string; provider?: string[]; yes?: boolean }) => {
-      await executeInitCommand({
-        ...(options.name !== undefined && { name: options.name }),
-        ...(options.description !== undefined && { description: options.description }),
-        ...(options.provider !== undefined && { providers: options.provider as SupportedProvider[] }),
-        ...(options.yes !== undefined && { yes: options.yes }),
-      });
-    });
+    .action(
+      async (options: {
+        name?: string;
+        description?: string;
+        provider?: string[];
+        yes?: boolean;
+      }) => {
+        await executeInitCommand({
+          ...(options.name !== undefined && { name: options.name }),
+          ...(options.description !== undefined && { description: options.description }),
+          ...(options.provider !== undefined && {
+            providers: options.provider as SupportedProvider[],
+          }),
+          ...(options.yes !== undefined && { yes: options.yes }),
+        });
+      }
+    );
 }

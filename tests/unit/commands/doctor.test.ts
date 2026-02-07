@@ -147,7 +147,9 @@ describe('executeDoctorCommand', () => {
 
     await executeDoctorCommand({ check: ['synapsync-dir'] });
 
-    expect(mockDiagnose).toHaveBeenCalledWith(expect.objectContaining({ checks: ['synapsync-dir'] }));
+    expect(mockDiagnose).toHaveBeenCalledWith(
+      expect.objectContaining({ checks: ['synapsync-dir'] })
+    );
   });
 
   it('should output JSON when requested', async () => {
@@ -194,13 +196,15 @@ describe('executeDoctorCommand', () => {
     mockFindConfig.mockReturnValue(mockConfigManager);
     mockDiagnose.mockResolvedValue({
       healthy: false,
-      checks: [{
-        id: 'test',
-        name: 'Test check',
-        status: 'fail',
-        message: 'Something is wrong',
-        details: ['detail 1', 'detail 2'],
-      }],
+      checks: [
+        {
+          id: 'test',
+          name: 'Test check',
+          status: 'fail',
+          message: 'Something is wrong',
+          details: ['detail 1', 'detail 2'],
+        },
+      ],
       passed: 0,
       failed: 1,
       warnings: 0,

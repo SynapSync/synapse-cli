@@ -98,10 +98,12 @@ describe('executeListCommand', () => {
   it('should show empty message when no cognitives', async () => {
     mockFindConfig.mockReturnValue(mockConfigManager);
     vi.mocked(fs.existsSync).mockReturnValue(true);
-    vi.mocked(fs.readFileSync).mockReturnValue(JSON.stringify({
-      ...mockManifest,
-      cognitives: {},
-    }));
+    vi.mocked(fs.readFileSync).mockReturnValue(
+      JSON.stringify({
+        ...mockManifest,
+        cognitives: {},
+      })
+    );
 
     await executeListCommand({});
 

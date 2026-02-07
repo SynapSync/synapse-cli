@@ -41,7 +41,7 @@ const mockConfigManager = {
     sync: { method: 'symlink', providers: {} },
   }),
   flatten: vi.fn().mockReturnValue({
-    'name': 'test',
+    name: 'test',
     'cli.theme': 'auto',
     'cli.color': true,
     'cli.verbose': false,

@@ -129,7 +129,12 @@ describe('SymlinkManager', () => {
       // We need getExistingLinks to find something
       vi.mocked(fs.existsSync).mockReturnValue(true);
       vi.mocked(fs.readdirSync).mockReturnValue([
-        { name: 'test-agent.md', isFile: () => true, isDirectory: () => false, isSymbolicLink: () => true },
+        {
+          name: 'test-agent.md',
+          isFile: () => true,
+          isDirectory: () => false,
+          isSymbolicLink: () => true,
+        },
       ] as unknown as fs.Dirent[]);
       vi.mocked(fs.lstatSync).mockReturnValue({
         isSymbolicLink: () => true,
@@ -139,7 +144,9 @@ describe('SymlinkManager', () => {
       vi.mocked(fs.statSync).mockReturnValue({
         isDirectory: () => false,
       } as unknown as fs.Stats);
-      vi.mocked(fs.readlinkSync).mockReturnValue('../../.synapsync/agents/testing/test-agent/test-agent.md');
+      vi.mocked(fs.readlinkSync).mockReturnValue(
+        '../../.synapsync/agents/testing/test-agent/test-agent.md'
+      );
 
       const result = manager.syncProvider('claude', [agentCognitive]);
 
@@ -194,7 +201,12 @@ describe('SymlinkManager', () => {
       vi.mocked(fs.readdirSync).mockImplementation((p) => {
         if (String(p).includes('.claude/agents')) {
           return [
-            { name: 'old-agent.md', isFile: () => true, isDirectory: () => false, isSymbolicLink: () => true },
+            {
+              name: 'old-agent.md',
+              isFile: () => true,
+              isDirectory: () => false,
+              isSymbolicLink: () => true,
+            },
           ] as unknown as fs.Dirent[];
         }
         return [] as unknown as fs.Dirent[];
@@ -207,7 +219,9 @@ describe('SymlinkManager', () => {
       vi.mocked(fs.statSync).mockReturnValue({
         isDirectory: () => false,
       } as unknown as fs.Stats);
-      vi.mocked(fs.readlinkSync).mockReturnValue('../../.synapsync/agents/general/old-agent/old-agent.md');
+      vi.mocked(fs.readlinkSync).mockReturnValue(
+        '../../.synapsync/agents/general/old-agent/old-agent.md'
+      );
 
       const result = manager.syncProvider('claude', []);
 
@@ -219,7 +233,12 @@ describe('SymlinkManager', () => {
       vi.mocked(fs.readdirSync).mockImplementation((p) => {
         if (String(p).includes('.claude/agents')) {
           return [
-            { name: 'old-agent.md', isFile: () => true, isDirectory: () => false, isSymbolicLink: () => true },
+            {
+              name: 'old-agent.md',
+              isFile: () => true,
+              isDirectory: () => false,
+              isSymbolicLink: () => true,
+            },
           ] as unknown as fs.Dirent[];
         }
         return [] as unknown as fs.Dirent[];
@@ -235,7 +254,9 @@ describe('SymlinkManager', () => {
         throw new Error('lstat error');
       });
       vi.mocked(fs.statSync).mockReturnValue({ isDirectory: () => false } as unknown as fs.Stats);
-      vi.mocked(fs.readlinkSync).mockReturnValue('../../.synapsync/agents/general/old-agent/old-agent.md');
+      vi.mocked(fs.readlinkSync).mockReturnValue(
+        '../../.synapsync/agents/general/old-agent/old-agent.md'
+      );
       vi.mocked(fs.unlinkSync).mockImplementation(() => {
         throw new Error('Permission denied');
       });
@@ -291,7 +312,12 @@ describe('SymlinkManager', () => {
     it('should scan provider directories for links', () => {
       vi.mocked(fs.existsSync).mockReturnValue(true);
       vi.mocked(fs.readdirSync).mockReturnValue([
-        { name: 'my-skill', isFile: () => false, isDirectory: () => true, isSymbolicLink: () => false },
+        {
+          name: 'my-skill',
+          isFile: () => false,
+          isDirectory: () => true,
+          isSymbolicLink: () => false,
+        },
       ] as unknown as fs.Dirent[]);
       vi.mocked(fs.lstatSync).mockReturnValue({
         isSymbolicLink: () => false,
@@ -307,7 +333,12 @@ describe('SymlinkManager', () => {
     it('should skip hidden entries', () => {
       vi.mocked(fs.existsSync).mockReturnValue(true);
       vi.mocked(fs.readdirSync).mockReturnValue([
-        { name: '.hidden', isFile: () => true, isDirectory: () => false, isSymbolicLink: () => false },
+        {
+          name: '.hidden',
+          isFile: () => true,
+          isDirectory: () => false,
+          isSymbolicLink: () => false,
+        },
       ] as unknown as fs.Dirent[]);
 
       const links = manager.getExistingLinks('claude');
@@ -327,16 +358,26 @@ describe('SymlinkManager', () => {
       vi.mocked(fs.existsSync).mockImplementation((p) => {
         const pathStr = String(p);
         // Provider type directories exist (e.g., /test/project/.claude/agents)
-        if (pathStr.endsWith('/agents') || pathStr.endsWith('/skills') ||
-            pathStr.endsWith('/prompts') || pathStr.endsWith('/workflows') ||
-            pathStr.endsWith('/tools')) return true;
+        if (
+          pathStr.endsWith('/agents') ||
+          pathStr.endsWith('/skills') ||
+          pathStr.endsWith('/prompts') ||
+          pathStr.endsWith('/workflows') ||
+          pathStr.endsWith('/tools')
+        )
+          return true;
         // All other paths (including resolved symlink targets) don't exist
         return false;
       });
       vi.mocked(fs.readdirSync).mockImplementation((p) => {
         if (String(p).includes('.claude/agents')) {
           return [
-            { name: 'broken-link.md', isFile: () => false, isDirectory: () => false, isSymbolicLink: () => true },
+            {
+              name: 'broken-link.md',
+              isFile: () => false,
+              isDirectory: () => false,
+              isSymbolicLink: () => true,
+            },
           ] as unknown as fs.Dirent[];
         }
         return [] as unknown as fs.Dirent[];
@@ -360,7 +401,12 @@ describe('SymlinkManager', () => {
     it('should handle getLinkInfo errors gracefully', () => {
       vi.mocked(fs.existsSync).mockReturnValue(true);
       vi.mocked(fs.readdirSync).mockReturnValue([
-        { name: 'error-link.md', isFile: () => true, isDirectory: () => false, isSymbolicLink: () => false },
+        {
+          name: 'error-link.md',
+          isFile: () => true,
+          isDirectory: () => false,
+          isSymbolicLink: () => false,
+        },
       ] as unknown as fs.Dirent[]);
       vi.mocked(fs.lstatSync).mockImplementation(() => {
         throw new Error('Access denied');
@@ -379,19 +425,32 @@ describe('SymlinkManager', () => {
       vi.mocked(fs.readdirSync).mockImplementation((p) => {
         if (String(p).includes('.claude/agents')) {
           return [
-            { name: 'valid-agent.md', isFile: () => false, isDirectory: () => false, isSymbolicLink: () => true },
-            { name: 'broken-agent.md', isFile: () => false, isDirectory: () => false, isSymbolicLink: () => true },
+            {
+              name: 'valid-agent.md',
+              isFile: () => false,
+              isDirectory: () => false,
+              isSymbolicLink: () => true,
+            },
+            {
+              name: 'broken-agent.md',
+              isFile: () => false,
+              isDirectory: () => false,
+              isSymbolicLink: () => true,
+            },
           ] as unknown as fs.Dirent[];
         }
         return [] as unknown as fs.Dirent[];
       });
 
       let callCount = 0;
-      vi.mocked(fs.lstatSync).mockImplementation(() => ({
-        isSymbolicLink: () => true,
-        isDirectory: () => false,
-        isFile: () => false,
-      }) as unknown as fs.Stats);
+      vi.mocked(fs.lstatSync).mockImplementation(
+        () =>
+          ({
+            isSymbolicLink: () => true,
+            isDirectory: () => false,
+            isFile: () => false,
+          }) as unknown as fs.Stats
+      );
 
       vi.mocked(fs.statSync).mockImplementation((p) => {
         if (String(p).includes('broken-agent')) {
@@ -409,7 +468,9 @@ describe('SymlinkManager', () => {
 
       const result = manager.verifyProvider('claude');
 
-      expect(result.valid.length + result.broken.length + result.orphaned.length).toBeGreaterThan(0);
+      expect(result.valid.length + result.broken.length + result.orphaned.length).toBeGreaterThan(
+        0
+      );
     });
 
     it('should detect broken symlinks', () => {
@@ -421,7 +482,12 @@ describe('SymlinkManager', () => {
       vi.mocked(fs.readdirSync).mockImplementation((p) => {
         if (String(p).includes('.claude/skills')) {
           return [
-            { name: 'broken-skill', isFile: () => false, isDirectory: () => false, isSymbolicLink: () => true },
+            {
+              name: 'broken-skill',
+              isFile: () => false,
+              isDirectory: () => false,
+              isSymbolicLink: () => true,
+            },
           ] as unknown as fs.Dirent[];
         }
         return [] as unknown as fs.Dirent[];
@@ -447,15 +513,25 @@ describe('SymlinkManager', () => {
     it('should remove broken and orphaned links', () => {
       vi.mocked(fs.existsSync).mockImplementation((p) => {
         const pathStr = String(p);
-        if (pathStr.endsWith('/agents') || pathStr.endsWith('/skills') ||
-            pathStr.endsWith('/prompts') || pathStr.endsWith('/workflows') ||
-            pathStr.endsWith('/tools')) return true;
+        if (
+          pathStr.endsWith('/agents') ||
+          pathStr.endsWith('/skills') ||
+          pathStr.endsWith('/prompts') ||
+          pathStr.endsWith('/workflows') ||
+          pathStr.endsWith('/tools')
+        )
+          return true;
         return false;
       });
       vi.mocked(fs.readdirSync).mockImplementation((p) => {
         if (String(p).endsWith('.claude/agents')) {
           return [
-            { name: 'broken-agent.md', isFile: () => false, isDirectory: () => false, isSymbolicLink: () => true },
+            {
+              name: 'broken-agent.md',
+              isFile: () => false,
+              isDirectory: () => false,
+              isSymbolicLink: () => true,
+            },
           ] as unknown as fs.Dirent[];
         }
         return [] as unknown as fs.Dirent[];
@@ -488,7 +564,12 @@ describe('SymlinkManager', () => {
       vi.mocked(fs.readdirSync).mockImplementation((p) => {
         if (String(p).includes('.claude/agents')) {
           return [
-            { name: 'broken-agent.md', isFile: () => false, isDirectory: () => false, isSymbolicLink: () => true },
+            {
+              name: 'broken-agent.md',
+              isFile: () => false,
+              isDirectory: () => false,
+              isSymbolicLink: () => true,
+            },
           ] as unknown as fs.Dirent[];
         }
         return [] as unknown as fs.Dirent[];
@@ -517,7 +598,12 @@ describe('SymlinkManager', () => {
       vi.mocked(fs.readdirSync).mockImplementation((p) => {
         if (String(p).includes('.claude/agents')) {
           return [
-            { name: 'broken-agent.md', isFile: () => false, isDirectory: () => false, isSymbolicLink: () => true },
+            {
+              name: 'broken-agent.md',
+              isFile: () => false,
+              isDirectory: () => false,
+              isSymbolicLink: () => true,
+            },
           ] as unknown as fs.Dirent[];
         }
         return [] as unknown as fs.Dirent[];

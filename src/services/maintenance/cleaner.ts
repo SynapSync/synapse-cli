@@ -6,12 +6,7 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import type {
-  CleanResult,
-  CleanedItem,
-  CleanError,
-  CleanOptions,
-} from './types.js';
+import type { CleanResult, CleanedItem, CleanError, CleanOptions } from './types.js';
 import { SymlinkManager } from '../symlink/manager.js';
 import type { ProjectConfig } from '../config/schema.js';
 import type { SupportedProvider } from '../../core/constants.js';

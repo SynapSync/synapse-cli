@@ -256,10 +256,42 @@ describe('CognitiveScanner', () => {
   describe('countByType', () => {
     it('should count cognitives by type', () => {
       const cognitives: ScannedCognitive[] = [
-        { name: 'skill-1', type: 'skill', category: 'general', path: '', filePath: '', hash: '', metadata: {} },
-        { name: 'skill-2', type: 'skill', category: 'frontend', path: '', filePath: '', hash: '', metadata: {} },
-        { name: 'agent-1', type: 'agent', category: 'backend', path: '', filePath: '', hash: '', metadata: {} },
-        { name: 'prompt-1', type: 'prompt', category: 'general', path: '', filePath: '', hash: '', metadata: {} },
+        {
+          name: 'skill-1',
+          type: 'skill',
+          category: 'general',
+          path: '',
+          filePath: '',
+          hash: '',
+          metadata: {},
+        },
+        {
+          name: 'skill-2',
+          type: 'skill',
+          category: 'frontend',
+          path: '',
+          filePath: '',
+          hash: '',
+          metadata: {},
+        },
+        {
+          name: 'agent-1',
+          type: 'agent',
+          category: 'backend',
+          path: '',
+          filePath: '',
+          hash: '',
+          metadata: {},
+        },
+        {
+          name: 'prompt-1',
+          type: 'prompt',
+          category: 'general',
+          path: '',
+          filePath: '',
+          hash: '',
+          metadata: {},
+        },
       ];
 
       const scanner = new CognitiveScanner(testDir);

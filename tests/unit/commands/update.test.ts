@@ -197,7 +197,16 @@ describe('executeUpdateCommand', () => {
     mockGetCognitives.mockReturnValue(installedCognitives);
     mockCheckAll.mockResolvedValue({
       checked: 1,
-      updatesAvailable: [{ name: 'test-skill', hasUpdate: true, currentVersion: '1.0.0', latestVersion: '2.0.0', type: 'skill', category: 'general' }],
+      updatesAvailable: [
+        {
+          name: 'test-skill',
+          hasUpdate: true,
+          currentVersion: '1.0.0',
+          latestVersion: '2.0.0',
+          type: 'skill',
+          category: 'general',
+        },
+      ],
       upToDate: [],
       errors: [],
       checkTime: new Date().toISOString(),
@@ -213,7 +222,16 @@ describe('executeUpdateCommand', () => {
     mockGetCognitives.mockReturnValue(installedCognitives);
     mockCheckAll.mockResolvedValue({
       checked: 1,
-      updatesAvailable: [{ name: 'test-skill', hasUpdate: true, currentVersion: '1.0.0', latestVersion: '2.0.0', type: 'skill', category: 'general' }],
+      updatesAvailable: [
+        {
+          name: 'test-skill',
+          hasUpdate: true,
+          currentVersion: '1.0.0',
+          latestVersion: '2.0.0',
+          type: 'skill',
+          category: 'general',
+        },
+      ],
       upToDate: [],
       errors: [],
       checkTime: new Date().toISOString(),
@@ -236,7 +254,16 @@ describe('executeUpdateCommand', () => {
     mockGetCognitives.mockReturnValue(installedCognitives);
     mockCheckAll.mockResolvedValue({
       checked: 1,
-      updatesAvailable: [{ name: 'test-skill', hasUpdate: true, currentVersion: '1.0.0', latestVersion: '2.0.0', type: 'skill', category: 'general' }],
+      updatesAvailable: [
+        {
+          name: 'test-skill',
+          hasUpdate: true,
+          currentVersion: '1.0.0',
+          latestVersion: '2.0.0',
+          type: 'skill',
+          category: 'general',
+        },
+      ],
       upToDate: [],
       errors: [],
       checkTime: new Date().toISOString(),

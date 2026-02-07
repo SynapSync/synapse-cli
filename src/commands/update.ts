@@ -92,7 +92,9 @@ export async function executeUpdateCommand(
     }
 
     if (cognitive.source !== 'registry') {
-      logger.error(`Cognitive '${cognitiveName}' was installed locally and cannot be updated from registry.`);
+      logger.error(
+        `Cognitive '${cognitiveName}' was installed locally and cannot be updated from registry.`
+      );
       return;
     }
 
@@ -152,12 +154,7 @@ export async function executeUpdateCommand(
       const manifestEntry = installed.find((c) => c.name === update.name);
       if (manifestEntry === undefined) continue;
 
-      const targetDir = path.join(
-        synapSyncDir,
-        `${update.type}s`,
-        update.category,
-        update.name
-      );
+      const targetDir = path.join(synapSyncDir, `${update.type}s`, update.category, update.name);
 
       // Save the new version
       const fileName = COGNITIVE_FILE_NAMES[update.type];
@@ -183,7 +180,9 @@ export async function executeUpdateCommand(
         name: update.name,
         error: error instanceof Error ? error.message : 'Unknown error',
       });
-      logger.log(`    ${pc.red('✗')} Failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      logger.log(
+        `    ${pc.red('✗')} Failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 

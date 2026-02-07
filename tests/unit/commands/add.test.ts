@@ -76,7 +76,7 @@ vi.mock('../../../src/utils/logger.js', () => ({
 }));
 
 import * as fs from 'fs';
-import { executeAddCommand } from '../../../src/commands/add.js';
+import { executeAddCommand, GitHubInstallError } from '../../../src/commands/add.js';
 import { CognitiveNotFoundError, RegistryError } from '../../../src/services/registry/client.js';
 
 const mockConfigManager = {
@@ -161,12 +161,14 @@ describe('executeAddCommand', () => {
     });
     mockRegistryFindByName.mockResolvedValue(null);
     vi.mocked(fs.existsSync).mockReturnValue(true);
-    vi.mocked(fs.readFileSync).mockReturnValue(JSON.stringify({
-      version: '1.0.0',
-      lastUpdated: '2026-01-01',
-      cognitives: {},
-      syncs: {},
-    }));
+    vi.mocked(fs.readFileSync).mockReturnValue(
+      JSON.stringify({
+        version: '1.0.0',
+        lastUpdated: '2026-01-01',
+        cognitives: {},
+        syncs: {},
+      })
+    );
     vi.mocked(fs.mkdirSync).mockImplementation(() => undefined as unknown as string);
     vi.mocked(fs.writeFileSync).mockImplementation(() => undefined);
 
@@ -207,12 +209,16 @@ describe('executeAddCommand', () => {
     expect(mockLogger.error).toHaveBeenCalledWith(expect.stringContaining('Path not found'));
   });
 
-  it('should show GitHub not implemented message', async () => {
+  it('should handle GitHubInstallError when no cognitive found', async () => {
     mockFindConfig.mockReturnValue(mockConfigManager);
+    // Mock global fetch to return 404 for all files
+    const mockFetch = vi.fn().mockResolvedValue({ ok: false, status: 404 });
+    vi.stubGlobal('fetch', mockFetch);
 
     await executeAddCommand('github:user/repo', {});
 
-    expect(mockLogger.error).toHaveBeenCalledWith(expect.stringContaining('not yet fully implemented'));
+    expect(mockLogger.error).toHaveBeenCalledWith(expect.stringContaining('GitHub install failed'));
+    vi.unstubAllGlobals();
   });
 
   it('should handle CognitiveNotFoundError', async () => {
@@ -243,13 +249,18 @@ describe('executeAddCommand', () => {
     expect(mockLogger.error).toHaveBeenCalledWith(expect.stringContaining('Installation failed'));
   });
 
-  it('should parse GitHub URL source', async () => {
+  it('should parse GitHub URL source and attempt install', async () => {
     mockFindConfig.mockReturnValue(mockConfigManager);
+    // Mock global fetch to return 404 for all files
+    const mockFetch = vi.fn().mockResolvedValue({ ok: false, status: 404 });
+    vi.stubGlobal('fetch', mockFetch);
 
     await executeAddCommand('https://github.com/user/repo', {});
 
-    // GitHub install shows not implemented
-    expect(mockLogger.error).toHaveBeenCalledWith(expect.stringContaining('not yet fully implemented'));
+    // Should have tried to fetch from raw.githubusercontent.com
+    expect(mockFetch).toHaveBeenCalled();
+    expect(mockLogger.error).toHaveBeenCalledWith(expect.stringContaining('GitHub install failed'));
+    vi.unstubAllGlobals();
   });
 
   it('should auto-sync to providers after install', async () => {
@@ -269,13 +280,15 @@ describe('executeAddCommand', () => {
     vi.mocked(fs.mkdirSync).mockImplementation(() => undefined as unknown as string);
     vi.mocked(fs.writeFileSync).mockImplementation(() => undefined);
     mockSync.mockReturnValue({
-      providerResults: [{
-        provider: 'claude',
-        created: [{ name: 'test-skill', success: true }],
-        skipped: [],
-        removed: [],
-        errors: [],
-      }],
+      providerResults: [
+        {
+          provider: 'claude',
+          created: [{ name: 'test-skill', success: true }],
+          skipped: [],
+          removed: [],
+          errors: [],
+        },
+      ],
     });
 
     await executeAddCommand('test-skill', {});

@@ -9,7 +9,12 @@ import * as path from 'path';
 import type { Command } from 'commander';
 import pc from 'picocolors';
 import { ConfigManager } from '../services/config/manager.js';
-import { SUPPORTED_PROVIDERS, PROVIDER_PATHS, COGNITIVE_TYPES, AGENTS_MD_FILE_NAME } from '../core/constants.js';
+import {
+  SUPPORTED_PROVIDERS,
+  PROVIDER_PATHS,
+  COGNITIVE_TYPES,
+  AGENTS_MD_FILE_NAME,
+} from '../core/constants.js';
 import { logger } from '../utils/logger.js';
 
 // ============================================

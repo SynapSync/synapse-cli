@@ -304,7 +304,10 @@ export class SymlinkManager {
   /**
    * Create a symlink or copy
    */
-  private createLink(mapping: CognitiveSymlinkMapping, options: SymlinkOptions): SymlinkCreateResult {
+  private createLink(
+    mapping: CognitiveSymlinkMapping,
+    options: SymlinkOptions
+  ): SymlinkCreateResult {
     const method = this.getMethod(options);
     const isFile = mapping.isFile ?? false;
 

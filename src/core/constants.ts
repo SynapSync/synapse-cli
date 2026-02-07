@@ -23,11 +23,11 @@ export const COGNITIVE_FILE_EXTENSIONS: Record<CognitiveType, string> = {
 // - 'folder': Sync entire folder (for cognitives with assets, like skills)
 // - 'file': Sync as flat file (for simple cognitives like agents)
 export const COGNITIVE_SYNC_MODE: Record<CognitiveType, 'folder' | 'file'> = {
-  skill: 'folder',   // Skills have SKILL.md + assets/ folder
-  agent: 'file',     // Agents are single .md files
-  prompt: 'file',    // Prompts are single .md files
-  workflow: 'file',  // Workflows are single .yaml files
-  tool: 'file',      // Tools are single .md files
+  skill: 'folder', // Skills have SKILL.md + assets/ folder
+  agent: 'file', // Agents are single .md files
+  prompt: 'file', // Prompts are single .md files
+  workflow: 'file', // Workflows are single .yaml files
+  tool: 'file', // Tools are single .md files
 };
 
 // Legacy: Default file names per cognitive type (for backward compatibility)

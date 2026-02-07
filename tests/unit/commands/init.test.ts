@@ -4,7 +4,16 @@
 
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 
-const { mockIsProjectInitialized, mockConfigCreate, mockConfigSet, mockConfigSave, mockLogger, mockSpinner, mockNote, mockOutro } = vi.hoisted(() => ({
+const {
+  mockIsProjectInitialized,
+  mockConfigCreate,
+  mockConfigSet,
+  mockConfigSave,
+  mockLogger,
+  mockSpinner,
+  mockNote,
+  mockOutro,
+} = vi.hoisted(() => ({
   mockIsProjectInitialized: vi.fn(),
   mockConfigCreate: vi.fn(),
   mockConfigSet: vi.fn(),
@@ -34,7 +43,9 @@ vi.mock('../../../src/services/config/manager.js', () => {
       save: mockConfigSave,
     };
   });
-  (MockConfigManager as unknown as Record<string, unknown>).isProjectInitialized = (...args: unknown[]) => mockIsProjectInitialized(...args);
+  (MockConfigManager as unknown as Record<string, unknown>).isProjectInitialized = (
+    ...args: unknown[]
+  ) => mockIsProjectInitialized(...args);
   return { ConfigManager: MockConfigManager };
 });
 

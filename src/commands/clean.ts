@@ -87,10 +87,14 @@ export function executeCleanCommand(options: CleanCommandOptions = {}): void {
   if (result.cleaned.length === 0) {
     logger.log(`  ${pc.green('✓')} Nothing to clean`);
   } else if (options.dryRun === true) {
-    logger.log(`  ${pc.dim(`Would clean ${result.cleaned.length} item(s), freeing ${result.sizeFreed}`)}`);
+    logger.log(
+      `  ${pc.dim(`Would clean ${result.cleaned.length} item(s), freeing ${result.sizeFreed}`)}`
+    );
     logger.hint('Run synapsync clean without --dry-run to apply changes.');
   } else {
-    logger.log(`  ${pc.green('✓')} Cleaned ${result.cleaned.length} item(s), freed ${result.sizeFreed}`);
+    logger.log(
+      `  ${pc.green('✓')} Cleaned ${result.cleaned.length} item(s), freed ${result.sizeFreed}`
+    );
   }
 
   if (result.errors.length > 0) {

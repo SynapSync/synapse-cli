@@ -8,7 +8,11 @@ import type { Command } from 'commander';
 import pc from 'picocolors';
 import { ConfigManager } from '../services/config/manager.js';
 import { DoctorService } from '../services/maintenance/doctor.js';
-import type { DiagnosticCheck, DiagnosticResult, FixResult } from '../services/maintenance/types.js';
+import type {
+  DiagnosticCheck,
+  DiagnosticResult,
+  FixResult,
+} from '../services/maintenance/types.js';
 import { logger } from '../utils/logger.js';
 
 // ============================================

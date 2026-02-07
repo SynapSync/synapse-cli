@@ -115,11 +115,7 @@ project:
       manager.load();
       manager.save();
 
-      expect(fs.writeFileSync).toHaveBeenCalledWith(
-        configPath,
-        expect.any(String),
-        'utf-8'
-      );
+      expect(fs.writeFileSync).toHaveBeenCalledWith(configPath, expect.any(String), 'utf-8');
     });
 
     it('should throw error when no config loaded', () => {

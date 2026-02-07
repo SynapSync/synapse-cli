@@ -70,7 +70,10 @@ export class RegistryClient {
     const response = await this.fetch(url);
 
     if (!response.ok) {
-      throw new RegistryError(`Failed to fetch registry index: ${response.status} ${response.statusText}`, url);
+      throw new RegistryError(
+        `Failed to fetch registry index: ${response.status} ${response.statusText}`,
+        url
+      );
     }
 
     const index = (await response.json()) as RegistryIndex;
@@ -185,7 +188,10 @@ export class RegistryClient {
   /**
    * Get the content file for a cognitive
    */
-  async getContent(cognitiveEntry: RegistryCognitiveEntry, manifest: CognitiveManifest): Promise<string> {
+  async getContent(
+    cognitiveEntry: RegistryCognitiveEntry,
+    manifest: CognitiveManifest
+  ): Promise<string> {
     const url = `${this.baseUrl}/${cognitiveEntry.path}/${manifest.file}`;
     const response = await this.fetch(url);
 

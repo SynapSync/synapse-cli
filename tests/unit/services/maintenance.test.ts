@@ -216,7 +216,9 @@ describe('DoctorService', () => {
   describe('diagnose', () => {
     it('should run all diagnostic checks', async () => {
       vi.mocked(fs.existsSync).mockReturnValue(true);
-      vi.mocked(fs.readFileSync).mockReturnValue(JSON.stringify({ version: '1.0.0', cognitives: {} }));
+      vi.mocked(fs.readFileSync).mockReturnValue(
+        JSON.stringify({ version: '1.0.0', cognitives: {} })
+      );
 
       const doctor = new DoctorService(projectRoot, synapSyncDir, mockConfig);
       const result = await doctor.diagnose();
@@ -249,7 +251,9 @@ describe('DoctorService', () => {
 
     it('should pass when .synapsync directory exists', async () => {
       vi.mocked(fs.existsSync).mockReturnValue(true);
-      vi.mocked(fs.readFileSync).mockReturnValue(JSON.stringify({ version: '1.0.0', cognitives: {} }));
+      vi.mocked(fs.readFileSync).mockReturnValue(
+        JSON.stringify({ version: '1.0.0', cognitives: {} })
+      );
 
       const doctor = new DoctorService(projectRoot, synapSyncDir, mockConfig);
       const result = await doctor.diagnose({ checks: ['synapsync-dir'] });
@@ -260,7 +264,9 @@ describe('DoctorService', () => {
 
     it('should compute healthy status correctly', async () => {
       vi.mocked(fs.existsSync).mockReturnValue(true);
-      vi.mocked(fs.readFileSync).mockReturnValue(JSON.stringify({ version: '1.0.0', cognitives: {} }));
+      vi.mocked(fs.readFileSync).mockReturnValue(
+        JSON.stringify({ version: '1.0.0', cognitives: {} })
+      );
 
       const doctor = new DoctorService(projectRoot, synapSyncDir, mockConfig);
       const result = await doctor.diagnose({ checks: ['synapsync-dir'] });

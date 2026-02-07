@@ -3,7 +3,11 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { parseFrontmatter, extractVersion, extractName } from '../../../src/services/scanner/parser.js';
+import {
+  parseFrontmatter,
+  extractVersion,
+  extractName,
+} from '../../../src/services/scanner/parser.js';
 
 describe('parseFrontmatter', () => {
   it('should parse basic key-value pairs', () => {

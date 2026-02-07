@@ -62,12 +62,12 @@ registerInteractiveCommand(
     logger.line();
 
     const categories: Record<string, string[]> = {
-      'Information': ['info', 'version'],
-      'Project': ['init', 'config', 'status'],
-      'Providers': ['providers'],
-      'Cognitives': ['add', 'list', 'uninstall'],
-      'Sync': ['sync'],
-      'Maintenance': ['update', 'doctor', 'clean', 'purge'],
+      Information: ['info', 'version'],
+      Project: ['init', 'config', 'status'],
+      Providers: ['providers'],
+      Cognitives: ['add', 'list', 'uninstall'],
+      Sync: ['sync'],
+      Maintenance: ['update', 'doctor', 'clean', 'purge'],
     };
 
     for (const [category, cmds] of Object.entries(categories)) {

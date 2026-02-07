@@ -4,7 +4,14 @@
 
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 
-const { mockFindConfig, mockSync, mockGetStatus, mockGetProviderStatus, mockRegenerateAgentsMd, mockLogger } = vi.hoisted(() => ({
+const {
+  mockFindConfig,
+  mockSync,
+  mockGetStatus,
+  mockGetProviderStatus,
+  mockRegenerateAgentsMd,
+  mockLogger,
+} = vi.hoisted(() => ({
   mockFindConfig: vi.fn(),
   mockSync: vi.fn(),
   mockGetStatus: vi.fn(),
@@ -206,14 +213,16 @@ describe('executeSyncCommand', () => {
       ...emptySyncResult,
       added: 1,
       actions: [{ operation: 'add', cognitive: 'my-skill' }],
-      providerResults: [{
-        provider: 'claude',
-        method: 'symlink',
-        created: [{ name: 'my-skill', success: true }],
-        skipped: [],
-        removed: [],
-        errors: [],
-      }],
+      providerResults: [
+        {
+          provider: 'claude',
+          method: 'symlink',
+          created: [{ name: 'my-skill', success: true }],
+          skipped: [],
+          removed: [],
+          errors: [],
+        },
+      ],
     });
 
     executeSyncCommand({});

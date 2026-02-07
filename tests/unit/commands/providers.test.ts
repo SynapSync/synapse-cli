@@ -43,7 +43,16 @@ const mockConfigManager = {
     sync: {
       method: 'symlink',
       providers: {
-        claude: { enabled: true, paths: { skill: '.claude/skills', agent: '.claude/agents', prompt: '.claude/prompts', workflow: '.claude/workflows', tool: '.claude/tools' } },
+        claude: {
+          enabled: true,
+          paths: {
+            skill: '.claude/skills',
+            agent: '.claude/agents',
+            prompt: '.claude/prompts',
+            workflow: '.claude/workflows',
+            tool: '.claude/tools',
+          },
+        },
       },
     },
   }),
@@ -107,7 +116,9 @@ describe('executeProvidersCommand', () => {
 
     executeProvidersCommand('enable');
 
-    expect(mockLogger.error).toHaveBeenCalledWith(expect.stringContaining('Provider name is required'));
+    expect(mockLogger.error).toHaveBeenCalledWith(
+      expect.stringContaining('Provider name is required')
+    );
   });
 
   it('should show error for unknown provider on enable', () => {
@@ -142,7 +153,9 @@ describe('executeProvidersCommand', () => {
 
     executeProvidersCommand('disable');
 
-    expect(mockLogger.error).toHaveBeenCalledWith(expect.stringContaining('Provider name is required'));
+    expect(mockLogger.error).toHaveBeenCalledWith(
+      expect.stringContaining('Provider name is required')
+    );
   });
 
   it('should set custom path for provider', () => {
@@ -173,7 +186,9 @@ describe('executeProvidersCommand', () => {
 
     executeProvidersCommand('path');
 
-    expect(mockLogger.error).toHaveBeenCalledWith(expect.stringContaining('Provider name is required'));
+    expect(mockLogger.error).toHaveBeenCalledWith(
+      expect.stringContaining('Provider name is required')
+    );
   });
 
   it('should show error for path without path argument', () => {

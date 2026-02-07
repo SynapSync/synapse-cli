@@ -6,12 +6,7 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import type {
-  DiagnosticCheck,
-  DiagnosticResult,
-  FixResult,
-  DoctorOptions,
-} from './types.js';
+import type { DiagnosticCheck, DiagnosticResult, FixResult, DoctorOptions } from './types.js';
 import type { ProjectConfig } from '../config/schema.js';
 import { ManifestManager } from '../manifest/manager.js';
 import { CognitiveScanner } from '../scanner/scanner.js';

@@ -74,7 +74,9 @@ async function checkForUpdates(): Promise<void> {
   if (comparison < 0) {
     // Current version is older
     logger.line();
-    logger.warning(`Update available: ${pc.cyan(`v${version}`)} → ${pc.green(`v${latestVersion}`)}`);
+    logger.warning(
+      `Update available: ${pc.cyan(`v${version}`)} → ${pc.green(`v${latestVersion}`)}`
+    );
     logger.line();
     logger.log(`  Run ${pc.cyan('npm install -g synapsync')} to update`);
   } else if (comparison > 0) {

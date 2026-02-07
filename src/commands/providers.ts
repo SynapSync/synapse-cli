@@ -327,9 +327,7 @@ function getProviderDisplayName(provider: SupportedProvider): string {
  * Register providers command with Commander
  */
 export function registerProvidersCommand(program: Command): void {
-  const providersCmd = program
-    .command('providers')
-    .description('Manage provider configuration');
+  const providersCmd = program.command('providers').description('Manage provider configuration');
 
   // List (default)
   providersCmd

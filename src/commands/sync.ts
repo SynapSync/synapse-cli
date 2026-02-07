@@ -160,19 +160,22 @@ function validateOptions(options: SyncCommandOptions): ValidatedSyncOptions | nu
 
 function displayResults(result: SyncResult, options: SyncCommandOptions): void {
   const hasManifestChanges = result.added > 0 || result.removed > 0 || result.updated > 0;
-  const hasProviderResults = result.providerResults !== undefined && result.providerResults.length > 0;
+  const hasProviderResults =
+    result.providerResults !== undefined && result.providerResults.length > 0;
 
   // Check if there are any provider changes
-  const hasProviderChanges = hasProviderResults && result.providerResults?.some(
-    (pr) => pr.created.length > 0 || pr.removed.length > 0
-  );
+  const hasProviderChanges =
+    hasProviderResults &&
+    result.providerResults?.some((pr) => pr.created.length > 0 || pr.removed.length > 0);
 
   if (!hasManifestChanges && hasProviderChanges !== true) {
     logger.log(`  ${pc.green('✓')} Everything is in sync`);
     logger.line();
     logger.log(`  ${pc.dim(`${result.total} cognitives in manifest`)}`);
     if (hasProviderResults && result.providerResults !== undefined) {
-      const syncedProviders = result.providerResults.filter((pr) => pr.skipped.length > 0 || pr.created.length > 0);
+      const syncedProviders = result.providerResults.filter(
+        (pr) => pr.skipped.length > 0 || pr.created.length > 0
+      );
       if (syncedProviders.length > 0) {
         logger.log(`  ${pc.dim(`${syncedProviders.length} provider(s) synced`)}`);
       }
@@ -400,7 +403,10 @@ export function executeSyncStatusCommand(options: { json?: boolean }): void {
 
   logger.line();
 
-  if (!status.inSync || Object.values(providerStatuses).some((s) => s.broken > 0 || s.orphaned > 0)) {
+  if (
+    !status.inSync ||
+    Object.values(providerStatuses).some((s) => s.broken > 0 || s.orphaned > 0)
+  ) {
     logger.hint('Run synapsync sync to synchronize.');
   }
 }

@@ -73,10 +73,12 @@ describe('executeUninstallCommand', () => {
   it('should show error when cognitive is not installed', () => {
     mockFindConfig.mockReturnValue(mockConfigManager);
     vi.mocked(fs.existsSync).mockReturnValue(true);
-    vi.mocked(fs.readFileSync).mockReturnValue(JSON.stringify({
-      ...mockManifest,
-      cognitives: {},
-    }));
+    vi.mocked(fs.readFileSync).mockReturnValue(
+      JSON.stringify({
+        ...mockManifest,
+        cognitives: {},
+      })
+    );
 
     executeUninstallCommand('nonexistent', { force: true });
 

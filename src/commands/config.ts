@@ -243,9 +243,7 @@ function parseValue(value: string): unknown {
  * Register config command with Commander
  */
 export function registerConfigCommand(program: Command): void {
-  const configCmd = program
-    .command('config')
-    .description('Manage project configuration');
+  const configCmd = program.command('config').description('Manage project configuration');
 
   configCmd
     .command('list')

@@ -29,7 +29,14 @@ vi.mock('../../../src/version.js', () => ({
   version: '1.0.0',
 }));
 
-import { showBanner, showHeader, showSuccess, showError, showWarning, showInfo } from '../../../src/ui/banner.js';
+import {
+  showBanner,
+  showHeader,
+  showSuccess,
+  showError,
+  showWarning,
+  showInfo,
+} from '../../../src/ui/banner.js';
 
 describe('showBanner', () => {
   beforeEach(() => {

@@ -57,9 +57,7 @@ function showCognitivesInfo(): void {
   logger.line();
   logger.log(pc.bold(pc.cyan('  Cognitive Types')));
   logger.line();
-  logger.dim(
-    '  SynapSync manages multiple types of AI cognitives that can be installed,'
-  );
+  logger.dim('  SynapSync manages multiple types of AI cognitives that can be installed,');
   logger.dim('  synced across providers, and shared via the registry.');
   logger.line();
 
@@ -98,9 +96,7 @@ function showCognitivesInfo(): void {
   ];
 
   // Header
-  logger.log(
-    `  ${pc.dim('Type')}        ${pc.dim('File')}             ${pc.dim('Description')}`
-  );
+  logger.log(`  ${pc.dim('Type')}        ${pc.dim('File')}             ${pc.dim('Description')}`);
   logger.log(pc.dim('  ' + '─'.repeat(70)));
 
   // Rows
@@ -116,10 +112,18 @@ function showCognitivesInfo(): void {
   // Usage examples
   logger.log(pc.bold('  Usage Examples:'));
   logger.line();
-  logger.log(`  ${pc.dim('$')} ${pc.cyan('synapsync add')} code-reviewer      ${pc.dim('# Add a skill')}`);
-  logger.log(`  ${pc.dim('$')} ${pc.cyan('synapsync add')} ci-agent           ${pc.dim('# Add an agent')}`);
-  logger.log(`  ${pc.dim('$')} ${pc.cyan('synapsync list')} --type agent          ${pc.dim('# List only agents')}`);
-  logger.log(`  ${pc.dim('$')} ${pc.cyan('synapsync sync')} --type skill          ${pc.dim('# Sync only skills')}`);
+  logger.log(
+    `  ${pc.dim('$')} ${pc.cyan('synapsync add')} code-reviewer      ${pc.dim('# Add a skill')}`
+  );
+  logger.log(
+    `  ${pc.dim('$')} ${pc.cyan('synapsync add')} ci-agent           ${pc.dim('# Add an agent')}`
+  );
+  logger.log(
+    `  ${pc.dim('$')} ${pc.cyan('synapsync list')} --type agent          ${pc.dim('# List only agents')}`
+  );
+  logger.log(
+    `  ${pc.dim('$')} ${pc.cyan('synapsync sync')} --type skill          ${pc.dim('# Sync only skills')}`
+  );
   logger.line();
 
   // Storage hint
@@ -134,9 +138,15 @@ function showCognitivesInfo(): void {
   logger.line();
   logger.dim('  When adding, SynapSync detects the cognitive type automatically:');
   logger.line();
-  logger.log(`  ${pc.cyan('1.')} ${pc.white('Flag')}       ${pc.dim('--type skill (explicit, highest priority)')}`);
-  logger.log(`  ${pc.cyan('2.')} ${pc.white('Registry')}   ${pc.dim('Metadata from the registry')}`);
-  logger.log(`  ${pc.cyan('3.')} ${pc.white('File')}       ${pc.dim('Detects SKILL.md, AGENT.md, etc.')}`);
+  logger.log(
+    `  ${pc.cyan('1.')} ${pc.white('Flag')}       ${pc.dim('--type skill (explicit, highest priority)')}`
+  );
+  logger.log(
+    `  ${pc.cyan('2.')} ${pc.white('Registry')}   ${pc.dim('Metadata from the registry')}`
+  );
+  logger.log(
+    `  ${pc.cyan('3.')} ${pc.white('File')}       ${pc.dim('Detects SKILL.md, AGENT.md, etc.')}`
+  );
   logger.log(`  ${pc.cyan('4.')} ${pc.white('Prompt')}     ${pc.dim('Asks you if cannot detect')}`);
   logger.line();
 }
@@ -197,25 +207,43 @@ function showAddInfo(): void {
   logger.dim('  SynapSync automatically detects the cognitive type using:');
   logger.line();
 
-  logger.log(`  ${pc.cyan('1.')} ${pc.white('Explicit flag')}     ${pc.dim('synapsync add code-reviewer --type skill')}`);
-  logger.log(`  ${pc.cyan('2.')} ${pc.white('Registry lookup')}   ${pc.dim('Registry provides type metadata')}`);
-  logger.log(`  ${pc.cyan('3.')} ${pc.white('File detection')}    ${pc.dim('Scans for SKILL.md, AGENT.md, etc.')}`);
-  logger.log(`  ${pc.cyan('4.')} ${pc.white('Interactive')}       ${pc.dim('Prompts you to select if unknown')}`);
+  logger.log(
+    `  ${pc.cyan('1.')} ${pc.white('Explicit flag')}     ${pc.dim('synapsync add code-reviewer --type skill')}`
+  );
+  logger.log(
+    `  ${pc.cyan('2.')} ${pc.white('Registry lookup')}   ${pc.dim('Registry provides type metadata')}`
+  );
+  logger.log(
+    `  ${pc.cyan('3.')} ${pc.white('File detection')}    ${pc.dim('Scans for SKILL.md, AGENT.md, etc.')}`
+  );
+  logger.log(
+    `  ${pc.cyan('4.')} ${pc.white('Interactive')}       ${pc.dim('Prompts you to select if unknown')}`
+  );
   logger.line();
 
   // Version
   logger.log(pc.bold('  Version Specification:'));
   logger.line();
-  logger.log(`  ${pc.dim('$')} ${pc.cyan('synapsync add')} code-reviewer          ${pc.dim('# Latest version')}`);
-  logger.log(`  ${pc.dim('$')} ${pc.cyan('synapsync add')} code-reviewer@1.2.0    ${pc.dim('# Specific version')}`);
-  logger.log(`  ${pc.dim('$')} ${pc.cyan('synapsync add')} code-reviewer@^1.0.0   ${pc.dim('# Version range')}`);
+  logger.log(
+    `  ${pc.dim('$')} ${pc.cyan('synapsync add')} code-reviewer          ${pc.dim('# Latest version')}`
+  );
+  logger.log(
+    `  ${pc.dim('$')} ${pc.cyan('synapsync add')} code-reviewer@1.2.0    ${pc.dim('# Specific version')}`
+  );
+  logger.log(
+    `  ${pc.dim('$')} ${pc.cyan('synapsync add')} code-reviewer@^1.0.0   ${pc.dim('# Version range')}`
+  );
   logger.line();
 
   // Options
   logger.log(pc.bold('  Common Options:'));
   logger.line();
-  logger.log(`  ${pc.yellow('--type <type>')}       ${pc.dim('Explicit cognitive type (skill, agent, prompt, workflow, tool)')}`);
-  logger.log(`  ${pc.yellow('--category <cat>')}    ${pc.dim('Explicit category (frontend, backend, etc.)')}`);
+  logger.log(
+    `  ${pc.yellow('--type <type>')}       ${pc.dim('Explicit cognitive type (skill, agent, prompt, workflow, tool)')}`
+  );
+  logger.log(
+    `  ${pc.yellow('--category <cat>')}    ${pc.dim('Explicit category (frontend, backend, etc.)')}`
+  );
   logger.log(`  ${pc.yellow('--force')}             ${pc.dim('Force reinstall even if exists')}`);
   logger.line();
 }
@@ -254,9 +282,15 @@ function showProvidersInfo(): void {
   // Usage
   logger.log(pc.bold('  Usage:'));
   logger.line();
-  logger.log(`  ${pc.dim('$')} ${pc.cyan('synapsync connect')} claude     ${pc.dim('# Connect to Claude')}`);
-  logger.log(`  ${pc.dim('$')} ${pc.cyan('synapsync providers')}           ${pc.dim('# List connected providers')}`);
-  logger.log(`  ${pc.dim('$')} ${pc.cyan('synapsync sync')} --provider claude  ${pc.dim('# Sync to specific provider')}`);
+  logger.log(
+    `  ${pc.dim('$')} ${pc.cyan('synapsync connect')} claude     ${pc.dim('# Connect to Claude')}`
+  );
+  logger.log(
+    `  ${pc.dim('$')} ${pc.cyan('synapsync providers')}           ${pc.dim('# List connected providers')}`
+  );
+  logger.log(
+    `  ${pc.dim('$')} ${pc.cyan('synapsync sync')} --provider claude  ${pc.dim('# Sync to specific provider')}`
+  );
   logger.line();
 }
 
@@ -269,17 +303,33 @@ function showCategoriesInfo(): void {
   logger.line();
 
   const categories = [
-    { name: 'frontend', description: 'UI, components, styling, React, Vue, etc.', color: pc.yellow },
+    {
+      name: 'frontend',
+      description: 'UI, components, styling, React, Vue, etc.',
+      color: pc.yellow,
+    },
     { name: 'backend', description: 'APIs, servers, authentication, databases', color: pc.blue },
-    { name: 'database', description: 'Queries, schemas, migrations, optimization', color: pc.yellow },
+    {
+      name: 'database',
+      description: 'Queries, schemas, migrations, optimization',
+      color: pc.yellow,
+    },
     { name: 'devops', description: 'CI/CD, Docker, Kubernetes, infrastructure', color: pc.magenta },
     { name: 'security', description: 'Audits, vulnerabilities, authentication', color: pc.red },
     { name: 'testing', description: 'Unit tests, E2E, test generation', color: pc.green },
     { name: 'analytics', description: 'Metrics, tracking, data analysis', color: pc.cyan },
     { name: 'automation', description: 'Scripts, workflows, task automation', color: pc.green },
     { name: 'general', description: 'General purpose, code review, docs', color: pc.white },
-    { name: 'integrations', description: 'External services (Supabase, Stripe, etc.)', color: pc.blue },
-    { name: 'planning', description: 'Project planning, SDLC, requirements, architecture', color: pc.magenta },
+    {
+      name: 'integrations',
+      description: 'External services (Supabase, Stripe, etc.)',
+      color: pc.blue,
+    },
+    {
+      name: 'planning',
+      description: 'Project planning, SDLC, requirements, architecture',
+      color: pc.magenta,
+    },
   ];
 
   // Header
@@ -298,7 +348,9 @@ function showCategoriesInfo(): void {
   // Usage
   logger.log(pc.bold('  Usage:'));
   logger.line();
-  logger.log(`  ${pc.dim('$')} ${pc.cyan('synapsync add')} react-patterns ${pc.dim('--category frontend')}`);
+  logger.log(
+    `  ${pc.dim('$')} ${pc.cyan('synapsync add')} react-patterns ${pc.dim('--category frontend')}`
+  );
   logger.log(`  ${pc.dim('$')} ${pc.cyan('synapsync list')} --category devops`);
   logger.log(`  ${pc.dim('$')} ${pc.cyan('synapsync list')} --remote --category security`);
   logger.line();
@@ -331,17 +383,31 @@ function showSyncInfo(): void {
   logger.log(`    ${pc.cyan('.synapsync/skills/frontend/react-patterns/SKILL.md')}`);
   logger.line();
   logger.log(pc.dim('  After sync (symlink):'));
-  logger.log(`    ${pc.green('.claude/skills/react-patterns/')} -> ${pc.dim('../../.synapsync/skills/frontend/react-patterns/')}`);
-  logger.log(`    ${pc.green('.openai/skills/react-patterns/')} -> ${pc.dim('../../.synapsync/skills/frontend/react-patterns/')}`);
+  logger.log(
+    `    ${pc.green('.claude/skills/react-patterns/')} -> ${pc.dim('../../.synapsync/skills/frontend/react-patterns/')}`
+  );
+  logger.log(
+    `    ${pc.green('.openai/skills/react-patterns/')} -> ${pc.dim('../../.synapsync/skills/frontend/react-patterns/')}`
+  );
   logger.line();
 
   logger.log(pc.bold('  Commands:'));
   logger.line();
-  logger.log(`  ${pc.dim('$')} ${pc.cyan('synapsync sync')}                ${pc.dim('# Sync all cognitives to all providers')}`);
-  logger.log(`  ${pc.dim('$')} ${pc.cyan('synapsync sync')} --provider claude  ${pc.dim('# Sync to specific provider')}`);
-  logger.log(`  ${pc.dim('$')} ${pc.cyan('synapsync sync')} --type skill       ${pc.dim('# Sync only skills')}`);
-  logger.log(`  ${pc.dim('$')} ${pc.cyan('synapsync sync')} --copy             ${pc.dim('# Force copy mode')}`);
-  logger.log(`  ${pc.dim('$')} ${pc.cyan('synapsync sync')} --dry-run          ${pc.dim('# Preview without changes')}`);
+  logger.log(
+    `  ${pc.dim('$')} ${pc.cyan('synapsync sync')}                ${pc.dim('# Sync all cognitives to all providers')}`
+  );
+  logger.log(
+    `  ${pc.dim('$')} ${pc.cyan('synapsync sync')} --provider claude  ${pc.dim('# Sync to specific provider')}`
+  );
+  logger.log(
+    `  ${pc.dim('$')} ${pc.cyan('synapsync sync')} --type skill       ${pc.dim('# Sync only skills')}`
+  );
+  logger.log(
+    `  ${pc.dim('$')} ${pc.cyan('synapsync sync')} --copy             ${pc.dim('# Force copy mode')}`
+  );
+  logger.log(
+    `  ${pc.dim('$')} ${pc.cyan('synapsync sync')} --dry-run          ${pc.dim('# Preview without changes')}`
+  );
   logger.line();
 }
 

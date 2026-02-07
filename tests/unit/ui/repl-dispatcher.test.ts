@@ -55,7 +55,9 @@ describe('executeCommand', () => {
 
   it('should show error for input without / prefix', async () => {
     await executeCommand('help');
-    expect(mockShowError).toHaveBeenCalledWith(expect.stringContaining('Commands must start with /'));
+    expect(mockShowError).toHaveBeenCalledWith(
+      expect.stringContaining('Commands must start with /')
+    );
   });
 
   it('should do nothing for bare /', async () => {

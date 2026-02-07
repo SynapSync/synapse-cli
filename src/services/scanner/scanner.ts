@@ -45,10 +45,7 @@ export class CognitiveScanner {
 
       for (const category of categories) {
         // Skip if filtering by category and this isn't included
-        if (
-          options.categories !== undefined &&
-          !options.categories.includes(category)
-        ) {
+        if (options.categories !== undefined && !options.categories.includes(category)) {
           continue;
         }
 
@@ -153,10 +150,7 @@ export class CognitiveScanner {
   /**
    * Compare scanned cognitives with manifest and return differences
    */
-  compare(
-    scanned: ScannedCognitive[],
-    manifestCognitives: ManifestCognitive[]
-  ): ScanResult {
+  compare(scanned: ScannedCognitive[], manifestCognitives: ManifestCognitive[]): ScanResult {
     const result: ScanResult = {
       found: scanned,
       new: [],

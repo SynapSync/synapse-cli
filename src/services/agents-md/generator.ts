@@ -139,7 +139,12 @@ export class AgentsMdGenerator {
       } else {
         // Fallback: build expected path from manifest data
         const typeDir = `${cognitive.type}s`;
-        const expectedDir = path.join(this.synapSyncDir, typeDir, cognitive.category, cognitive.name);
+        const expectedDir = path.join(
+          this.synapSyncDir,
+          typeDir,
+          cognitive.category,
+          cognitive.name
+        );
         relativePath = path.relative(this.projectRoot, expectedDir);
         fileName = cognitive.name;
       }
@@ -191,7 +196,9 @@ export class AgentsMdGenerator {
 
       lines.push('---');
       lines.push('');
-      lines.push(`*Last updated: ${new Date().toISOString()} \u00B7 ${entries.length} cognitive${entries.length !== 1 ? 's' : ''} installed*`);
+      lines.push(
+        `*Last updated: ${new Date().toISOString()} \u00B7 ${entries.length} cognitive${entries.length !== 1 ? 's' : ''} installed*`
+      );
     }
 
     lines.push(END_MARKER);

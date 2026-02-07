@@ -5,7 +5,10 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import * as fs from 'fs';
 import * as path from 'path';
-import { AgentsMdGenerator, regenerateAgentsMd } from '../../../src/services/agents-md/generator.js';
+import {
+  AgentsMdGenerator,
+  regenerateAgentsMd,
+} from '../../../src/services/agents-md/generator.js';
 import type { ManifestCognitive } from '../../../src/services/manifest/types.js';
 import type { ScannedCognitive } from '../../../src/services/scanner/types.js';
 
@@ -70,7 +73,8 @@ describe('AgentsMdGenerator', () => {
     type: 'agent',
     category: 'devops',
     path: '/test/project/.synapsync/agents/devops/feature-branch-manager',
-    filePath: '/test/project/.synapsync/agents/devops/feature-branch-manager/feature-branch-manager.md',
+    filePath:
+      '/test/project/.synapsync/agents/devops/feature-branch-manager/feature-branch-manager.md',
     fileName: 'feature-branch-manager.md',
     hash: 'def456',
     metadata: { description: 'Manages branches' },
@@ -169,9 +173,7 @@ describe('AgentsMdGenerator', () => {
       vi.mocked(fs.writeFileSync).mockImplementation(() => {});
 
       const longDescription = 'A'.repeat(100);
-      scanMock.mockReturnValue([
-        { ...scannedSkill, metadata: { description: longDescription } },
-      ]);
+      scanMock.mockReturnValue([{ ...scannedSkill, metadata: { description: longDescription } }]);
 
       const generator = new AgentsMdGenerator(projectRoot, synapSyncDir);
       generator.generate([mockSkill]);
@@ -199,7 +201,10 @@ describe('AgentsMdGenerator', () => {
       vi.mocked(fs.existsSync).mockReturnValue(false);
       vi.mocked(fs.writeFileSync).mockImplementation(() => {});
       scanMock.mockReturnValue([
-        { ...scannedSkill, metadata: { description: ['line one', 'line two'] as unknown as string } },
+        {
+          ...scannedSkill,
+          metadata: { description: ['line one', 'line two'] as unknown as string },
+        },
       ]);
 
       const generator = new AgentsMdGenerator(projectRoot, synapSyncDir);
@@ -213,9 +218,7 @@ describe('AgentsMdGenerator', () => {
     it('should handle undefined description from frontmatter', () => {
       vi.mocked(fs.existsSync).mockReturnValue(false);
       vi.mocked(fs.writeFileSync).mockImplementation(() => {});
-      scanMock.mockReturnValue([
-        { ...scannedSkill, metadata: {} },
-      ]);
+      scanMock.mockReturnValue([{ ...scannedSkill, metadata: {} }]);
 
       const generator = new AgentsMdGenerator(projectRoot, synapSyncDir);
       const result = generator.generate([mockSkill]);
@@ -247,7 +250,9 @@ describe('AgentsMdGenerator', () => {
       generator.generate([mockSkill]);
 
       const writtenContent = vi.mocked(fs.writeFileSync).mock.calls[0][1] as string;
-      expect(writtenContent).toContain('[SKILL.md](.synapsync/skills/general/code-reviewer/SKILL.md)');
+      expect(writtenContent).toContain(
+        '[SKILL.md](.synapsync/skills/general/code-reviewer/SKILL.md)'
+      );
     });
 
     it('should include last updated timestamp and count', () => {
@@ -290,9 +295,7 @@ describe('AgentsMdGenerator', () => {
       const result = generator.remove();
 
       expect(result).toBe(true);
-      expect(fs.unlinkSync).toHaveBeenCalledWith(
-        path.join(projectRoot, 'AGENTS.md')
-      );
+      expect(fs.unlinkSync).toHaveBeenCalledWith(path.join(projectRoot, 'AGENTS.md'));
     });
 
     it('should return false when file does not exist', () => {

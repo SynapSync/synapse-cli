@@ -288,8 +288,7 @@ describe('detectFromGitHub', () => {
   it('should detect cognitive from single file response', async () => {
     mockFetch.mockResolvedValueOnce({
       ok: true,
-      json: () =>
-        Promise.resolve({ name: 'AGENT.md', path: 'agents/AGENT.md' }),
+      json: () => Promise.resolve({ name: 'AGENT.md', path: 'agents/AGENT.md' }),
     });
 
     const result = await detectFromGitHub({
@@ -310,8 +309,7 @@ describe('detectFromGitHub', () => {
     // Second call with master branch succeeds
     mockFetch.mockResolvedValueOnce({
       ok: true,
-      json: () =>
-        Promise.resolve([{ name: 'SKILL.md', type: 'file', path: 'SKILL.md' }]),
+      json: () => Promise.resolve([{ name: 'SKILL.md', type: 'file', path: 'SKILL.md' }]),
     });
 
     const result = await detectFromGitHub({
@@ -393,8 +391,7 @@ describe('detectCognitiveType', () => {
   it('should detect from GitHub source', async () => {
     mockFetch.mockResolvedValueOnce({
       ok: true,
-      json: () =>
-        Promise.resolve([{ name: 'SKILL.md', type: 'file', path: 'SKILL.md' }]),
+      json: () => Promise.resolve([{ name: 'SKILL.md', type: 'file', path: 'SKILL.md' }]),
     });
 
     const result = await detectCognitiveType('github:owner/repo');

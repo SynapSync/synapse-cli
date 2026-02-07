@@ -70,7 +70,9 @@ describe('executePurgeCommand', () => {
     vi.mocked(fs.readdirSync).mockReturnValue([]);
     vi.mocked(fs.rmSync).mockImplementation(() => undefined);
     vi.mocked(fs.unlinkSync).mockImplementation(() => undefined);
-    vi.mocked(fs.readFileSync).mockReturnValue('# SynapSync\n.synapsync/manifest.json\n*.local.yaml\n');
+    vi.mocked(fs.readFileSync).mockReturnValue(
+      '# SynapSync\n.synapsync/manifest.json\n*.local.yaml\n'
+    );
     vi.mocked(fs.writeFileSync).mockImplementation(() => undefined);
 
     executePurgeCommand({ force: true });
@@ -118,7 +120,12 @@ describe('executePurgeCommand', () => {
     vi.mocked(fs.readdirSync).mockImplementation((p) => {
       if (String(p).includes('.claude/skills')) {
         return [
-          { name: 'my-skill', isSymbolicLink: () => true, isFile: () => false, isDirectory: () => false },
+          {
+            name: 'my-skill',
+            isSymbolicLink: () => true,
+            isFile: () => false,
+            isDirectory: () => false,
+          },
         ] as unknown as fs.Dirent[];
       }
       return [] as unknown as fs.Dirent[];

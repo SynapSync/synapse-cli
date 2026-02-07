@@ -107,7 +107,9 @@ async function listRemoteCognitives(options: ListCommandOptions): Promise<void> 
     // Display results
     displayRemoteCognitives(filtered);
   } catch (error) {
-    logger.error(`Failed to fetch registry: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    logger.error(
+      `Failed to fetch registry: ${error instanceof Error ? error.message : 'Unknown error'}`
+    );
   }
 }
 
@@ -152,7 +154,9 @@ function displayRemoteCognitives(cognitives: RegistryCognitiveEntry[]): void {
   for (const [type, items] of Object.entries(grouped)) {
     const typeIcon = getCognitiveIcon(type as CognitiveType);
     const typeLabel = `${type}s`;
-    logger.log(`  ${typeIcon} ${pc.bold(typeLabel.charAt(0).toUpperCase() + typeLabel.slice(1))} (${items.length})`);
+    logger.log(
+      `  ${typeIcon} ${pc.bold(typeLabel.charAt(0).toUpperCase() + typeLabel.slice(1))} (${items.length})`
+    );
     logger.line();
 
     for (const cognitive of items) {
@@ -161,9 +165,10 @@ function displayRemoteCognitives(cognitives: RegistryCognitiveEntry[]): void {
 
       // Description (truncated)
       if (cognitive.description) {
-        const desc = cognitive.description.length > 60
-          ? cognitive.description.slice(0, 57) + '...'
-          : cognitive.description;
+        const desc =
+          cognitive.description.length > 60
+            ? cognitive.description.slice(0, 57) + '...'
+            : cognitive.description;
         logger.log(`      ${pc.dim(desc)}`);
       }
 
@@ -186,7 +191,9 @@ function displayRemoteCognitives(cognitives: RegistryCognitiveEntry[]): void {
   }
 
   // Summary
-  logger.log(`  ${pc.dim(`Total: ${cognitives.length} cognitive${cognitives.length === 1 ? '' : 's'} available`)}`);
+  logger.log(
+    `  ${pc.dim(`Total: ${cognitives.length} cognitive${cognitives.length === 1 ? '' : 's'} available`)}`
+  );
   logger.line();
   logger.hint('Run synapsync add <name> to add a cognitive.');
 }
@@ -308,7 +315,9 @@ function displayCognitives(manifest: ProjectManifest, options: ValidatedOptions)
   for (const [type, items] of Object.entries(grouped)) {
     const typeIcon = getCognitiveIcon(type as CognitiveType);
     const typeLabel = `${type}s`;
-    logger.log(`  ${typeIcon} ${pc.bold(typeLabel.charAt(0).toUpperCase() + typeLabel.slice(1))} (${items.length})`);
+    logger.log(
+      `  ${typeIcon} ${pc.bold(typeLabel.charAt(0).toUpperCase() + typeLabel.slice(1))} (${items.length})`
+    );
     logger.line();
 
     for (const cognitive of items) {
@@ -318,7 +327,9 @@ function displayCognitives(manifest: ProjectManifest, options: ValidatedOptions)
 
   // Summary
   logger.line();
-  logger.log(`  ${pc.dim(`Total: ${filtered.length} cognitive${filtered.length === 1 ? '' : 's'}`)}`);
+  logger.log(
+    `  ${pc.dim(`Total: ${filtered.length} cognitive${filtered.length === 1 ? '' : 's'}`)}`
+  );
   logger.line();
   logger.hint('Run synapsync uninstall <name> to remove a cognitive.');
 }

@@ -4,7 +4,11 @@
 
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { SyncEngine } from '../../../src/services/sync/engine.js';
-import type { SyncOptions, SyncProgressCallback, SyncStatus } from '../../../src/services/sync/types.js';
+import type {
+  SyncOptions,
+  SyncProgressCallback,
+  SyncStatus,
+} from '../../../src/services/sync/types.js';
 import type { ProjectConfig } from '../../../src/services/config/schema.js';
 import type { ScannedCognitive } from '../../../src/services/scanner/types.js';
 import type { ManifestCognitive } from '../../../src/services/manifest/types.js';
@@ -165,7 +169,12 @@ describe('SyncEngine', () => {
 
     it('should detect new cognitives', () => {
       mockScan.mockReturnValue([scannedCognitive]);
-      mockCompare.mockReturnValue({ new: [scannedCognitive], modified: [], removed: [], unchanged: 0 });
+      mockCompare.mockReturnValue({
+        new: [scannedCognitive],
+        modified: [],
+        removed: [],
+        unchanged: 0,
+      });
       mockToManifestCognitive.mockReturnValue(manifestCognitive);
       mockGetCognitiveCount.mockReturnValue(1);
 
@@ -178,7 +187,12 @@ describe('SyncEngine', () => {
 
     it('should detect modified cognitives', () => {
       mockScan.mockReturnValue([scannedCognitive]);
-      mockCompare.mockReturnValue({ new: [], modified: [scannedCognitive], removed: [], unchanged: 0 });
+      mockCompare.mockReturnValue({
+        new: [],
+        modified: [scannedCognitive],
+        removed: [],
+        unchanged: 0,
+      });
       mockToManifestCognitive.mockReturnValue(manifestCognitive);
       mockGetCognitiveCount.mockReturnValue(1);
 
@@ -203,7 +217,12 @@ describe('SyncEngine', () => {
   describe('sync - Phase 3: Applying changes', () => {
     it('should add new cognitives to manifest', () => {
       mockScan.mockReturnValue([scannedCognitive]);
-      mockCompare.mockReturnValue({ new: [scannedCognitive], modified: [], removed: [], unchanged: 0 });
+      mockCompare.mockReturnValue({
+        new: [scannedCognitive],
+        modified: [],
+        removed: [],
+        unchanged: 0,
+      });
       mockToManifestCognitive.mockReturnValue(manifestCognitive);
 
       engine.sync({ manifestOnly: true });
@@ -214,7 +233,12 @@ describe('SyncEngine', () => {
 
     it('should update modified cognitives in manifest', () => {
       mockScan.mockReturnValue([scannedCognitive]);
-      mockCompare.mockReturnValue({ new: [], modified: [scannedCognitive], removed: [], unchanged: 0 });
+      mockCompare.mockReturnValue({
+        new: [],
+        modified: [scannedCognitive],
+        removed: [],
+        unchanged: 0,
+      });
       mockToManifestCognitive.mockReturnValue(manifestCognitive);
 
       engine.sync({ manifestOnly: true });
@@ -233,7 +257,12 @@ describe('SyncEngine', () => {
 
     it('should not apply changes in dry run mode', () => {
       mockScan.mockReturnValue([scannedCognitive]);
-      mockCompare.mockReturnValue({ new: [scannedCognitive], modified: [], removed: [], unchanged: 0 });
+      mockCompare.mockReturnValue({
+        new: [scannedCognitive],
+        modified: [],
+        removed: [],
+        unchanged: 0,
+      });
 
       const result = engine.sync({ dryRun: true, manifestOnly: true });
 
@@ -254,7 +283,12 @@ describe('SyncEngine', () => {
 
     it('should handle errors during action apply', () => {
       mockScan.mockReturnValue([scannedCognitive]);
-      mockCompare.mockReturnValue({ new: [scannedCognitive], modified: [], removed: [], unchanged: 0 });
+      mockCompare.mockReturnValue({
+        new: [scannedCognitive],
+        modified: [],
+        removed: [],
+        unchanged: 0,
+      });
       mockToManifestCognitive.mockImplementation(() => {
         throw new Error('Parse failure');
       });
@@ -281,7 +315,11 @@ describe('SyncEngine', () => {
 
       const result = engine.sync();
 
-      expect(mockSyncProvider).toHaveBeenCalledWith('claude', [scannedCognitive], expect.any(Object));
+      expect(mockSyncProvider).toHaveBeenCalledWith(
+        'claude',
+        [scannedCognitive],
+        expect.any(Object)
+      );
       expect(result.providerResults).toHaveLength(1);
     });
 
@@ -292,7 +330,11 @@ describe('SyncEngine', () => {
       engine.sync();
 
       // cursor is disabled in mockConfig, should not be synced
-      expect(mockSyncProvider).not.toHaveBeenCalledWith('cursor', expect.anything(), expect.anything());
+      expect(mockSyncProvider).not.toHaveBeenCalledWith(
+        'cursor',
+        expect.anything(),
+        expect.anything()
+      );
     });
 
     it('should filter by specific provider', () => {
@@ -354,10 +396,13 @@ describe('SyncEngine', () => {
 
       engine.sync();
 
-      expect(mockSetProviderSync).toHaveBeenCalledWith('claude', expect.objectContaining({
-        method: 'symlink',
-        cognitives: ['test-skill'],
-      }));
+      expect(mockSetProviderSync).toHaveBeenCalledWith(
+        'claude',
+        expect.objectContaining({
+          method: 'symlink',
+          cognitives: ['test-skill'],
+        })
+      );
     });
 
     it('should not update provider sync state in dry run', () => {
@@ -450,7 +495,12 @@ describe('SyncEngine', () => {
       };
 
       mockScan.mockReturnValue([scannedCognitive]);
-      mockCompare.mockReturnValue({ new: [scannedCognitive], modified: [], removed: [], unchanged: 0 });
+      mockCompare.mockReturnValue({
+        new: [scannedCognitive],
+        modified: [],
+        removed: [],
+        unchanged: 0,
+      });
       mockToManifestCognitive.mockReturnValue(manifestCognitive);
 
       engine.sync({ manifestOnly: true }, onProgress);
@@ -466,7 +516,12 @@ describe('SyncEngine', () => {
   describe('preview', () => {
     it('should perform dry run', () => {
       mockScan.mockReturnValue([scannedCognitive]);
-      mockCompare.mockReturnValue({ new: [scannedCognitive], modified: [], removed: [], unchanged: 0 });
+      mockCompare.mockReturnValue({
+        new: [scannedCognitive],
+        modified: [],
+        removed: [],
+        unchanged: 0,
+      });
 
       const result = engine.preview();
 

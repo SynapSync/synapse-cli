@@ -8,17 +8,32 @@ import * as fs from 'fs';
 import * as path from 'path';
 import type { Command } from 'commander';
 import pc from 'picocolors';
-import { RegistryClient, CognitiveNotFoundError, RegistryError } from '../services/registry/client.js';
+import {
+  RegistryClient,
+  CognitiveNotFoundError,
+  RegistryError,
+} from '../services/registry/client.js';
 import { ConfigManager } from '../services/config/manager.js';
 import { SyncEngine } from '../services/sync/engine.js';
 import { regenerateAgentsMd } from '../services/agents-md/generator.js';
-import {
-  COGNITIVE_TYPES,
-  COGNITIVE_FILE_NAMES,
-} from '../core/constants.js';
+import { COGNITIVE_TYPES, COGNITIVE_FILE_NAMES } from '../core/constants.js';
 import type { CognitiveType, Category } from '../core/constants.js';
 import type { InstalledCognitive, CognitiveManifest } from '../types/index.js';
 import { logger } from '../utils/logger.js';
+
+// ============================================
+// Error Classes
+// ============================================
+
+export class GitHubInstallError extends Error {
+  constructor(
+    message: string,
+    public repoUrl: string
+  ) {
+    super(message);
+    this.name = 'GitHubInstallError';
+  }
+}
 
 // ============================================
 // Types
@@ -45,10 +60,7 @@ interface InstallSource {
 /**
  * Execute the add command
  */
-export async function executeAddCommand(
-  source: string,
-  options: AddCommandOptions
-): Promise<void> {
+export async function executeAddCommand(source: string, options: AddCommandOptions): Promise<void> {
   logger.line();
 
   // Check if project is initialized
@@ -76,7 +88,7 @@ export async function executeAddCommand(
         }
         break;
       case 'github':
-        success = installFromGitHub(parsedSource, options, configManager);
+        success = await installFromGitHub(parsedSource, options, configManager);
         break;
     }
 
@@ -91,7 +103,7 @@ export async function executeAddCommand(
 
       if (result.providerResults && result.providerResults.length > 0) {
         for (const pr of result.providerResults) {
-          const created = pr.created.filter(c => c.success).length;
+          const created = pr.created.filter((c) => c.success).length;
           const skipped = pr.skipped.length;
           if (created > 0) {
             logger.log(`  ${pc.green('✓')} Synced to ${pr.provider} (${created} created)`);
@@ -111,6 +123,9 @@ export async function executeAddCommand(
     if (error instanceof CognitiveNotFoundError) {
       logger.error(`Cognitive '${error.cognitiveName}' not found in registry.`);
       logger.hint('Run synapsync list --remote to browse available cognitives.');
+    } else if (error instanceof GitHubInstallError) {
+      logger.error(`GitHub install failed: ${error.message}`);
+      logger.hint(`Repository: ${error.repoUrl}`);
     } else if (error instanceof RegistryError) {
       logger.error(`Registry error: ${error.message}`);
     } else if (error instanceof Error) {
@@ -209,7 +224,9 @@ async function installFromRegistry(
 
   // Success
   logger.line();
-  logger.log(`  ${pc.green('✓')} Installed ${pc.bold(manifest.name)} ${pc.dim(`v${manifest.version}`)}`);
+  logger.log(
+    `  ${pc.green('✓')} Installed ${pc.bold(manifest.name)} ${pc.dim(`v${manifest.version}`)}`
+  );
   logger.log(`    ${pc.dim('Type:')} ${manifest.type}`);
   logger.log(`    ${pc.dim('Category:')} ${category}`);
   logger.log(`    ${pc.dim('Location:')} ${path.relative(process.cwd(), targetDir)}`);
@@ -229,10 +246,7 @@ async function downloadAssets(
   if (entry === null) return assets;
 
   // Try to download common asset files
-  const assetFiles = [
-    'assets/SKILL-TEMPLATE-BASIC.md',
-    'assets/SKILL-TEMPLATE-ADVANCED.md',
-  ];
+  const assetFiles = ['assets/SKILL-TEMPLATE-BASIC.md', 'assets/SKILL-TEMPLATE-ADVANCED.md'];
 
   for (const assetPath of assetFiles) {
     try {
@@ -265,9 +279,7 @@ function installFromLocal(
   const detected = detectCognitiveType(absolutePath);
 
   if (detected === null && options.type === undefined) {
-    throw new Error(
-      'Could not detect cognitive type. Please specify with --type flag.'
-    );
+    throw new Error('Could not detect cognitive type. Please specify with --type flag.');
   }
 
   const cognitiveType = (options.type as CognitiveType) ?? detected?.type ?? 'skill';
@@ -283,7 +295,8 @@ function installFromLocal(
   const content = fs.readFileSync(filePath, 'utf-8');
   const metadata = parseMetadata(content);
   const name = (metadata['name'] as string) ?? path.basename(absolutePath);
-  const category = (options.category as Category) ?? (metadata['category'] as Category) ?? 'general';
+  const category =
+    (options.category as Category) ?? (metadata['category'] as Category) ?? 'general';
 
   // Create manifest from metadata - use original filename
   const manifest: CognitiveManifest = {
@@ -400,8 +413,10 @@ function parseMetadata(content: string): Record<string, unknown> {
 
         // Remove quotes
         if (typeof value === 'string') {
-          if ((value.startsWith('"') && value.endsWith('"')) ||
-              (value.startsWith("'") && value.endsWith("'"))) {
+          if (
+            (value.startsWith('"') && value.endsWith('"')) ||
+            (value.startsWith("'") && value.endsWith("'"))
+          ) {
             value = value.slice(1, -1);
           }
         }
@@ -420,17 +435,156 @@ function parseMetadata(content: string): Record<string, unknown> {
 // GitHub Installation
 // ============================================
 
-function installFromGitHub(
-  _source: InstallSource,
-  _options: AddCommandOptions,
-  _configManager: ConfigManager
-): boolean {
-  // For now, we'll use raw GitHub URLs similar to registry
-  // This is a simplified implementation
+function parseGitHubUrl(url: string): { owner: string; repo: string; subpath: string } | null {
+  const parts = url.replace('https://github.com/', '').split('/');
+  const owner = parts[0];
+  const repo = parts[1];
+  if (!owner || !repo) return null;
+  const subpath = parts.slice(2).join('/');
+  return { owner, repo, subpath };
+}
+
+async function fetchGitHubFile(
+  owner: string,
+  repo: string,
+  branch: string,
+  filePath: string
+): Promise<string | null> {
+  const url = `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${filePath}`;
+  try {
+    const response = await fetch(url, { headers: { 'User-Agent': 'SynapSync-CLI' } });
+    if (!response.ok) return null;
+    return response.text();
+  } catch {
+    return null;
+  }
+}
+
+async function installFromGitHub(
+  source: InstallSource,
+  options: AddCommandOptions,
+  configManager: ConfigManager
+): Promise<boolean> {
+  const repoUrl = source.url ?? '';
+  const branch = source.branch ?? 'main';
+
+  // Parse URL
+  const parsed = parseGitHubUrl(repoUrl);
+  if (!parsed) {
+    throw new GitHubInstallError('Invalid GitHub URL format.', repoUrl);
+  }
+
+  const { owner, repo, subpath } = parsed;
+  const basePath = subpath ? `${subpath}/` : '';
+
+  // Try to find manifest.json first
+  const manifestContent = await fetchGitHubFile(owner, repo, branch, `${basePath}manifest.json`);
+
+  let manifest: CognitiveManifest;
+  let content: string;
+
+  if (manifestContent) {
+    // Manifest-based install
+    try {
+      manifest = JSON.parse(manifestContent) as CognitiveManifest;
+    } catch {
+      throw new GitHubInstallError('Invalid manifest.json in repository.', repoUrl);
+    }
+
+    const mainFile = await fetchGitHubFile(owner, repo, branch, `${basePath}${manifest.file}`);
+    if (!mainFile) {
+      throw new GitHubInstallError(
+        `Main file '${manifest.file}' referenced in manifest.json not found.`,
+        repoUrl
+      );
+    }
+    content = mainFile;
+  } else {
+    // Probe for known cognitive files
+    let foundType: CognitiveType | null = null;
+    let foundFileName: string | null = null;
+    let foundContent: string | null = null;
+
+    for (const type of COGNITIVE_TYPES) {
+      const fileName = COGNITIVE_FILE_NAMES[type];
+      const fileContent = await fetchGitHubFile(owner, repo, branch, `${basePath}${fileName}`);
+      if (fileContent) {
+        foundType = type;
+        foundFileName = fileName;
+        foundContent = fileContent;
+        break;
+      }
+    }
+
+    if (!foundType || !foundFileName || !foundContent) {
+      throw new GitHubInstallError(
+        'No cognitive file found in repository. Expected SKILL.md, AGENT.md, PROMPT.md, WORKFLOW.yaml, or TOOL.md.',
+        repoUrl
+      );
+    }
+
+    content = foundContent;
+    const metadata = parseMetadata(content);
+
+    const cognitiveType = (options.type as CognitiveType) ?? foundType;
+    const name = (metadata['name'] as string) ?? source.name;
+    const category =
+      (options.category as Category) ?? (metadata['category'] as Category) ?? 'general';
+
+    manifest = {
+      name,
+      type: cognitiveType,
+      version: (metadata['version'] as string) ?? '1.0.0',
+      description: (metadata['description'] as string) ?? '',
+      author: (metadata['author'] as string) ?? `${owner}`,
+      license: (metadata['license'] as string) ?? 'MIT',
+      category,
+      tags: (metadata['tags'] as string[]) ?? [],
+      providers: ((metadata['providers'] as string[]) ?? []) as CognitiveManifest['providers'],
+      file: foundFileName,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+  }
+
+  // Apply option overrides
+  if (options.type) {
+    manifest.type = options.type as CognitiveType;
+  }
+  if (options.category) {
+    manifest.category = options.category;
+  }
+
+  const category = manifest.category;
+
+  // Check if already installed
+  const targetDir = getTargetDir(configManager, manifest.type, category, manifest.name);
+
+  if (fs.existsSync(targetDir) && options.force !== true) {
+    logger.line();
+    logger.error(`Cognitive '${manifest.name}' is already installed.`);
+    logger.hint('Use --force to overwrite.');
+    return false;
+  }
+
+  // Save files
+  const assets = new Map<string, string>();
+  saveCognitive(targetDir, manifest, content, assets);
+
+  // Update manifest.json with sourceUrl
+  updateProjectManifest(configManager, manifest, 'github', repoUrl);
+
+  // Success
   logger.line();
-  logger.error('GitHub installation is not yet fully implemented.');
-  logger.hint('For now, clone the repo locally and use: synapsync add ./path/to/cognitive');
-  return false;
+  logger.log(
+    `  ${pc.green('✓')} Installed ${pc.bold(manifest.name)} ${pc.dim(`v${manifest.version}`)}`
+  );
+  logger.log(`    ${pc.dim('Type:')} ${manifest.type}`);
+  logger.log(`    ${pc.dim('Category:')} ${category}`);
+  logger.log(`    ${pc.dim('Source:')} github`);
+  logger.log(`    ${pc.dim('Location:')} ${path.relative(process.cwd(), targetDir)}`);
+
+  return true;
 }
 
 // ============================================
@@ -472,7 +626,8 @@ function saveCognitive(
 function updateProjectManifest(
   configManager: ConfigManager,
   manifest: CognitiveManifest,
-  source: 'registry' | 'local' | 'github'
+  source: 'registry' | 'local' | 'github',
+  sourceUrl?: string
 ): void {
   const synapSyncDir = configManager.getSynapSyncDir();
   const manifestPath = path.join(synapSyncDir, 'manifest.json');
@@ -498,7 +653,7 @@ function updateProjectManifest(
   }
 
   // Add or update cognitive entry
-  const mappedSource = source === 'github' ? 'git' as const : source;
+  const mappedSource = source === 'github' ? ('git' as const) : source;
   const entry: InstalledCognitive = {
     name: manifest.name,
     type: manifest.type,
@@ -507,7 +662,9 @@ function updateProjectManifest(
     installedAt: new Date(),
     source: mappedSource,
   };
-  if (source === 'registry') {
+  if (sourceUrl) {
+    entry.sourceUrl = sourceUrl;
+  } else if (source === 'registry') {
     entry.sourceUrl = 'https://github.com/SynapSync/synapse-registry';
   }
   projectManifest.cognitives[manifest.name] = entry;

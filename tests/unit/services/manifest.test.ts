@@ -86,11 +86,7 @@ describe('ManifestManager', () => {
       const manager = new ManifestManager(testDir);
       manager.save();
 
-      expect(fs.writeFileSync).toHaveBeenCalledWith(
-        manifestPath,
-        expect.any(String),
-        'utf-8'
-      );
+      expect(fs.writeFileSync).toHaveBeenCalledWith(manifestPath, expect.any(String), 'utf-8');
 
       // Verify the saved content includes lastUpdated
       const savedContent = vi.mocked(fs.writeFileSync).mock.calls[0][1] as string;

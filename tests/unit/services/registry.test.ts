@@ -3,8 +3,16 @@
  */
 
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { RegistryClient, RegistryError, CognitiveNotFoundError } from '../../../src/services/registry/client.js';
-import type { RegistryIndex, RegistryCognitiveEntry, CognitiveManifest } from '../../../src/types/index.js';
+import {
+  RegistryClient,
+  RegistryError,
+  CognitiveNotFoundError,
+} from '../../../src/services/registry/client.js';
+import type {
+  RegistryIndex,
+  RegistryCognitiveEntry,
+  CognitiveManifest,
+} from '../../../src/types/index.js';
 
 // Mock global fetch
 const mockFetch = vi.fn();
@@ -247,7 +255,11 @@ describe('RegistryClient', () => {
     });
 
     it('should include filters in result', async () => {
-      const result = await client.search(undefined, { type: 'skill', category: 'general', tag: 'code' });
+      const result = await client.search(undefined, {
+        type: 'skill',
+        category: 'general',
+        tag: 'code',
+      });
 
       expect(result.filters).toEqual({ type: 'skill', category: 'general', tag: 'code' });
     });

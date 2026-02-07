@@ -36,10 +36,7 @@ interface ProjectManifest {
 /**
  * Execute the uninstall command
  */
-export function executeUninstallCommand(
-  name: string,
-  options: UninstallCommandOptions
-): void {
+export function executeUninstallCommand(name: string, options: UninstallCommandOptions): void {
   logger.line();
 
   // Check if project is initialized
@@ -78,7 +75,9 @@ export function executeUninstallCommand(
       const cognitiveDir = getCognitiveDir(configManager, cognitive);
       if (fs.existsSync(cognitiveDir)) {
         fs.rmSync(cognitiveDir, { recursive: true, force: true });
-        logger.log(`  ${pc.dim('Removed files from')} ${path.relative(process.cwd(), cognitiveDir)}`);
+        logger.log(
+          `  ${pc.dim('Removed files from')} ${path.relative(process.cwd(), cognitiveDir)}`
+        );
       }
     }
 

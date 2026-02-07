@@ -131,22 +131,19 @@ export async function confirmCognitiveType(
       output: process.stdout,
     });
 
-    rl.question(
-      `${pc.dim('  Is this correct?')} ${pc.cyan('[Y/n]')}: `,
-      (answer) => {
-        rl.close();
+    rl.question(`${pc.dim('  Is this correct?')} ${pc.cyan('[Y/n]')}: `, (answer) => {
+      rl.close();
 
-        const normalized = answer.trim().toLowerCase();
+      const normalized = answer.trim().toLowerCase();
 
-        if (normalized === '' || normalized === 'y' || normalized === 'yes') {
-          resolve({ confirmed: true, type: detectedType });
-        } else {
-          // User wants to change, prompt for new type
-          void promptForCognitiveType(cognitiveName).then((newType) => {
-            resolve({ confirmed: true, type: newType });
-          });
-        }
+      if (normalized === '' || normalized === 'y' || normalized === 'yes') {
+        resolve({ confirmed: true, type: detectedType });
+      } else {
+        // User wants to change, prompt for new type
+        void promptForCognitiveType(cognitiveName).then((newType) => {
+          resolve({ confirmed: true, type: newType });
+        });
       }
-    );
+    });
   });
 }

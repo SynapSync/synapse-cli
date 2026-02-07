@@ -209,7 +209,12 @@ registerInteractiveCommand(
       { flag: '-r, --remote', description: 'Browse all cognitives in registry' },
       { flag: '--json', description: 'Output as JSON' },
     ],
-    examples: ['/list', '/list --remote', '/list --remote --category planning', '/list --type skill'],
+    examples: [
+      '/list',
+      '/list --remote',
+      '/list --remote --category planning',
+      '/list --type skill',
+    ],
   }
 );
 
@@ -372,9 +377,7 @@ registerInteractiveCommand(
   },
   {
     usage: '/purge [options]',
-    options: [
-      { flag: '-f, --force', description: 'Skip confirmation and remove everything' },
-    ],
+    options: [{ flag: '-f, --force', description: 'Skip confirmation and remove everything' }],
     examples: ['/purge', '/purge --force'],
   }
 );

@@ -133,11 +133,7 @@ export function extractVersion(metadata: CognitiveMetadata, content: string): st
 /**
  * Extract name from frontmatter, directory, or content
  */
-export function extractName(
-  metadata: CognitiveMetadata,
-  dirName: string,
-  content: string
-): string {
+export function extractName(metadata: CognitiveMetadata, dirName: string, content: string): string {
   // Check frontmatter first
   if (metadata.name !== undefined) {
     return metadata.name;
